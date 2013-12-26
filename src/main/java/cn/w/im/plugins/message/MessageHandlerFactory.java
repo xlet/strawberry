@@ -19,6 +19,10 @@ public class MessageHandlerFactory{
                 NormalMessageHandler normalHandler=new NormalMessageHandler();
                 normalHandler.init(ctx,serverInfo);
                 return normalHandler;
+            case Logout:
+                LogoutMessageHandler logoutHandler=new LogoutMessageHandler();
+                logoutHandler.init(ctx,serverInfo);
+                return logoutHandler;
             default:
                 throw new Exception("不支持的消息类型!");
         }
