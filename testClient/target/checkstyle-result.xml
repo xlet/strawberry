@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="E:\IDEA\im\testClient\src\main\java\cn\w\im\testClient\Client.java">
+</file>
+<file name="E:\IDEA\im\testClient\src\main\java\cn\w\im\testClient\ClientHandler.java">
+</file>
+<file name="E:\IDEA\im\testClient\src\main\java\cn\w\im\testClient\Console.java">
+</file>
+<file name="E:\IDEA\im\testClient\src\main\java\cn\w\im\testClient\InputMasking.java">
+</file>
+<file name="E:\IDEA\im\testClient\src\main\java\cn\w\im\testClient\MaskingThread.java">
+</file>
+<file name="E:\IDEA\im\testClient\src\main\java\cn\w\im\testClient\package-info.java">
+</file>
+</checkstyle>

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1389152763343
+Build-Jdk: 1.7.0_45
+Built-By: JackieHan
+Bundle-Description: 溜溜IM
+Bundle-DocURL: http://liuliu.w.cn
+Bundle-ManifestVersion: 2
+Bundle-Name: Im/Exceptions
+Bundle-SymbolicName: cn.w.im.exceptions
+Bundle-Vendor: The WIm Project
+Bundle-Version: 1.0.0.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Export-Package: cn.w.im.exceptions;uses:="cn.w.im.domains.messages";vers
+ ion="1.0.0.SNAPSHOT"
+Import-Package: cn.w.im.domains.messages;version="[1.0,2)"
+Tool: Bnd-1.50.0

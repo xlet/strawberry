@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.6">
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\ClientInfo.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\HandlerContext.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\messages\LoginMessage.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\messages\LoginResponseMessage.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\messages\LogoutMessage.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\messages\LogoutResponseMessage.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\messages\Message.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\messages\MessageType.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\messages\NormalMessage.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\messages\package-info.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\mongo\MongoLoginMessage.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\mongo\MongoLogoutMessage.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\mongo\MongoNormalMessage.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\mongo\package-info.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\package-info.java">
+</file>
+<file name="E:\IDEA\im\domains\src\main\java\cn\w\im\domains\ServerInfo.java">
+</file>
+</checkstyle>
