@@ -1,6 +1,6 @@
 package cn.w.im.server;
 
-import cn.w.im.domains.ServerInfo;
+import cn.w.im.domains.server.MessageServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -52,7 +52,7 @@ public class ServerStarter {
      * @throws Exception 异常.
      */
     private void startListenServerPort() throws Exception {
-        int serverPort = ServerInfo.current().getServerPort();
+        int serverPort = MessageServer.current().getServerPort();
 
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();

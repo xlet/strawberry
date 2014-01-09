@@ -2,7 +2,7 @@ package cn.w.im.server;
 
 import cn.w.im.handlers.MessageDecoder;
 import cn.w.im.handlers.MessageEncoder;
-import cn.w.im.handlers.ServerHandler;
+import cn.w.im.handlers.MessageServerHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
@@ -28,7 +28,7 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
                 new StringDecoder(CharsetUtil.UTF_8),
                 new MessageEncoder(),
                 new MessageDecoder(),
-                new ServerHandler()
+                new MessageServerHandler()
         );
     }
 }

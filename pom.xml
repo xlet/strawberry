@@ -46,6 +46,9 @@
         <module>testClient</module>
         <module>domains</module>
         <module>exceptions</module>
+        <module>loginServer</module>
+        <module>mongo</module>
+        <module>resources</module>
     </modules>
 
     <repositories>

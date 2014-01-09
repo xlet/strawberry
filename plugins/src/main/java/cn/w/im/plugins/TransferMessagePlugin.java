@@ -2,7 +2,7 @@ package cn.w.im.plugins;
 
 import cn.w.im.domains.ClientInfo;
 import cn.w.im.domains.HandlerContext;
-import cn.w.im.domains.ServerInfo;
+import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.messages.NormalMessage;
 import org.apache.commons.logging.Log;
@@ -36,7 +36,7 @@ public class TransferMessagePlugin extends MessagePlugin {
     public void processMessage(Message message, HandlerContext context) {
         try {
             NormalMessage normalMessage = (NormalMessage) message;
-            ClientInfo toClient = ServerInfo.current().getClient(normalMessage.getTo());
+            ClientInfo toClient = MessageServer.current().getClient(normalMessage.getTo());
             if (toClient != null) {
                 toClient.getContext().write(normalMessage);
                 normalMessage.setTransmit(true);

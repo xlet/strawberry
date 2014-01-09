@@ -30,5 +30,10 @@
             <artifactId>im-exceptions</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>im-mongo</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

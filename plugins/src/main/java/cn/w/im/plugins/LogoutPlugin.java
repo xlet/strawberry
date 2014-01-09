@@ -1,7 +1,7 @@
 package cn.w.im.plugins;
 
 import cn.w.im.domains.HandlerContext;
-import cn.w.im.domains.ServerInfo;
+import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.messages.LogoutMessage;
 import cn.w.im.domains.messages.LogoutResponseMessage;
 import cn.w.im.domains.messages.Message;
@@ -48,7 +48,7 @@ public class LogoutPlugin extends MessagePlugin {
     }
 
     private boolean logout(LogoutMessage message) throws Exception {
-        ServerInfo.current().removeClient(message.getLoginId());
+        MessageServer.current().removeClient(message.getLoginId());
         return true;
     }
 }

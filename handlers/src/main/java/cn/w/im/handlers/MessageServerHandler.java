@@ -1,18 +1,14 @@
 package cn.w.im.handlers;
 
 import cn.w.im.domains.HandlerContext;
-import cn.w.im.domains.ServerInfo;
+import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.messages.Message;
-import cn.w.im.plugins.LoginPlugin;
-import cn.w.im.plugins.LogoutPlugin;
 import cn.w.im.plugins.Plugin;
-import cn.w.im.plugins.TransferMessagePlugin;
-import cn.w.im.plugins.mongo.MongoSerializationPlugin;
+import cn.w.im.plugins.PluginInitializer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,27 +17,17 @@ import java.util.List;
  * DateTime: 13-11-28 上午9:35.
  * Summary: 负责处理消息的接收和发送.
  */
-public class ServerHandler extends ChannelInboundHandlerAdapter {
+public class MessageServerHandler extends ChannelInboundHandlerAdapter {
     /**
      * 注册的所有插件
      */
-    private List<Plugin> plugins = new ArrayList<Plugin>();
+    private List<Plugin> plugins;
 
     /**
      * 构造函数.
      */
-    public ServerHandler() {
-        registerPlugins();
-    }
-
-    /**
-     * 注册插件.
-     */
-    private void registerPlugins() {
-        plugins.add(new LoginPlugin());
-        plugins.add(new TransferMessagePlugin());
-        plugins.add(new LogoutPlugin());
-        plugins.add(new MongoSerializationPlugin());
+    public MessageServerHandler() {
+        plugins = PluginInitializer.init();
     }
 
     /**
@@ -83,6 +69,6 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         String ipAddress = remoteAddress.getHostString();
         int port = remoteAddress.getPort();
 
-        ServerInfo.current().removeClient(ipAddress, port);
+        MessageServer.current().removeClient(ipAddress, port);
     }
 }
