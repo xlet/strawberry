@@ -4,7 +4,7 @@ import cn.w.im.domains.HandlerContext;
 import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.plugins.Plugin;
-import cn.w.im.plugins.PluginInitializer;
+import cn.w.im.plugins.init.PluginInitializerFactory;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -27,7 +27,7 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
      * 构造函数.
      */
     public MessageServerHandler() {
-        plugins = PluginInitializer.init();
+        plugins = PluginInitializerFactory.getInitializer(MessageServer.current().getServerType()).init();
     }
 
     /**

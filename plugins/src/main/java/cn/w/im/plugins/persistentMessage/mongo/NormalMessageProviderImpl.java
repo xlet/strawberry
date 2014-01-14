@@ -4,14 +4,14 @@ import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.messages.NormalMessage;
 import cn.w.im.domains.mongo.MongoNormalMessage;
 import cn.w.im.mongo.dao.message.MongoNormalMessageDao;
-import cn.w.im.plugins.persistentMessage.ProcessProvider;
+import cn.w.im.plugins.persistentMessage.MessageProvider;
 
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-6 下午3:03.
  * Summary: MongoNoramlMessage 序列化实现.
  */
-public class MongoNormalMessageProviderImpl implements ProcessProvider {
+public class NormalMessageProviderImpl implements MessageProvider {
 
     /**
      * MongoNormalMessageDao.
@@ -22,7 +22,7 @@ public class MongoNormalMessageProviderImpl implements ProcessProvider {
      * 构造函数.
      * @param dao MongoNormalMessageDao.
      */
-    public MongoNormalMessageProviderImpl(MongoNormalMessageDao dao) {
+    public NormalMessageProviderImpl(MongoNormalMessageDao dao) {
         this.dao = dao;
     }
 

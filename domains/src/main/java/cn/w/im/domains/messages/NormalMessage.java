@@ -1,5 +1,7 @@
 package cn.w.im.domains.messages;
 
+import cn.w.im.domains.MessageType;
+
 /**
  * Creator: JackieHan.
  * DateTime: 13-12-24 下午2:21.

@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
  * DateTime: 13-12-31 下午3:04.
  * Summary: Mongo 序列化插件.
  */
-public class MessageSerizalizePlugin extends MessagePlugin {
+public class MessagePersistentPlugin extends MessagePlugin {
 
     /**
      * 日志.
@@ -21,8 +21,8 @@ public class MessageSerizalizePlugin extends MessagePlugin {
     /**
      * 构造函数.
      */
-    public MessageSerizalizePlugin() {
-        super("MessageSerizalizePlugin", "Mongo序列化!");
+    public MessagePersistentPlugin() {
+        super("MessagePersistentPlugin", "Mongo持久化!");
     }
 
     @Override
@@ -33,7 +33,7 @@ public class MessageSerizalizePlugin extends MessagePlugin {
     @Override
     public void processMessage(Message message, HandlerContext context) {
         logger.info("开始保存!");
-        ProcesserFactory.createProcesser(message).serialize(message);
+        MessageProviderFactory.createProvider(message).serialize(message);
         logger.info("保存成功!");
     }
 }

@@ -49,6 +49,7 @@
         <module>loginServer</module>
         <module>mongo</module>
         <module>resources</module>
+        <module>messageBus</module>
     </modules>
 
     <repositories>

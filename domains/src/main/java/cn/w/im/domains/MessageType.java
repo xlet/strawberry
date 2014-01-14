@@ -1,4 +1,4 @@
-package cn.w.im.domains.messages;
+package cn.w.im.domains;
 
 /**
  * Creator: JackieHan.
@@ -29,7 +29,20 @@ public enum MessageType {
     /**
      * 系统消息.
      */
-    System(0x06);
+    System(0x06),
+    /**
+     * 消息服务注册消息(消息服务注册到消息总线服务).
+     */
+    MessageServerRegister(0x07),
+    /**
+     * 所有注册消息的回复消息.
+     */
+    RegisterResponse(0x08),
+
+    /**
+     * 登陆服务注册消息(注册到消息总线服务).
+     */
+    LoginServerRegister(0x09);
 
     /**
      * 构造函数.
@@ -43,7 +56,7 @@ public enum MessageType {
      * 获取值.
      * @return 值.
      */
-    private int getValue() {
+    public int getValue() {
         return this.value;
     }
 

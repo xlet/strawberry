@@ -1,5 +1,10 @@
 package cn.w.im.domains.messages;
 
+import cn.w.im.domains.MessageType;
+import cn.w.im.domains.messages.responses.LoginResponseMessage;
+import cn.w.im.domains.messages.responses.LogoutResponseMessage;
+import cn.w.im.domains.messages.responses.MessageServerRegisterResponseMessage;
+import cn.w.im.domains.messages.responses.RegisterResponseMessage;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -16,7 +21,10 @@ import java.util.Date;
         @JsonSubTypes.Type(value = LoginResponseMessage.class, name = "LoginResponseMessage"),
         @JsonSubTypes.Type(value = LogoutMessage.class, name = "LogoutMessage"),
         @JsonSubTypes.Type(value = LogoutResponseMessage.class, name = "LogoutResponse"),
-        @JsonSubTypes.Type(value = NormalMessage.class, name = "NormalResponse")
+        @JsonSubTypes.Type(value = NormalMessage.class, name = "NormalResponse"),
+        @JsonSubTypes.Type(value = MessageServerRegisterMessage.class, name = "MessageServerRegisterMessage"),
+        @JsonSubTypes.Type(value = RegisterResponseMessage.class, name = "RegisterResponseMessage"),
+        @JsonSubTypes.Type(value = MessageServerRegisterResponseMessage.class, name = "MessageServerRegisterResponseMessage")
 })
 public abstract class Message {
     /**

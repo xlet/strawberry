@@ -2,8 +2,8 @@ package cn.w.im.testClient;
 
 import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.messages.LoginMessage;
-import cn.w.im.domains.messages.LoginResponseMessage;
-import cn.w.im.domains.messages.LogoutResponseMessage;
+import cn.w.im.domains.messages.responses.LoginResponseMessage;
+import cn.w.im.domains.messages.responses.LogoutResponseMessage;
 import cn.w.im.domains.messages.NormalMessage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

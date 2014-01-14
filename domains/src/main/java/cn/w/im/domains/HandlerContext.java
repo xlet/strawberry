@@ -56,10 +56,25 @@ public class HandlerContext {
     }
 
     /**
+     * 获取连接Context.
+     * @return 连接Context.
+     */
+    public ChannelHandlerContext getCtx() {
+        return this.ctx;
+    }
+
+    /**
      * 回复客户端消息.
      * @param message 需要回复的消息.
      */
     public void write(Message message) {
         ctx.writeAndFlush(message);
+    }
+
+    /**
+     * 关闭连接.
+     */
+    public void close() {
+        ctx.close();
     }
 }

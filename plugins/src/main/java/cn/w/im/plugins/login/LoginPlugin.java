@@ -1,15 +1,16 @@
 package cn.w.im.plugins.login;
 
-import cn.w.im.domains.ClientInfo;
+import cn.w.im.domains.client.MessageClient;
 import cn.w.im.domains.HandlerContext;
 import cn.w.im.domains.LoginToken;
 import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.messages.LoginMessage;
-import cn.w.im.domains.messages.LoginResponseMessage;
+import cn.w.im.domains.messages.responses.LoginResponseMessage;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.mongo.MongoLoginToken;
 import cn.w.im.mongo.dao.utils.MongoLoginTokenDao;
 import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.utils.netty.IpAddressProvider;
 import cn.w.im.utils.spring.SpringContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,7 +48,7 @@ public class LoginPlugin extends MessagePlugin {
             logger.info("开始登陆处理!");
             LoginMessage loginMessage = (LoginMessage) message;
             if (login(loginMessage)) {
-                ClientInfo client = new ClientInfo(context, loginMessage.getLoginId());
+                MessageClient client = new MessageClient(context.getCtx(), loginMessage.getLoginId());
                 MessageServer.current().addClient(client);
 
                 LoginToken token = createAndSaveToken(client);
@@ -63,11 +64,11 @@ public class LoginPlugin extends MessagePlugin {
         }
     }
 
-    private LoginToken createAndSaveToken(ClientInfo client) {
+    private LoginToken createAndSaveToken(MessageClient client) {
         LoginToken token = new LoginToken();
         token.setLoginId(client.getId());
-        token.setClientIp(client.getContext().getClientIpAddress());
-        token.setLoginDate(new Date());
+        token.setClientIp(IpAddressProvider.getRemoteIpAddress(client.getContext()));
+                token.setLoginDate(new Date());
         token.setUsed(false);
         token.setToken(UUID.randomUUID().toString().replace("-", ""));
 

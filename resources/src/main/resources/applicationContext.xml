@@ -23,6 +23,7 @@
         <property name="toEnsureIndexes" value="true" />
         <property name="toEnsureCaps" value="true" />
     </bean>
+    <!-- mongo Message dao -->
     <bean id="mongoLoginMessageDao" class="cn.w.im.mongo.dao.message.MongoLoginMessageDao">
         <constructor-arg ref="datastore" />
     </bean>
@@ -32,13 +33,31 @@
     <bean id="mongoNormalMessageDao" class="cn.w.im.mongo.dao.message.MongoNormalMessageDao">
         <constructor-arg ref="datastore" />
     </bean>
-    <bean id="mongoLoginMessageSerializer" class="cn.w.im.plugins.persistentMessage.mongo.MongoLoginMessageProviderImpl">
+    <bean id="mongoMessageServerRegisterMessageDao" class="cn.w.im.mongo.dao.message.MongoMessageServerRegisterMessageDao">
+        <constructor-arg ref="datastore" />
+    </bean>
+    <bean id="mongoLoginServerRegisterMessageDao" class="cn.w.im.mongo.dao.message.MongoLoginServerRegisterMessageDao">
+        <constructor-arg ref="datastore" />
+    </bean>
+
+    <!-- mongo utils dao -->
+    <bean id="mongoLoginTokenDao" class="cn.w.im.mongo.dao.utils.MongoLoginTokenDao">
+        <constructor-arg ref="datastore" />
+    </bean>
+
+    <!-- mongo persistent provider -->
+    <bean id="loginMessageProviderImpl" class="cn.w.im.plugins.persistentMessage.mongo.LoginMessageProviderImpl">
         <constructor-arg ref="mongoLoginMessageDao" />
     </bean>
-    <bean id="mongoLogoutMessageSerializer" class="cn.w.im.plugins.persistentMessage.mongo.MongoLogoutMessageProviderImpl">
+    <bean id="logoutMessageProviderImpl" class="cn.w.im.plugins.persistentMessage.mongo.LogoutMessageProviderImpl">
         <constructor-arg ref="mongoLogoutMessageDao" />
     </bean>
-    <bean id="mongoNormalMessageSerializer" class="cn.w.im.plugins.persistentMessage.mongo.MongoNormalMessageProviderImpl">
+    <bean id="normalMessageProviderImpl" class="cn.w.im.plugins.persistentMessage.mongo.NormalMessageProviderImpl">
         <constructor-arg ref="mongoNormalMessageDao" />
     </bean>
+    <bean id="messageServerRegisterMessageProviderImpl" class="cn.w.im.plugins.persistentMessage.mongo.MessageServerRegisterMessageProviderImpl">
+        <constructor-arg ref="mongoMessageServerRegisterMessageDao" />
+    </bean>
+    <!-- 插件初始化配置 -->
+    <bean id="loginServerPluginInitializer" class="cn.w.im.plugins.init.LoginServerPluginInitializer"></bean>
 </beans>

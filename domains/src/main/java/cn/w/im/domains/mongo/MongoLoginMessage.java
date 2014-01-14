@@ -20,7 +20,6 @@ public class MongoLoginMessage extends LoginMessage {
      */
     @Id
     private ObjectId id;
-
     /**
      * 序列化名称.
      */
