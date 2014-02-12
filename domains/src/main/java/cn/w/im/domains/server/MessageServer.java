@@ -1,11 +1,17 @@
 package cn.w.im.domains.server;
 
+import cn.w.im.domains.LoginToken;
 import cn.w.im.domains.client.MessageClient;
 import cn.w.im.domains.ServerBasic;
+import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.utils.netty.IpAddressProvider;
+import io.netty.channel.ChannelHandlerContext;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -38,9 +44,15 @@ public class MessageServer extends AbstractServer {
 
     private int busPort;
 
+    private ChannelHandlerContext forwardContext;
+
     private List<MessageClient> clients;
 
     private List<ServerBasic> startedMessageServices;
+
+    private Map<String, List<MessageClientBasic>> messageServerClientMap;
+
+    private List<LoginToken> tokens;
 
     /**
      * 构造函数.
@@ -49,6 +61,8 @@ public class MessageServer extends AbstractServer {
         super(ServerType.MessageServer);
         clients = new CopyOnWriteArrayList<MessageClient>();
         startedMessageServices = new CopyOnWriteArrayList<ServerBasic>();
+        tokens = new CopyOnWriteArrayList<LoginToken>();
+        messageServerClientMap = new ConcurrentHashMap<String, List<MessageClientBasic>>();
     }
 
     /**
@@ -68,6 +82,21 @@ public class MessageServer extends AbstractServer {
             this.busPort = busPort;
         }
         return this;
+    }
+
+    /**
+     * 获取所有已连接客户端的基础信息.
+     * @return 所有已连接客户端的基础信息.
+     */
+    public List<MessageClientBasic> getLinkedClients() {
+        List<MessageClientBasic> clientBasics = new ArrayList<MessageClientBasic>();
+        Iterator<MessageClient> iterator = clients.iterator();
+        while (iterator.hasNext()) {
+            MessageClient client = iterator.next();
+            MessageClientBasic clientBasic = new MessageClientBasic(client.getId(),client.getRemoteHost(),client.getRemotePort());
+            clientBasics.add(clientBasic);
+        }
+        return clientBasics;
     }
 
     /**
@@ -133,6 +162,7 @@ public class MessageServer extends AbstractServer {
      */
     public void addServer(ServerBasic serverBasic) {
         this.startedMessageServices.add(serverBasic);
+        initClientMap(serverBasic);
     }
 
     /**
@@ -141,6 +171,70 @@ public class MessageServer extends AbstractServer {
      */
     public void addServers(List<ServerBasic> serverBasics) {
         this.startedMessageServices.addAll(serverBasics);
+        Iterator<ServerBasic> iterator = serverBasics.iterator();
+        while (iterator.hasNext()) {
+            ServerBasic serverBasic = iterator.next();
+            initClientMap(serverBasic);
+        }
+    }
+
+    private void initClientMap(ServerBasic serverBasic) {
+        String nodeId = serverBasic.getNodeId();
+        List<MessageClientBasic> messageClientBasics = new CopyOnWriteArrayList<MessageClientBasic>();
+        messageServerClientMap.put(nodeId,messageClientBasics);
+    }
+
+    /**
+     * 获取其他消息服务信息.
+     * @param loginId 登陆Id.
+     * @return 服务信息.
+     */
+    public ServerBasic getOtherServer(String loginId) {
+        String matchedServerNodeId = getOtherServerNodeId(loginId);
+        if (matchedServerNodeId.isEmpty()) {
+            return null;
+        }
+
+        Iterator<ServerBasic> serverIterator = startedMessageServices.iterator();
+        while (serverIterator.hasNext()) {
+            ServerBasic serverBasic = serverIterator.next();
+            if (serverBasic.getNodeId().equals(matchedServerNodeId)) {
+                return serverBasic;
+            }
+        }
+        return null;
+    }
+
+    private String getOtherServerNodeId(String loginId) {
+        Iterator<String> keyIterator = messageServerClientMap.keySet().iterator();
+        while (keyIterator.hasNext()) {
+            String nodeId = keyIterator.next();
+            List<MessageClientBasic> messageClients = messageServerClientMap.get(nodeId);
+            Iterator<MessageClientBasic> clientIterator = messageClients.iterator();
+            while (clientIterator.hasNext()) {
+                MessageClientBasic clientBasic = clientIterator.next();
+                if(clientBasic.getLoginId().equals(loginId)) {
+                    return nodeId;
+                }
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 添加其他消息服务客户端.
+     * @param otherServer 其他消息服务.
+     * @param clients 连接在其他消息服务上的客户端.
+     */
+    public void addOtherServerClients(ServerBasic otherServer, List<MessageClientBasic> clients) {
+        if (messageServerClientMap.containsKey(otherServer.getNodeId())) {
+            List<MessageClientBasic> existedClients = messageServerClientMap.get(otherServer.getNodeId());
+            for (MessageClientBasic client : clients) {
+                existedClients.add(client);
+            }
+        } else {
+            messageServerClientMap.put(otherServer.getNodeId(),clients);
+        }
     }
 
     /**
@@ -149,6 +243,14 @@ public class MessageServer extends AbstractServer {
      */
     public Iterator<ServerBasic> getServerIterator() {
         return startedMessageServices.iterator();
+    }
+
+    /**
+     * 添加登陆token.
+     * @param token token信息.
+     */
+    public void addToken(LoginToken token) {
+        this.tokens.add(token);
     }
 
     /**
@@ -165,5 +267,21 @@ public class MessageServer extends AbstractServer {
      */
     public int getBusPort() {
         return busPort;
+    }
+
+    /**
+     * 获取转发Context.
+     * @return 转发Context.
+     */
+    public ChannelHandlerContext getForwardContext() {
+        return forwardContext;
+    }
+
+    /**
+     * 设置转发Context.
+     * @param forwardContext 转发Context.
+     */
+    public void setForwardContext(ChannelHandlerContext forwardContext) {
+        this.forwardContext = forwardContext;
     }
 }

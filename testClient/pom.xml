@@ -52,7 +52,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
-                            <mainClass>cn.w.im.testClient.Client</mainClass>
+                            <mainClass>cn.w.im.testClient.ClientStarter</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -13,24 +13,18 @@ import java.util.Date;
  * Summary: mongo 一般消息.
  */
 @Entity("messages")
-public class MongoNormalMessage extends NormalMessage {
+public class MongoNormalMessage extends NormalMessage implements MongoDomain {
 
-    /**
-     * id.
-     */
     @Id
     private ObjectId id;
 
-    /**
-     * 序列化名称.
-     */
-    private Date serializationTime;
+    private Date persistentDate;
 
     /**
      * 构造函数  设置序列化时间为当前时间.
      */
     public MongoNormalMessage() {
-        this.serializationTime = new Date();
+        this.persistentDate = new Date();
     }
 
     /**
@@ -47,34 +41,22 @@ public class MongoNormalMessage extends NormalMessage {
         this.setTo(normalMessage.getTo());
     }
 
-    /**
-     * 获取序列化时间.
-     * @return 序列化时间.
-     */
-    public Date getSerializationTime() {
-        return serializationTime;
+    @Override
+    public Date getPersistentDate() {
+        return persistentDate;
     }
 
-    /**
-     * 设置序列化时间.
-     * @param serializationTime 序列化时间.
-     */
-    public void setSerializationTime(Date serializationTime) {
-        this.serializationTime = serializationTime;
+    @Override
+    public void setPersistentDate(Date persistentDate) {
+        this.persistentDate = persistentDate;
     }
 
-    /**
-     * 获取id.
-     * @return id.
-     */
+    @Override
     public ObjectId getId() {
         return id;
     }
 
-    /**
-     * 设置id.
-     * @param id id.
-     */
+    @Override
     public void setId(ObjectId id) {
         this.id = id;
     }

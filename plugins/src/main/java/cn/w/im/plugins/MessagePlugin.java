@@ -2,6 +2,9 @@ package cn.w.im.plugins;
 
 import cn.w.im.domains.HandlerContext;
 import cn.w.im.domains.messages.Message;
+import cn.w.im.domains.server.ServerType;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Creator: JackieHan.
@@ -10,24 +13,33 @@ import cn.w.im.domains.messages.Message;
  */
 public abstract class MessagePlugin extends AbstractPlugin {
 
+    private Log logger = LogFactory.getLog(this.getClass());
+
     /**
      * 构造函数.
-     * @param name 插件名称.
-     * @param description 插件说明.
+     *
+     * @param name          插件名称.
+     * @param description   插件说明.
+     * @param containerType 服务类型.
      */
-    public MessagePlugin(String name, String description) {
-        super(name, description);
+    public MessagePlugin(String name, String description, ServerType containerType) {
+        super(name, description, containerType);
     }
 
     @Override
     public void process(HandlerContext context) {
-        if (isMatch(context)) {
-            processMessage(context.getMessage(), context);
+        try {
+            if (isMatch(context)) {
+                processMessage(context.getMessage(), context);
+            }
+        } catch (Exception ex) {
+            logger.error(ex);
         }
     }
 
     /**
      * 是否匹配.
+     *
      * @param context 当前Context.
      * @return 匹配:true  不匹配:false.
      */
@@ -35,6 +47,7 @@ public abstract class MessagePlugin extends AbstractPlugin {
 
     /**
      * 处理消息.
+     *
      * @param message 消息.
      * @param context 当前Context.
      */

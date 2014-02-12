@@ -1,46 +1,43 @@
 package cn.w.im.plugins;
 
+import cn.w.im.domains.server.ServerType;
+
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-3 下午3:16.
- * Summary:
+ * Summary: 抽象插件.
  */
 public abstract class AbstractPlugin implements Plugin {
 
-    /**
-     * name:插件名称.
-     * description:插件说明.
-     */
     private String name, description;
+
+    private ServerType containerType;
 
     /**
      * 构造函数.
      *
      * @param name        插件名称.
      * @param description 插件说明.
+     * @param containerType 服务类型.
      */
-    public AbstractPlugin(String name, String description) {
+    public AbstractPlugin(String name, String description, ServerType containerType) {
         this.name = name;
         this.description = description;
+        this.containerType = containerType;
     }
 
-    /**
-     * 获取插件名称.
-     *
-     * @return 插件名称.
-     */
     @Override
     public String name() {
         return this.name;
     }
 
-    /**
-     * 获取插件说明.
-     *
-     * @return 插件说明.
-     */
     @Override
     public String description() {
         return this.description;
+    }
+
+    @Override
+    public ServerType containerType() {
+        return containerType;
     }
 }

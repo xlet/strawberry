@@ -22,9 +22,11 @@ import java.util.Date;
         @JsonSubTypes.Type(value = LogoutMessage.class, name = "LogoutMessage"),
         @JsonSubTypes.Type(value = LogoutResponseMessage.class, name = "LogoutResponse"),
         @JsonSubTypes.Type(value = NormalMessage.class, name = "NormalResponse"),
-        @JsonSubTypes.Type(value = MessageServerRegisterMessage.class, name = "MessageServerRegisterMessage"),
+        @JsonSubTypes.Type(value = ServerRegisterMessage.class, name = "ServerRegisterMessage"),
         @JsonSubTypes.Type(value = RegisterResponseMessage.class, name = "RegisterResponseMessage"),
-        @JsonSubTypes.Type(value = MessageServerRegisterResponseMessage.class, name = "MessageServerRegisterResponseMessage")
+        @JsonSubTypes.Type(value = MessageServerRegisterResponseMessage.class, name = "MessageServerRegisterResponseMessage"),
+        @JsonSubTypes.Type(value = ConnectMessage.class, name = "ConnectMessage"),
+        @JsonSubTypes.Type(value = ForwardMessage.class, name = "ForwardMessage")
 })
 public abstract class Message {
     /**

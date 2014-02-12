@@ -1,6 +1,7 @@
 package cn.w.im.domains.server;
 
 import cn.w.im.domains.ServerBasic;
+import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +39,8 @@ public class LoginServer extends AbstractServer {
 
     private ConcurrentHashMap<String, Integer> messageServerClients;
 
+    private ChannelHandlerContext forwardContext;
+
 
     /**
      * 获取已注册的消息服务列表.
@@ -62,6 +65,22 @@ public class LoginServer extends AbstractServer {
      */
     public String getBusHost() {
         return busHost;
+    }
+
+    /**
+     * 获取转发连接Conext.
+     * @return Context.
+     */
+    public ChannelHandlerContext getForwardContext() {
+        return forwardContext;
+    }
+
+    /**
+     * 设置转发连接Context.
+     * @param forwardContext Context.
+     */
+    public void setForwardContext(ChannelHandlerContext forwardContext) {
+        this.forwardContext = forwardContext;
     }
 
     /**
@@ -126,7 +145,7 @@ public class LoginServer extends AbstractServer {
         Iterator<ServerBasic> servers = messageServers.iterator();
         while (servers.hasNext()) {
             ServerBasic serverBasic = servers.next();
-            if (minClientCountKey == serverBasic.getNodeId()) {
+            if (minClientCountKey.equals(serverBasic.getNodeId())) {
                 matchedServer = serverBasic;
             }
         }

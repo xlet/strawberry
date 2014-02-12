@@ -2,15 +2,24 @@ package cn.w.im.loginServer;
 
 
 import cn.w.im.domains.server.LoginServer;
+import cn.w.im.domains.server.ServerType;
+import cn.w.im.handlers.MessageBusConnectionHandler;
+import cn.w.im.handlers.MessageDecoder;
+import cn.w.im.handlers.MessageEncoder;
 import cn.w.im.utils.ConfigHelper;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
+import io.netty.util.CharsetUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -42,8 +51,6 @@ public class LoginServerStarter {
 
     /**
      * 启动服务器.
-     *
-     * @throws Exception 异常信息.
      */
     private void start() {
         logger.info("server Starting!");
@@ -61,7 +68,20 @@ public class LoginServerStarter {
             LoginServer.current().init(hostIp, port, busHost, busPort);
 
             logger.info("read configuration: loginServer[" + hostIp + ":" + port + "],messageBus[" + busHost + ":" + busPort + "]");
-            startListenServerPort();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    startServer();
+                }
+            }).start();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    registerToMessageBus();
+                }
+            }).start();
         } catch (Exception ex) {
             logger.error("未知错误!", ex);
         }
@@ -69,10 +89,8 @@ public class LoginServerStarter {
 
     /**
      * 启动.
-     *
-     * @throws Exception 异常.
      */
-    private void startListenServerPort() throws Exception {
+    private void startServer() {
 
         String host = LoginServer.current().getHost();
         int serverPort = LoginServer.current().getPort();
@@ -85,6 +103,7 @@ public class LoginServerStarter {
             serverBootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ServerInitializer());
+
             ChannelFuture bindFuture;
             if (debug) {
                 bindFuture = serverBootstrap.bind(serverPort).sync();
@@ -93,6 +112,8 @@ public class LoginServerStarter {
             }
             bindFuture.addListener(bindFutureListener);
             bindFuture.channel().closeFuture().sync();
+        } catch (Exception ex) {
+            logger.error(ex);
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
@@ -103,7 +124,7 @@ public class LoginServerStarter {
         @Override
         public void operationComplete(ChannelFuture future) throws Exception {
             LoginServer.current().start();
-            registerToMessageBus();
+            logger.info("server started!");
         }
     };
 
@@ -114,21 +135,24 @@ public class LoginServerStarter {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(clientGroup)
                     .channel(NioSocketChannel.class)
-                    .handler(new MessageBusClientInitializer());
+                    .handler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            ch.pipeline().addLast(
+                                    new StringEncoder(CharsetUtil.UTF_8),
+                                    new StringDecoder(CharsetUtil.UTF_8),
+                                    new MessageEncoder(),
+                                    new MessageDecoder(),
+                                    new MessageBusConnectionHandler(ServerType.LoginServer)
+                            );
+                        }
+                    });
 
             ChannelFuture connectFuture = bootstrap.connect(LoginServer.current().getBusHost(), LoginServer.current().getBusPort()).sync();
-            connectFuture.addListener(connectFutureListener);
             connectFuture.channel().closeFuture().sync();
         } catch (Exception ex) {
             logger.info("未知错误!", ex);
             clientGroup.shutdownGracefully();
         }
     }
-
-    private ChannelFutureListener connectFutureListener = new ChannelFutureListener() {
-        @Override
-        public void operationComplete(ChannelFuture future) throws Exception {
-            logger.info("server started!");
-        }
-    };
 }

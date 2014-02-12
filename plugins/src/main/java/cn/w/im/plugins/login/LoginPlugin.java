@@ -1,17 +1,19 @@
 package cn.w.im.plugins.login;
 
+import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClient;
 import cn.w.im.domains.HandlerContext;
 import cn.w.im.domains.LoginToken;
-import cn.w.im.domains.server.MessageServer;
+import cn.w.im.domains.messages.ForwardMessage;
 import cn.w.im.domains.messages.LoginMessage;
+import cn.w.im.domains.messages.TokenMessage;
 import cn.w.im.domains.messages.responses.LoginResponseMessage;
 import cn.w.im.domains.messages.Message;
-import cn.w.im.domains.mongo.MongoLoginToken;
-import cn.w.im.mongo.dao.utils.MongoLoginTokenDao;
+import cn.w.im.domains.server.LoginServer;
+import cn.w.im.domains.server.ServerType;
+import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
 import cn.w.im.utils.netty.IpAddressProvider;
-import cn.w.im.utils.spring.SpringContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -27,14 +29,13 @@ public class LoginPlugin extends MessagePlugin {
 
     private Log logger = LogFactory.getLog(this.getClass());
 
-    private MongoLoginTokenDao mongoLoginTokenDao;
-
     /**
      * 构造函数.
+     *
+     * @param containerType 服务类型.
      */
-    public LoginPlugin() {
-        super("LoginPlugin", "登陆处理!");
-        mongoLoginTokenDao = (MongoLoginTokenDao) SpringContext.context().getBean("mongoLoginTokenDao");
+    public LoginPlugin(ServerType containerType) {
+        super("LoginPlugin", "登陆处理!", containerType);
     }
 
     @Override
@@ -44,36 +45,42 @@ public class LoginPlugin extends MessagePlugin {
 
     @Override
     public void processMessage(Message message, HandlerContext context) {
-        try {
-            logger.info("开始登陆处理!");
-            LoginMessage loginMessage = (LoginMessage) message;
-            if (login(loginMessage)) {
-                MessageClient client = new MessageClient(context.getCtx(), loginMessage.getLoginId());
-                MessageServer.current().addClient(client);
-
-                LoginToken token = createAndSaveToken(client);
-                context.write(new LoginResponseMessage(true, token));
-                logger.info("登陆成功!");
-            } else {
-                context.write(new LoginResponseMessage(false));
-                logger.info("登陆失败!");
-            }
-        } catch (Exception ex) {
-            logger.error("登陆失败!", ex);
-            context.write(new LoginResponseMessage(false));
+        LoginMessage loginMessage = (LoginMessage) message;
+        switch (this.containerType()) {
+            case LoginServer:
+                processWithLoginServer(loginMessage, context);
+                break;
+            default:
+                throw new NotSupportedServerTypeException(this.containerType());
         }
     }
 
-    private LoginToken createAndSaveToken(MessageClient client) {
+    private void processWithLoginServer(LoginMessage message, HandlerContext context) {
+        if (login(message)) {
+            MessageClient client = new MessageClient(context.getCtx(), message.getLoginId());
+            LoginToken token = createToken(client);
+
+            //通知消息服务登陆token信息.
+            ServerBasic messageServer = LoginServer.current().getMessageServer();
+            TokenMessage tokenMessage = new TokenMessage(token);
+            ForwardMessage forwardMessage = new ForwardMessage(LoginServer.current().getServerBasic(), messageServer, tokenMessage);
+            LoginServer.current().getForwardContext().writeAndFlush(forwardMessage);
+
+            //发送登陆token给客户端. 并关闭连接.
+            LoginResponseMessage loginResponseMessage = new LoginResponseMessage(true, token, messageServer);
+            context.write(loginResponseMessage);
+        } else {
+            context.write(new LoginResponseMessage(false));
+        }
+        context.close();
+    }
+
+    private LoginToken createToken(MessageClient client) {
         LoginToken token = new LoginToken();
         token.setLoginId(client.getId());
         token.setClientIp(IpAddressProvider.getRemoteIpAddress(client.getContext()));
-                token.setLoginDate(new Date());
-        token.setUsed(false);
+        token.setLoginDate(new Date());
         token.setToken(UUID.randomUUID().toString().replace("-", ""));
-
-        MongoLoginToken mongoLoginToken = new MongoLoginToken(token);
-        mongoLoginTokenDao.save(mongoLoginToken);
 
         return token;
     }

@@ -1,6 +1,7 @@
 package cn.w.im.testClient;
 
-import cn.w.im.domains.messages.Message;
+import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.messages.ConnectMessage;
 import cn.w.im.domains.messages.LoginMessage;
 import cn.w.im.domains.messages.responses.LoginResponseMessage;
 import cn.w.im.domains.messages.responses.LogoutResponseMessage;
@@ -10,7 +11,9 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Creator: JackieHan.
@@ -24,15 +27,18 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
      */
     private static Log log = LogFactory.getLog(ClientHandler.class);
 
+    private List<HandlerListener> listeners = new ArrayList<HandlerListener>();
+
     /**
      * id:登陆id.
      * password:登陆密码.
      */
-    private String id, password;
+    private String id, password, token;
 
     /**
      * 构造函数.
-     * @param id 登陆id.
+     *
+     * @param id       登陆id.
      * @param password 登陆密码.
      */
     public ClientHandler(String id, String password) {
@@ -41,18 +47,41 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     }
 
     /**
+     * 构造函数.
+     */
+    public ClientHandler(String token) {
+        this.token = token;
+    }
+
+    /**
+     * 添加监听.
+     *
+     * @param listener 监听回调.
+     */
+    public void addListener(HandlerListener listener) {
+        listeners.add(listener);
+    }
+
+    /**
      * channelActive.
+     *
      * @param ctx 当前连接上下文.
      * @throws Exception 异常.
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        Message message = new LoginMessage(id, password);
-        ctx.writeAndFlush(message);
+        if (!id.equals("") && !password.equals("")) {
+            LoginMessage loginMessage = new LoginMessage(id, password);
+            ctx.writeAndFlush(loginMessage);
+        } else {
+            ConnectMessage connectMessage = new ConnectMessage(token);
+            ctx.writeAndFlush(connectMessage);
+        }
     }
 
     /**
      * channelRead.
+     *
      * @param ctx 上下文.
      * @param msg 消息.
      * @throws Exception 异常.
@@ -61,12 +90,11 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof LoginResponseMessage) {
             LoginResponseMessage message = (LoginResponseMessage) msg;
-            if (message.isSuccess()) {
-                System.out.println("登陆成功!");
-                new Console(ctx, id).start();
-            } else {
-                System.out.println("用户名密码错误!");
+            HandlerContext handlerContext = new HandlerContext(message, ctx);
+            for (HandlerListener listener : listeners) {
+                listener.operationComplete(handlerContext);
             }
+            ctx.close();
         } else if (msg instanceof NormalMessage) {
             NormalMessage normalMessage = (NormalMessage) msg;
             System.out.println(normalMessage.getFrom() + "-->" + normalMessage.getTo());

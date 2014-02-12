@@ -1,6 +1,7 @@
 package cn.w.im.plugins;
 
 import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.server.ServerType;
 
 /**
  * Creator: JackieHan.
@@ -20,6 +21,12 @@ public interface Plugin {
      * @return 插件说明.
      */
     String description();
+
+    /**
+     * 获取注册到那种服务中.
+     * @return 服务类型.
+     */
+    ServerType containerType();
 
     /**
      * 处理.

@@ -1,9 +1,10 @@
 package cn.w.im.server;
 
 import cn.w.im.domains.server.MessageServer;
+import cn.w.im.domains.server.ServerType;
 import cn.w.im.handlers.MessageDecoder;
 import cn.w.im.handlers.MessageEncoder;
-import cn.w.im.handlers.MessageServerRegisterHandler;
+import cn.w.im.handlers.MessageBusConnectionHandler;
 import cn.w.im.utils.ConfigHelper;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.bootstrap.Bootstrap;
@@ -33,6 +34,8 @@ public class MessageServerStarter {
 
     private Log logger = LogFactory.getLog(this.getClass());
 
+    private boolean debug = false;
+
     /**
      * 启动主函数.
      *
@@ -47,15 +50,42 @@ public class MessageServerStarter {
         logger.info("server Starting!");
         try {
             Properties properties = ConfigHelper.getConfig(MessageServerStarter.class, "config/server.conf");
-            String hostIp = properties.getProperty("ip");
-            int port = Integer.parseInt(properties.getProperty("port"));
-            String loginServerHostIp = properties.getProperty("loginServer.ip");
-            int loginServerPort = Integer.parseInt(properties.getProperty("loginServer.port"));
-            MessageServer.current().init(hostIp, port, loginServerHostIp, loginServerPort);
 
-            logger.info("read configuration: bind and listen[" + hostIp + ":" + port + "]");
-            logger.info("read configuration: loginServer info[" + loginServerHostIp + ":" + loginServerPort + "]");
-            startServer();
+            debug = Boolean.parseBoolean(properties.getProperty("debug"));
+
+            String hostIp = properties.getProperty("host");
+            int port = Integer.parseInt(properties.getProperty("port"));
+            String busHost = properties.getProperty("bus.host");
+            int busPort = Integer.parseInt(properties.getProperty("bus.port"));
+            MessageServer.current().init(hostIp, port, busHost, busPort);
+
+            logger.info("read configuration: messageServer[" + hostIp + ":" + port + "]");
+            logger.info("read configuration: messageBus[" + busHost + ":" + busPort + "]");
+
+            Thread startServerThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        startServer();
+                    } catch (Exception ex) {
+                        logger.error(ex);
+                    }
+                }
+            });
+
+            Thread messageBusConnectionThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        connectMessageBus();
+                    } catch (Exception ex) {
+                        logger.error(ex);
+                    }
+                }
+            });
+
+            startServerThread.start();
+            messageBusConnectionThread.start();
         } catch (Exception ex) {
             logger.error("未知错误", ex);
         }
@@ -74,7 +104,13 @@ public class MessageServerStarter {
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ServerInitializer());
 
-            ChannelFuture future = serverBootstrap.bind(serverHost, serverPort).sync();
+            ChannelFuture future;
+
+            if (debug) {
+                future = serverBootstrap.bind(serverPort).sync();
+            } else {
+                future = serverBootstrap.bind(serverHost, serverPort).sync();
+            }
             future.addListener(registerToMessageBus);
             future.channel().closeFuture().sync();
         } finally {
@@ -88,7 +124,7 @@ public class MessageServerStarter {
         public void operationComplete(ChannelFuture future) throws Exception {
             if (future.isSuccess()) {
                 MessageServer.current().start();
-                registerToMessageBus();
+                logger.info("server started!");
             }
         }
     };
@@ -96,10 +132,7 @@ public class MessageServerStarter {
     /**
      * 注册到登陆服务.
      */
-    private void registerToMessageBus() {
-
-        logger.info("开始向登陆服务注册本消息服务!");
-
+    private void connectMessageBus() {
         EventLoopGroup clientGroup = new NioEventLoopGroup();
         try {
             String busHost = MessageServer.current().getBusHost();
@@ -116,12 +149,11 @@ public class MessageServerStarter {
                                     new StringDecoder(CharsetUtil.UTF_8),
                                     new MessageEncoder(),
                                     new MessageDecoder(),
-                                    new MessageServerRegisterHandler()
+                                    new MessageBusConnectionHandler(ServerType.MessageServer)
                             );
                         }
                     });
             ChannelFuture connectFuture = bootstrap.connect(busHost, busPort).sync();
-            connectFuture.addListener(connectFutureListener);
             connectFuture.channel().closeFuture().sync();
         } catch (Exception ex) {
             logger.error("未知错误!", ex);
@@ -129,11 +161,4 @@ public class MessageServerStarter {
             clientGroup.shutdownGracefully();
         }
     }
-
-    private ChannelFutureListener connectFutureListener = new ChannelFutureListener() {
-        @Override
-        public void operationComplete(ChannelFuture future) throws Exception {
-            logger.info("server started!");
-        }
-    };
 }

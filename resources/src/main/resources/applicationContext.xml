@@ -33,31 +33,52 @@
     <bean id="mongoNormalMessageDao" class="cn.w.im.mongo.dao.message.MongoNormalMessageDao">
         <constructor-arg ref="datastore" />
     </bean>
-    <bean id="mongoMessageServerRegisterMessageDao" class="cn.w.im.mongo.dao.message.MongoMessageServerRegisterMessageDao">
+    <bean id="mongoMessageServerRegisterMessageDao" class="cn.w.im.mongo.dao.message.MongoServerRegisterMessageDao">
         <constructor-arg ref="datastore" />
     </bean>
-    <bean id="mongoLoginServerRegisterMessageDao" class="cn.w.im.mongo.dao.message.MongoLoginServerRegisterMessageDao">
+    <bean id="mongoConnectMessageDao" class="cn.w.im.mongo.dao.message.MongoConnectMessageDao">
+        <constructor-arg ref="datastore" />
+    </bean>
+    <bean id="mongoForwardMessageDao" class="cn.w.im.mongo.dao.message.MongoForwardMessageDao">
+        <constructor-arg ref="datastore" />
+    </bean>
+    <bean id="mongoTokenMessageDao" class="cn.w.im.mongo.dao.message.MongoTokenMessageDao">
+        <constructor-arg ref="datastore" />
+    </bean>
+    <bean id="mongoRequestLinkedClientsMessageDao" class="cn.w.im.mongo.dao.message.MongoRequestLinkedClientsMessageDao">
         <constructor-arg ref="datastore" />
     </bean>
 
     <!-- mongo utils dao -->
-    <bean id="mongoLoginTokenDao" class="cn.w.im.mongo.dao.utils.MongoLoginTokenDao">
-        <constructor-arg ref="datastore" />
-    </bean>
 
     <!-- mongo persistent provider -->
-    <bean id="loginMessageProviderImpl" class="cn.w.im.plugins.persistentMessage.mongo.LoginMessageProviderImpl">
+    <bean id="loginMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.LoginMessagePersistentProviderImpl">
         <constructor-arg ref="mongoLoginMessageDao" />
     </bean>
-    <bean id="logoutMessageProviderImpl" class="cn.w.im.plugins.persistentMessage.mongo.LogoutMessageProviderImpl">
+    <bean id="logoutMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.LogoutMessagePersistentProviderImpl">
         <constructor-arg ref="mongoLogoutMessageDao" />
     </bean>
-    <bean id="normalMessageProviderImpl" class="cn.w.im.plugins.persistentMessage.mongo.NormalMessageProviderImpl">
+    <bean id="normalMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.NormalMessagePersistentProviderImpl">
         <constructor-arg ref="mongoNormalMessageDao" />
     </bean>
-    <bean id="messageServerRegisterMessageProviderImpl" class="cn.w.im.plugins.persistentMessage.mongo.MessageServerRegisterMessageProviderImpl">
+    <bean id="serverRegisterMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.ServerRegisterMessagePersistentProviderImpl">
         <constructor-arg ref="mongoMessageServerRegisterMessageDao" />
     </bean>
+    <bean id="connectMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.ConnectMessagePersistentProviderImpl">
+        <constructor-arg ref="mongoConnectMessageDao" />
+    </bean>
+    <bean id="forwardMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.ForwardMessagePersistentProviderImpl">
+        <constructor-arg ref="mongoForwardMessageDao" />
+    </bean>
+    <bean id="tokenMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.TokenMessagePersistentProviderImpl">
+        <constructor-arg ref="mongoTokenMessageDao" />
+    </bean>
+    <bean id="requestLinkedClientsMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.RequestLinkedClientsMessagePersistentProviderImpl">
+        <constructor-arg ref="mongoRequestLinkedClientsMessageDao" />
+    </bean>
+
     <!-- 插件初始化配置 -->
-    <bean id="loginServerPluginInitializer" class="cn.w.im.plugins.init.LoginServerPluginInitializer"></bean>
+    <bean id="loginServerPluginInitializer" class="cn.w.im.plugins.init.LoginServerPluginInitializer" />
+    <bean id="messageBusPluginInitializer" class="cn.w.im.plugins.init.MessageBusPluginInitializer" />
+    <bean id="messageServerPluginInitializer" class="cn.w.im.plugins.init.MessageServerPluginInitializer" />
 </beans>

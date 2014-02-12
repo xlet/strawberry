@@ -31,18 +31,42 @@ public enum MessageType {
      */
     System(0x06),
     /**
-     * 消息服务注册消息(消息服务注册到消息总线服务).
+     * 服务注册消息(服务注册到消息总线服务).
      */
-    MessageServerRegister(0x07),
+    ServerRegister(0x07),
     /**
      * 所有注册消息的回复消息.
      */
     RegisterResponse(0x08),
+    /**
+     * 连接消息服务器消息.
+     */
+    Connect(0x0A),
 
     /**
-     * 登陆服务注册消息(注册到消息总线服务).
+     * 连接消息服务器消息返回.
      */
-    LoginServerRegister(0x09);
+    ConnectResponse(0x0B),
+
+    /**
+     * 转发消息.
+     */
+    Forward(0x0C),
+
+    /**
+     * Token消息.
+     */
+    Token(0x0D),
+
+    /**
+     * 请求已连接客户端消息.
+     */
+    RequestLinkedClients(0x0E),
+
+    /**
+     * 请求已连接消息响应消息.
+     */
+    ResponseLinkedClients(0x0F);
 
     /**
      * 构造函数.

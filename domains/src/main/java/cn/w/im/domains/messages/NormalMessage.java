@@ -19,7 +19,7 @@ public class NormalMessage extends Message {
     /**
      * 是否转发.
      */
-    private boolean transmit;
+    private boolean forward;
 
     /**
      * 构造函数.
@@ -93,15 +93,15 @@ public class NormalMessage extends Message {
      * 是否已转发.
      * @return 转发：true 未转发：false.
      */
-    public boolean isTransmit() {
-        return transmit;
+    public boolean isForward() {
+        return forward;
     }
 
     /**
      * 设置是否转发.
-     * @param transmit 转发:true 未转发:false.
+     * @param forward 转发:true 未转发:false.
      */
-    public void setTransmit(boolean transmit) {
-        this.transmit = transmit;
+    public void setForward(boolean forward) {
+        this.forward = forward;
     }
 }

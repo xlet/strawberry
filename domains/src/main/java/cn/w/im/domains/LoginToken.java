@@ -17,8 +17,6 @@ public class LoginToken {
 
     private String token;
 
-    private boolean used;
-
     /**
      * 获取客户端Ip地址.
      * @return ip地址.
@@ -81,21 +79,5 @@ public class LoginToken {
      */
     public void setToken(String token) {
         this.token = token;
-    }
-
-    /**
-     * 是否已经使用.
-     * @return true:使用过.
-     */
-    public boolean isUsed() {
-        return used;
-    }
-
-    /**
-     * 设置是否已经使用.
-     * @param used true:使用过.
-     */
-    public void setUsed(boolean used) {
-        this.used = used;
     }
 }
