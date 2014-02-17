@@ -67,8 +67,9 @@ public class MessageServer extends AbstractServer {
 
     /**
      * 初始化.
-     * @param host 服务绑定ip.
-     * @param port 服务监听端口.
+     *
+     * @param host    服务绑定ip.
+     * @param port    服务监听端口.
      * @param busHost 登陆服务ip.
      * @param busPort 登陆服务监听端口.
      * @return MessageServer.
@@ -86,6 +87,7 @@ public class MessageServer extends AbstractServer {
 
     /**
      * 获取所有已连接客户端的基础信息.
+     *
      * @return 所有已连接客户端的基础信息.
      */
     public List<MessageClientBasic> getLinkedClients() {
@@ -93,7 +95,7 @@ public class MessageServer extends AbstractServer {
         Iterator<MessageClient> iterator = clients.iterator();
         while (iterator.hasNext()) {
             MessageClient client = iterator.next();
-            MessageClientBasic clientBasic = new MessageClientBasic(client.getId(),client.getRemoteHost(),client.getRemotePort());
+            MessageClientBasic clientBasic = new MessageClientBasic(client.getId(), client.getRemoteHost(), client.getRemotePort());
             clientBasics.add(clientBasic);
         }
         return clientBasics;
@@ -158,6 +160,7 @@ public class MessageServer extends AbstractServer {
 
     /**
      * 添加已启动的服务.
+     *
      * @param serverBasic 已启动的服务信息.
      */
     public void addServer(ServerBasic serverBasic) {
@@ -167,6 +170,7 @@ public class MessageServer extends AbstractServer {
 
     /**
      * 添加已启动的服务集合.
+     *
      * @param serverBasics 已启动的服务信息集合.
      */
     public void addServers(List<ServerBasic> serverBasics) {
@@ -181,11 +185,12 @@ public class MessageServer extends AbstractServer {
     private void initClientMap(ServerBasic serverBasic) {
         String nodeId = serverBasic.getNodeId();
         List<MessageClientBasic> messageClientBasics = new CopyOnWriteArrayList<MessageClientBasic>();
-        messageServerClientMap.put(nodeId,messageClientBasics);
+        messageServerClientMap.put(nodeId, messageClientBasics);
     }
 
     /**
      * 获取其他消息服务信息.
+     *
      * @param loginId 登陆Id.
      * @return 服务信息.
      */
@@ -213,7 +218,7 @@ public class MessageServer extends AbstractServer {
             Iterator<MessageClientBasic> clientIterator = messageClients.iterator();
             while (clientIterator.hasNext()) {
                 MessageClientBasic clientBasic = clientIterator.next();
-                if(clientBasic.getLoginId().equals(loginId)) {
+                if (clientBasic.getLoginId().equals(loginId)) {
                     return nodeId;
                 }
             }
@@ -223,8 +228,9 @@ public class MessageServer extends AbstractServer {
 
     /**
      * 添加其他消息服务客户端.
+     *
      * @param otherServer 其他消息服务.
-     * @param clients 连接在其他消息服务上的客户端.
+     * @param clients     连接在其他消息服务上的客户端.
      */
     public void addOtherServerClients(ServerBasic otherServer, List<MessageClientBasic> clients) {
         if (messageServerClientMap.containsKey(otherServer.getNodeId())) {
@@ -233,12 +239,13 @@ public class MessageServer extends AbstractServer {
                 existedClients.add(client);
             }
         } else {
-            messageServerClientMap.put(otherServer.getNodeId(),clients);
+            messageServerClientMap.put(otherServer.getNodeId(), clients);
         }
     }
 
     /**
      * 获取已启动的服务遍历对象.
+     *
      * @return 服务遍历对象.
      */
     public Iterator<ServerBasic> getServerIterator() {
@@ -247,6 +254,7 @@ public class MessageServer extends AbstractServer {
 
     /**
      * 添加登陆token.
+     *
      * @param token token信息.
      */
     public void addToken(LoginToken token) {
@@ -255,6 +263,7 @@ public class MessageServer extends AbstractServer {
 
     /**
      * 获取消息总线服务绑定ip.
+     *
      * @return ip.
      */
     public String getBusHost() {
@@ -263,6 +272,7 @@ public class MessageServer extends AbstractServer {
 
     /**
      * 获取消息总线服务监听端口.
+     *
      * @return 端口.
      */
     public int getBusPort() {
@@ -271,6 +281,7 @@ public class MessageServer extends AbstractServer {
 
     /**
      * 获取转发Context.
+     *
      * @return 转发Context.
      */
     public ChannelHandlerContext getForwardContext() {
@@ -279,6 +290,7 @@ public class MessageServer extends AbstractServer {
 
     /**
      * 设置转发Context.
+     *
      * @param forwardContext 转发Context.
      */
     public void setForwardContext(ChannelHandlerContext forwardContext) {

@@ -10,10 +10,11 @@ import org.mongodb.morphia.dao.BasicDAO;
  * DateTime: 14-2-11 下午2:52.
  * Summary: MongoRequestLinkedClientsMessage Dao.
  */
-public class MongoRequestLinkedClientsMessageDao extends BasicDAO<MongoRequestLinkedClientsMessage,ObjectId> {
+public class MongoRequestLinkedClientsMessageDao extends BasicDAO<MongoRequestLinkedClientsMessage, ObjectId> {
 
     /**
      * 构造函数.
+     *
      * @param ds datastore.
      */
     public MongoRequestLinkedClientsMessageDao(Datastore ds) {
