@@ -3,7 +3,11 @@
   <component name="FacetManager">
     <facet type="Osmorc" name="OSGi">
       <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="im-mongo-1.0-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="cn.w.im.mongo" bundleVersion="1.0.0.SNAPSHOT" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
-        <additionalProperties />
+        <additionalProperties>
+          <property key="Bundle-Description" value="溜溜IM" />
+          <property key="Bundle-Vendor" value="The WIm Project" />
+          <property key="Bundle-DocURL" value="http://liuliu.w.cn" />
+        </additionalProperties>
         <additionalJARContents />
       </configuration>
     </facet>
