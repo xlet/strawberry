@@ -52,14 +52,6 @@
         <module>messageBus</module>
     </modules>
 
-    <repositories>
-        <repository>
-            <id>ibiblio.mirrors</id>
-            <name>ibiblio.mirrors</name>
-            <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>io.netty</groupId>
