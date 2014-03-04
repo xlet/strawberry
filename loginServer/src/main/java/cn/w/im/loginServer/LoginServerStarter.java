@@ -1,6 +1,7 @@
 package cn.w.im.loginServer;
 
 
+import cn.w.im.domains.conf.Configuration;
 import cn.w.im.domains.server.LoginServer;
 import cn.w.im.domains.server.ServerType;
 import cn.w.im.handlers.MessageBusConnectionHandler;
@@ -38,8 +39,6 @@ public class LoginServerStarter {
      */
     private Log logger = LogFactory.getLog(this.getClass());
 
-    private boolean debug = false;
-
     /**
      * 启动主函数.
      *
@@ -58,8 +57,7 @@ public class LoginServerStarter {
         try {
             Properties properties = ConfigHelper.getConfig(this.getClass(), "config/server.conf");
 
-            this.debug = Boolean.parseBoolean(properties.getProperty("debug"));
-            logger.info("debug model");
+            Configuration.current().init(properties);
 
             String hostIp = properties.getProperty("host");
             int port = Integer.parseInt(properties.getProperty("port"));
@@ -105,7 +103,7 @@ public class LoginServerStarter {
                     .childHandler(new ServerInitializer());
 
             ChannelFuture bindFuture;
-            if (debug) {
+            if (Configuration.current().isDebug()) {
                 bindFuture = serverBootstrap.bind(serverPort).sync();
             } else {
                 bindFuture = serverBootstrap.bind(host, serverPort).sync();

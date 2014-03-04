@@ -5,7 +5,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
     <context:property-placeholder location="classpath:config.properties"/>
     <bean id="mongo" class="cn.w.im.mongo.MongoFactoryBean">
-        <property name="mongoUrl" value="mongodb://root:123456@10.0.40.20/?w=1" />
         <property name="readSecondary" value="false" />
         <property name="writeConcern" value="SAFE" />
     </bean>

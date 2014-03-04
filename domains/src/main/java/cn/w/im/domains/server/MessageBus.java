@@ -44,6 +44,14 @@ public class MessageBus extends AbstractServer {
     }
 
     /**
+     * 获取服务是否初始化.
+     * @return true:已经初始化
+     */
+    public boolean isInit() {
+        return init;
+    }
+
+    /**
      * 初始化服务信息.
      *
      * @param host 绑定ip.

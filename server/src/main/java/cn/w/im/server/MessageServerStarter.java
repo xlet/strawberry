@@ -1,5 +1,6 @@
 package cn.w.im.server;
 
+import cn.w.im.domains.conf.Configuration;
 import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.server.ServerType;
 import cn.w.im.handlers.MessageDecoder;
@@ -34,8 +35,6 @@ public class MessageServerStarter {
 
     private Log logger = LogFactory.getLog(this.getClass());
 
-    private boolean debug = false;
-
     /**
      * 启动主函数.
      *
@@ -51,7 +50,8 @@ public class MessageServerStarter {
         try {
             Properties properties = ConfigHelper.getConfig(MessageServerStarter.class, "config/server.conf");
 
-            debug = Boolean.parseBoolean(properties.getProperty("debug"));
+            //配置信息初始化.
+            Configuration.current().init(properties);
 
             String hostIp = properties.getProperty("host");
             int port = Integer.parseInt(properties.getProperty("port"));
@@ -106,7 +106,7 @@ public class MessageServerStarter {
 
             ChannelFuture future;
 
-            if (debug) {
+            if (Configuration.current().isDebug()) {
                 future = serverBootstrap.bind(serverPort).sync();
             } else {
                 future = serverBootstrap.bind(serverHost, serverPort).sync();

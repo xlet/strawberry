@@ -296,4 +296,12 @@ public class MessageServer extends AbstractServer {
     public void setForwardContext(ChannelHandlerContext forwardContext) {
         this.forwardContext = forwardContext;
     }
+
+    /**
+     * 获取服务是否初始化.
+     * @return true:已经初始化
+     */
+    public boolean isInit() {
+        return init;
+    }
 }

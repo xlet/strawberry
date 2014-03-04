@@ -95,28 +95,9 @@
                             <tasks>
                                 <echo>Ant Task - copying files.....</echo>
                                 <copy file="${project.basedir}/../config/messageServer.conf"
-                                      tofile="${build.directory}/config/server.conf"></copy>
+                                      tofile="${project.build.directory}/config/server.conf"></copy>
                             </tasks>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/main/assembly/assembly.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>

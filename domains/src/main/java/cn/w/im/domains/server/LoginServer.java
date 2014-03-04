@@ -84,6 +84,14 @@ public class LoginServer extends AbstractServer {
     }
 
     /**
+     * 获取服务是否初始化.
+     * @return true:已经初始化
+     */
+    public boolean isInit() {
+        return init;
+    }
+
+    /**
      * 构造函数.
      */
     private LoginServer() {

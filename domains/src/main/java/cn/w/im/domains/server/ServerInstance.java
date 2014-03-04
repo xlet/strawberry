@@ -9,6 +9,7 @@ public class ServerInstance {
 
     /**
      * 获取服务信息实例.
+     *
      * @param serverType 服务类型.
      * @return 服务信息唯一实例.
      * @throws Exception 不支持的服务类型异常.

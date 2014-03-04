@@ -1,5 +1,6 @@
 package cn.w.im.messageBus;
 
+import cn.w.im.domains.conf.Configuration;
 import cn.w.im.domains.server.MessageBus;
 import cn.w.im.utils.ConfigHelper;
 import io.netty.bootstrap.ServerBootstrap;
@@ -22,10 +23,9 @@ public class MessageBusStarter {
 
     private Log logger = LogFactory.getLog(this.getClass());
 
-    private boolean debug = false;
-
     /**
      * 服务启动入口.
+     *
      * @param args 参数.
      */
     public static void main(String[] args) {
@@ -37,15 +37,15 @@ public class MessageBusStarter {
             logger.info("server starting");
             Properties properties = ConfigHelper.getConfig(this.getClass(), "config/server.conf");
 
-            debug = Boolean.parseBoolean(properties.getProperty("debug"));
-
-            logger.info("运行为debug模式!");
+            Configuration.current().init(properties);
 
             String host = properties.getProperty("host");
             int port = Integer.parseInt(properties.getProperty("port"));
 
             logger.info("read configuration: server[" + host + ":" + port + "]");
             MessageBus.current().init(host, port);
+
+            String mongoUrl = properties.getProperty("mongo.url");
 
             startServer();
 
@@ -65,7 +65,7 @@ public class MessageBusStarter {
                     .childHandler(new ServerInitializer());
 
             ChannelFuture bindFuture;
-            if (debug) {
+            if (Configuration.current().isDebug()) {
                 bindFuture = bootstrap.bind(MessageBus.current().getPort()).sync();
             } else {
                 bindFuture = bootstrap.bind(MessageBus.current().getHost(), MessageBus.current().getPort()).sync();

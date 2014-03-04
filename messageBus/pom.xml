@@ -81,7 +81,7 @@
                             <tasks>
                                 <echo>Ant Task - copying files.....</echo>
                                 <copy file="${project.basedir}/../config/messageBus.conf"
-                                      tofile="${build.directory}/config/server.conf"></copy>
+                                      tofile="${project.build.directory}/config/server.conf"></copy>
                             </tasks>
                         </configuration>
                     </execution>
