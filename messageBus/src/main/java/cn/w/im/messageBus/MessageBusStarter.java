@@ -45,8 +45,6 @@ public class MessageBusStarter {
             logger.info("read configuration: server[" + host + ":" + port + "]");
             MessageBus.current().init(host, port);
 
-            String mongoUrl = properties.getProperty("mongo.url");
-
             startServer();
 
         } catch (Exception ex) {
