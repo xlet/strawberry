@@ -55,7 +55,7 @@ public class LoginServerStarter {
         logger.info("server Starting!");
 
         try {
-            Properties properties = ConfigHelper.getConfig(this.getClass(), "config/server.conf");
+            Properties properties = ConfigHelper.getConfig(this.getClass(), "conf/server.conf");
 
             Configuration.current().init(properties);
 

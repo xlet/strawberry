@@ -36,6 +36,7 @@ public class LoginServerRegisterPlugin extends MessagePlugin {
 
     @Override
     public void processMessage(Message message, HandlerContext context) {
+        
         ServerRegisterMessage registerMessage = (ServerRegisterMessage) message;
         ServerBasic loginServer = registerMessage.getServerBasic();
         MessageBus.current().addLoginServer(loginServer, context.getCtx());

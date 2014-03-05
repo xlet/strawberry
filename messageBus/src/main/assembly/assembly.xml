@@ -11,8 +11,8 @@
     </dependencySets>
     <fileSets>
         <fileSet>
-            <directory>target/config</directory>
-            <outputDirectory>/config</outputDirectory>
+            <directory>target/conf</directory>
+            <outputDirectory>/conf</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>target</directory>
