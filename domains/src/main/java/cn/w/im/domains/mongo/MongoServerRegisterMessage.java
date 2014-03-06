@@ -12,7 +12,7 @@ import java.util.Date;
  * DateTime: 14-1-9 下午4:55.
  * Summary: 消息服务注册消息Mongo结构定义.
  */
-@Entity("messageServerRegisterMessage")
+@Entity("serverRegisterMessage")
 public class MongoServerRegisterMessage extends ServerRegisterMessage implements MongoDomain {
 
     @Id
@@ -38,6 +38,7 @@ public class MongoServerRegisterMessage extends ServerRegisterMessage implements
         this.setMessageType(messageServerRegisterMessage.getMessageType());
         this.setReceivedTime(messageServerRegisterMessage.getReceivedTime());
         this.setServerBasic(messageServerRegisterMessage.getServerBasic());
+        this.setServerType(messageServerRegisterMessage.getServerType());
     }
 
     @Override
