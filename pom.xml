@@ -39,7 +39,7 @@
     </properties>
 
     <modules>
-        <module>server</module>
+        <module>messageServer</module>
         <module>handlers</module>
         <module>plugins</module>
         <module>utils</module>

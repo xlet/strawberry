@@ -52,10 +52,10 @@ public class LoginServerStarter {
      * 启动服务器.
      */
     private void start() {
-        logger.info("server Starting!");
+        logger.info("messageServer Starting!");
 
         try {
-            Properties properties = ConfigHelper.getConfig(this.getClass(), "conf/server.conf");
+            Properties properties = ConfigHelper.getConfig(this.getClass(), "conf/messageServer.conf");
 
             Configuration.current().init(properties);
 

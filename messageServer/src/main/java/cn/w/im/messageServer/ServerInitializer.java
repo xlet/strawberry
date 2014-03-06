@@ -1,4 +1,4 @@
-package cn.w.im.server;
+package cn.w.im.messageServer;
 
 import cn.w.im.handlers.MessageDecoder;
 import cn.w.im.handlers.MessageEncoder;

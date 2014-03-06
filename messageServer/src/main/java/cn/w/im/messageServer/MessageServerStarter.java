@@ -1,4 +1,4 @@
-package cn.w.im.server;
+package cn.w.im.messageServer;
 
 import cn.w.im.domains.conf.Configuration;
 import cn.w.im.domains.server.MessageServer;
@@ -46,9 +46,9 @@ public class MessageServerStarter {
 
     private void start() {
 
-        logger.info("server Starting!");
+        logger.info("messageServer Starting!");
         try {
-            Properties properties = ConfigHelper.getConfig(MessageServerStarter.class, "conf/server.conf");
+            Properties properties = ConfigHelper.getConfig(MessageServerStarter.class, "conf/messageServer.conf");
 
             //配置信息初始化.
             Configuration.current().init(properties);

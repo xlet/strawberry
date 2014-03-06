@@ -57,7 +57,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
-                            <mainClass>cn.w.im.server.MessageServerStarter</mainClass>
+                            <mainClass>cn.w.im.messageServer.MessageServerStarter</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

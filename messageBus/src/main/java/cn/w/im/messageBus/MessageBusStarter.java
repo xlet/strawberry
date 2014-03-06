@@ -34,15 +34,15 @@ public class MessageBusStarter {
 
     private void start() {
         try {
-            logger.info("server starting");
-            Properties properties = ConfigHelper.getConfig(this.getClass(), "conf/server.conf");
+            logger.info("messageServer starting");
+            Properties properties = ConfigHelper.getConfig(this.getClass(), "conf/messageServer.conf");
 
             Configuration.current().init(properties);
 
             String host = properties.getProperty("host");
             int port = Integer.parseInt(properties.getProperty("port"));
 
-            logger.info("read configuration: server[" + host + ":" + port + "]");
+            logger.info("read configuration: messageServer[" + host + ":" + port + "]");
             MessageBus.current().init(host, port);
 
             startServer();
