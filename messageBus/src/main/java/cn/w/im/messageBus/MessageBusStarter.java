@@ -35,7 +35,7 @@ public class MessageBusStarter {
     private void start() {
         try {
             logger.info("messageServer starting");
-            Properties properties = ConfigHelper.getConfig(this.getClass(), "conf/messageServer.conf");
+            Properties properties = ConfigHelper.getConfig(this.getClass(), "conf/server.conf");
 
             Configuration.current().init(properties);
 

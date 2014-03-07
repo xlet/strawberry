@@ -55,7 +55,7 @@ public class LoginServerStarter {
         logger.info("messageServer Starting!");
 
         try {
-            Properties properties = ConfigHelper.getConfig(this.getClass(), "conf/messageServer.conf");
+            Properties properties = ConfigHelper.getConfig(this.getClass(), "conf/server.conf");
 
             Configuration.current().init(properties);
 

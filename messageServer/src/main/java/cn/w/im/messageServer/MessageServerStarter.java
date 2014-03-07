@@ -48,7 +48,7 @@ public class MessageServerStarter {
 
         logger.info("messageServer Starting!");
         try {
-            Properties properties = ConfigHelper.getConfig(MessageServerStarter.class, "conf/messageServer.conf");
+            Properties properties = ConfigHelper.getConfig(MessageServerStarter.class, "conf/server.conf");
 
             //配置信息初始化.
             Configuration.current().init(properties);
