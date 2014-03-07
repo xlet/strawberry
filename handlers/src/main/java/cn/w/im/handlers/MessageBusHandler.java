@@ -54,6 +54,6 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
         //TODO: 容错处理
 
         MessageBus.current().removeClient(remoteIp, remotePort);
-        super.exceptionCaught(ctx, cause);
+        logger.error("client[" + remoteIp + ":" + remotePort + "] crashed!", cause);
     }
 }

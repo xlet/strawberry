@@ -78,7 +78,7 @@ public class MessageBusConnectionHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        //TODO:jackie 容错处理.
+        logger.error("connection interrupt! perhaps messageBusServer crashed!", cause);
     }
 
     private void forwardToServer(final Object message) {
