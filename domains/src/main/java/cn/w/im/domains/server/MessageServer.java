@@ -38,7 +38,7 @@ public class MessageServer extends AbstractServer {
         return currentServer;
     }
 
-    private boolean init = false;
+    private boolean init = false, connectedBusServer = false;
 
     private String busHost;
 
@@ -262,6 +262,22 @@ public class MessageServer extends AbstractServer {
     }
 
     /**
+     * 连接到消息总线后调用.
+     */
+    public void connectedBusServer() {
+        this.connectedBusServer = true;
+    }
+
+    /**
+     * 获取是否连接到消息总线.
+     *
+     * @return true:已连接.
+     */
+    public boolean isConnectedBusServer() {
+        return connectedBusServer;
+    }
+
+    /**
      * 获取消息总线服务绑定ip.
      *
      * @return ip.
@@ -299,6 +315,7 @@ public class MessageServer extends AbstractServer {
 
     /**
      * 获取服务是否初始化.
+     *
      * @return true:已经初始化
      */
     public boolean isInit() {

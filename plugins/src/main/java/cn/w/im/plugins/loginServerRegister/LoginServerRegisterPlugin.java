@@ -21,7 +21,7 @@ public class LoginServerRegisterPlugin extends MessagePlugin {
      * @param containerType 服务类型.
      */
     public LoginServerRegisterPlugin(ServerType containerType) {
-        super("loginServerRegisterPlugin", "登陆服务器注册插件", containerType);
+        super("loginServerRegisterPlugin", "login server register to message bus server process.", containerType);
     }
 
     @Override
@@ -36,11 +36,8 @@ public class LoginServerRegisterPlugin extends MessagePlugin {
 
     @Override
     public void processMessage(Message message, HandlerContext context) {
-        
         ServerRegisterMessage registerMessage = (ServerRegisterMessage) message;
         ServerBasic loginServer = registerMessage.getServerBasic();
         MessageBus.current().addLoginServer(loginServer, context.getCtx());
-
-        //TODO: jackie 添加回复消息.
     }
 }

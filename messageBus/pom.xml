@@ -43,7 +43,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
-                            <mainClass>cn.w.im.messageBus.MessageBusStarter</mainClass>
+                            <mainClass>cn.w.im.messageBus.Bootstrap</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

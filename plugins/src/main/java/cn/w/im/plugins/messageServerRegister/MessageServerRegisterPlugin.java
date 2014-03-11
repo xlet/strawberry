@@ -1,4 +1,4 @@
-package cn.w.im.plugins.serverRegister;
+package cn.w.im.plugins.messageServerRegister;
 
 import cn.w.im.domains.HandlerContext;
 import cn.w.im.domains.MessageType;
@@ -21,7 +21,7 @@ import java.util.List;
  * DateTime: 14-1-9 上午11:49.
  * Summary: 消息服务注册消息处理. 支持消息总线服务，登陆服务.
  */
-public class ServerRegisterPlugin extends MessagePlugin {
+public class MessageServerRegisterPlugin extends MessagePlugin {
 
     private final Log logger = LogFactory.getLog(this.getClass());
 
@@ -30,8 +30,8 @@ public class ServerRegisterPlugin extends MessagePlugin {
      *
      * @param containerType 服务类型.
      */
-    public ServerRegisterPlugin(ServerType containerType) {
-        super("ServerRegisterPlugin", "消息服务注册消息处理插件", containerType);
+    public MessageServerRegisterPlugin(ServerType containerType) {
+        super("MessageServerRegisterPlugin", "process message server register message.", containerType);
     }
 
     @Override

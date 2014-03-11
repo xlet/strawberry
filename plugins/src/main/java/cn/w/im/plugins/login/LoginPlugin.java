@@ -35,7 +35,7 @@ public class LoginPlugin extends MessagePlugin {
      * @param containerType 服务类型.
      */
     public LoginPlugin(ServerType containerType) {
-        super("LoginPlugin", "登陆处理!", containerType);
+        super("LoginPlugin", "login process.", containerType);
     }
 
     @Override

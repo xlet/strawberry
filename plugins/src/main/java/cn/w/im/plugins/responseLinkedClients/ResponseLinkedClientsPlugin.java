@@ -25,7 +25,7 @@ public class ResponseLinkedClientsPlugin extends MessagePlugin {
      * @param containerType 服务类型.
      */
     public ResponseLinkedClientsPlugin(ServerType containerType) {
-        super("ResponseLinkedClientsPlugin", "请求所有已连接客户端响应消息处理插件", containerType);
+        super("ResponseLinkedClientsPlugin", "request linked clients response message process.", containerType);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class RequestLinkedClientsPlugin extends MessagePlugin {
      * @param containerType 服务类型.
      */
     public RequestLinkedClientsPlugin(ServerType containerType) {
-        super("RequestLinkedClientsPlugin", "请求已连接客户端消息处理插件", containerType);
+        super("RequestLinkedClientsPlugin", "message server request other server linked clients.", containerType);
     }
 
     @Override

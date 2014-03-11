@@ -25,7 +25,7 @@ public class MessagePersistentPlugin extends MessagePlugin {
      * @param containerType 服务类型.
      */
     public MessagePersistentPlugin(ServerType containerType) {
-        super("MessagePersistentPlugin", "Mongo持久化!", containerType);
+        super("MessagePersistentPlugin", "persistent message to mongo db.", containerType);
     }
 
     @Override
@@ -35,8 +35,6 @@ public class MessagePersistentPlugin extends MessagePlugin {
 
     @Override
     public void processMessage(Message message, HandlerContext context) {
-        logger.info("开始保存!");
         MessagePersistentProviderFactory.createProvider(message).save(message);
-        logger.info("保存成功!");
     }
 }

@@ -28,7 +28,7 @@ public class LogoutPlugin extends MessagePlugin {
      * @param containerType 服务类型.
      */
     public LogoutPlugin(ServerType containerType) {
-        super("LogoutPlugin", "退出登陆处理!", containerType);
+        super("LogoutPlugin", "logout process.", containerType);
     }
 
     @Override

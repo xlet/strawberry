@@ -29,7 +29,7 @@ public class LoginServer extends AbstractServer {
         return currentLoginServer;
     }
 
-    private boolean init = false;
+    private boolean init = false, connectedBusServer = false;
 
     private int busPort;
 
@@ -41,6 +41,14 @@ public class LoginServer extends AbstractServer {
 
     private ChannelHandlerContext forwardContext;
 
+    /**
+     * 获取注册到messageBusServer的线程是否启动.
+     *
+     * @return true:启动.
+     */
+    public boolean isConnectedBusServer() {
+        return connectedBusServer;
+    }
 
     /**
      * 获取已注册的消息服务列表.
@@ -53,6 +61,7 @@ public class LoginServer extends AbstractServer {
 
     /**
      * 获取消息总线服务监听端口.
+     *
      * @return 端口号.
      */
     public int getBusPort() {
@@ -61,6 +70,7 @@ public class LoginServer extends AbstractServer {
 
     /**
      * 获取消息总线host.
+     *
      * @return host.
      */
     public String getBusHost() {
@@ -69,6 +79,7 @@ public class LoginServer extends AbstractServer {
 
     /**
      * 获取转发连接Conext.
+     *
      * @return Context.
      */
     public ChannelHandlerContext getForwardContext() {
@@ -77,6 +88,7 @@ public class LoginServer extends AbstractServer {
 
     /**
      * 设置转发连接Context.
+     *
      * @param forwardContext Context.
      */
     public void setForwardContext(ChannelHandlerContext forwardContext) {
@@ -85,6 +97,7 @@ public class LoginServer extends AbstractServer {
 
     /**
      * 获取服务是否初始化.
+     *
      * @return true:已经初始化
      */
     public boolean isInit() {
@@ -103,8 +116,8 @@ public class LoginServer extends AbstractServer {
     /**
      * 初始化.
      *
-     * @param host 绑定Ip.
-     * @param port 监听端口.
+     * @param host    绑定Ip.
+     * @param port    监听端口.
      * @param busHost 消息总线服务绑定ip.
      * @param busPort 消息总线服务监听端口.
      * @return 登陆服务信息实例.
@@ -118,6 +131,13 @@ public class LoginServer extends AbstractServer {
             this.init = true;
         }
         return this;
+    }
+
+    /**
+     * 注册线程启动后调用.
+     */
+    public void registerThreadStart() {
+        this.connectedBusServer = true;
     }
 
     /**

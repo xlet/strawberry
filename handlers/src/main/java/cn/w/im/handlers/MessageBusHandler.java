@@ -40,9 +40,9 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
 
         HandlerContext context = new HandlerContext(message, ctx);
         for (Plugin plugin : plugins) {
-            logger.info("开始执行: " + plugin.description());
+            logger.info("processing " + plugin.description());
             plugin.process(context);
-            logger.info("结束执行: " + plugin.description());
+            logger.info("processed " + plugin.description());
         }
     }
 

@@ -23,7 +23,7 @@ public class TokenPlugin extends MessagePlugin {
      * @param containerType 服务类型.
      */
     public TokenPlugin(ServerType containerType) {
-        super("TokenPlugin", "登陆token消息处理插件", containerType);
+        super("TokenPlugin", "process login token message.", containerType);
     }
 
     @Override

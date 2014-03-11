@@ -57,7 +57,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
-                            <mainClass>cn.w.im.loginServer.LoginServerStarter</mainClass>
+                            <mainClass>cn.w.im.loginServer.Bootstrap</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -24,7 +24,7 @@ public class ForwardMessagePlugin extends MessagePlugin {
      * @param containerType 服务类型.
      */
     public ForwardMessagePlugin(ServerType containerType) {
-        super("ForwardMessagePlugin", "服务之间消息转发插件", containerType);
+        super("ForwardMessagePlugin", "forward message between server and server.", containerType);
     }
 
     @Override

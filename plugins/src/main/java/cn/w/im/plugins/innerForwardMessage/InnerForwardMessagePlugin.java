@@ -16,7 +16,13 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-6 下午4:48.
- * Summary: 服务内部转发消息插件.
+ * Summary: 转发一般消息.
+ *                 one server
+ *       message ----------------> client
+ *          |                        /|\
+ *          | other server            |
+ *         \|/        the server      |
+ *       messageBus  --------->   messageServer
  */
 public class InnerForwardMessagePlugin extends MessagePlugin {
 
@@ -31,7 +37,7 @@ public class InnerForwardMessagePlugin extends MessagePlugin {
      * @param containerType 服务类型.
      */
     public InnerForwardMessagePlugin(ServerType containerType) {
-        super("InnerForwardMessagePlugin", "转发消息插件", containerType);
+        super("InnerForwardMessagePlugin", "forward message to client.", containerType);
     }
 
     @Override

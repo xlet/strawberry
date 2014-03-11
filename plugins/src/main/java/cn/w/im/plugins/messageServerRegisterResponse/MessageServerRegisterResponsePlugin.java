@@ -26,7 +26,7 @@ public class MessageServerRegisterResponsePlugin extends MessagePlugin {
      * @param containerType 服务类型.
      */
     public MessageServerRegisterResponsePlugin(ServerType containerType) {
-        super("MessageServerRegisterResponsePlugin", "消息服务注册响应消息处理插件", containerType);
+        super("MessageServerRegisterResponsePlugin", "message bus server response message server register.", containerType);
     }
 
     @Override
