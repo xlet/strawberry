@@ -18,13 +18,13 @@ public class MongoForwardMessage extends ForwardMessage implements MongoDomain {
     @Id
     private ObjectId id;
 
-    private Date persistentDate;
+    private long persistentDate;
 
     /**
      * 构造函数.
      */
     public MongoForwardMessage() {
-        persistentDate = new Date();
+        persistentDate = new Date().getTime();
     }
 
     /**
@@ -53,12 +53,12 @@ public class MongoForwardMessage extends ForwardMessage implements MongoDomain {
     }
 
     @Override
-    public Date getPersistentDate() {
+    public long getPersistentDate() {
         return this.persistentDate;
     }
 
     @Override
-    public void setPersistentDate(Date persistentDate) {
+    public void setPersistentDate(long persistentDate) {
         this.persistentDate = persistentDate;
     }
 }

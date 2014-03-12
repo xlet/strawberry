@@ -18,13 +18,13 @@ public class MongoNormalMessage extends NormalMessage implements MongoDomain {
     @Id
     private ObjectId id;
 
-    private Date persistentDate;
+    private long persistentDate;
 
     /**
      * 构造函数  设置序列化时间为当前时间.
      */
     public MongoNormalMessage() {
-        this.persistentDate = new Date();
+        this.persistentDate = new Date().getTime();
     }
 
     /**
@@ -42,12 +42,12 @@ public class MongoNormalMessage extends NormalMessage implements MongoDomain {
     }
 
     @Override
-    public Date getPersistentDate() {
+    public long getPersistentDate() {
         return persistentDate;
     }
 
     @Override
-    public void setPersistentDate(Date persistentDate) {
+    public void setPersistentDate(long persistentDate) {
         this.persistentDate = persistentDate;
     }
 

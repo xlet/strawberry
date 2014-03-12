@@ -134,10 +134,17 @@ public class LoginServer extends AbstractServer {
     }
 
     /**
-     * 注册线程启动后调用.
+     * 连接到消息总线服务后调用.
      */
-    public void registerThreadStart() {
+    public void connectedBusServer() {
         this.connectedBusServer = true;
+    }
+
+    /**
+     * 服务关闭时调用.
+     */
+    public void disconnectedBusServer() {
+        this.connectedBusServer = false;
     }
 
     /**

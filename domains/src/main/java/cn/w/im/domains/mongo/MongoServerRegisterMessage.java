@@ -18,14 +18,14 @@ public class MongoServerRegisterMessage extends ServerRegisterMessage implements
     @Id
     private ObjectId id;
 
-    private Date persistentDate;
+    private long persistentDate;
 
     /**
      * 构造函数.
      */
     public MongoServerRegisterMessage() {
 
-        this.persistentDate = new Date();
+        this.persistentDate = new Date().getTime();
     }
 
     /**
@@ -52,12 +52,12 @@ public class MongoServerRegisterMessage extends ServerRegisterMessage implements
     }
 
     @Override
-    public Date getPersistentDate() {
+    public long getPersistentDate() {
         return persistentDate;
     }
 
     @Override
-    public void setPersistentDate(Date persistentDate) {
+    public void setPersistentDate(long persistentDate) {
         this.persistentDate = persistentDate;
     }
 }

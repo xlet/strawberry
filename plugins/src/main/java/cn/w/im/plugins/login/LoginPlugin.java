@@ -79,7 +79,7 @@ public class LoginPlugin extends MessagePlugin {
         LoginToken token = new LoginToken();
         token.setLoginId(client.getId());
         token.setClientIp(IpAddressProvider.getRemoteIpAddress(client.getContext()));
-        token.setLoginDate(new Date());
+        token.setLoginDate(new Date().getTime());
         token.setToken(UUID.randomUUID().toString().replace("-", ""));
 
         return token;

@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * Creator: JackieHan.
- * DateTime: 14-1-16 下午2:21.
+ * longTime: 14-1-16 下午2:21.
  * Summary: 连接消息服务消息 mongo结构定义
  */
 @Entity("connectMessage")
@@ -18,14 +18,14 @@ public class MongoConnectMessage extends ConnectMessage implements MongoDomain {
     @Id
     private ObjectId id;
 
-    private Date persistentDate;
+    private long persistentDate;
 
 
     /**
      * 构造函数.
      */
     public MongoConnectMessage() {
-        this.persistentDate = new Date();
+        this.persistentDate = new Date().getTime();
     }
 
     /**
@@ -52,12 +52,12 @@ public class MongoConnectMessage extends ConnectMessage implements MongoDomain {
     }
 
     @Override
-    public Date getPersistentDate() {
+    public long getPersistentDate() {
         return persistentDate;
     }
 
     @Override
-    public void setPersistentDate(Date persistentDate) {
+    public void setPersistentDate(long persistentDate) {
         this.persistentDate = persistentDate;
     }
 }

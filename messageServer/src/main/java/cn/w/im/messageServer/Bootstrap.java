@@ -70,7 +70,8 @@ public class Bootstrap {
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
     private final EventLoopGroup clientGroup = new NioEventLoopGroup();
     private boolean serverStarting = false;
-    private boolean registering = false;
+    private boolean connecting = false;
+    private boolean startError = false;
 
 
     private void loadConfig() throws Exception {
@@ -98,6 +99,7 @@ public class Bootstrap {
                     serverStarting = true;
                     start();
                 } catch (Exception ex) {
+                    startError = true;
                     logger.error("start server error.", ex);
                     serverStarting = false;
                     stopServer();
@@ -109,11 +111,12 @@ public class Bootstrap {
             @Override
             public void run() {
                 try {
-                    registering = true;
+                    connecting = true;
                     connectMessageBus();
                 } catch (Exception ex) {
+                    startError = true;
                     logger.error("register to message bus error.", ex);
-                    registering = false;
+                    connecting = false;
                     stopServer();
                 }
             }
@@ -183,7 +186,7 @@ public class Bootstrap {
         @Override
         public void operationComplete(ChannelFuture future) throws Exception {
             if (future.isSuccess()) {
-                registering = false;
+                connecting = false;
                 MessageServer.current().connectedBusServer();
                 logger.debug("register completed.");
             }
@@ -193,11 +196,22 @@ public class Bootstrap {
     private synchronized void stopServer() {
         try {
             logger.debug("stopping.");
-            waitStarted();
+            if (startError) {
+                waitStarted();
+            }
+
+            MessageServer.current().stop();
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
+
+            MessageServer.current().disconnectedBusServer();
             clientGroup.shutdownGracefully();
-            logger.debug("normal stopped.");
+
+            if (startError) {
+                logger.debug("start error.stopped.");
+            } else {
+                logger.debug("normal stopped.");
+            }
             System.exit(0);
         } catch (Exception ex) {
             logger.error("stop error.", ex);
@@ -208,7 +222,7 @@ public class Bootstrap {
 
     private synchronized void waitStarted() throws Exception {
         while (true) {
-            if (serverStarting || registering) {
+            if (serverStarting || connecting) {
                 logger.debug("wait starting is done.");
                 this.wait(200);
             } else {

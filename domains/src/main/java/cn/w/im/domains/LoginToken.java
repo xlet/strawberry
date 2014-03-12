@@ -1,7 +1,5 @@
 package cn.w.im.domains;
 
-import java.util.Date;
-
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-8 下午4:57.
@@ -13,7 +11,7 @@ public class LoginToken {
 
     private String loginId;
 
-    private Date loginDate;
+    private long loginDate;
 
     private String token;
 
@@ -53,7 +51,7 @@ public class LoginToken {
      * 获取登陆时间.
      * @return 登陆时间.
      */
-    public Date getLoginDate() {
+    public long getLoginDate() {
         return loginDate;
     }
 
@@ -61,7 +59,7 @@ public class LoginToken {
      * 设置登陆时间.
      * @param loginDate 登陆时间.
      */
-    public void setLoginDate(Date loginDate) {
+    public void setLoginDate(long loginDate) {
         this.loginDate = loginDate;
     }
 

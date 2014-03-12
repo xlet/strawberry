@@ -37,12 +37,12 @@ public abstract class Message {
     /**
      * 发送时间.
      */
-    private Date sendTime;
+    private long sendTime;
 
     /**
      * 接收时间.
      */
-    private Date receivedTime;
+    private long receivedTime;
 
     /**
      * 构造函数.
@@ -50,7 +50,7 @@ public abstract class Message {
      */
     public Message(MessageType messageType) {
         this.messageType = messageType;
-        this.sendTime = new Date();
+        this.sendTime = new Date().getTime();
     }
 
     /**
@@ -73,7 +73,7 @@ public abstract class Message {
      * 获取发送时间.
      * @return 发送时间.
      */
-    public Date getSendTime() {
+    public long getSendTime() {
         return sendTime;
     }
 
@@ -81,7 +81,7 @@ public abstract class Message {
      * 设置发送时间.
      * @param sendTime 发送时间.
      */
-    public void setSendTime(Date sendTime) {
+    public void setSendTime(long sendTime) {
         this.sendTime = sendTime;
     }
 
@@ -89,7 +89,7 @@ public abstract class Message {
      * 获取接收时间.
      * @return 接收时间.
      */
-    public Date getReceivedTime() {
+    public long getReceivedTime() {
         return receivedTime;
     }
 
@@ -97,7 +97,7 @@ public abstract class Message {
      * 设置接收时间.
      * @param receivedTime 接收时间.
      */
-    public void setReceivedTime(Date receivedTime) {
+    public void setReceivedTime(long receivedTime) {
         this.receivedTime = receivedTime;
     }
 }

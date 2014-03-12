@@ -269,6 +269,13 @@ public class MessageServer extends AbstractServer {
     }
 
     /**
+     * 服务关闭时调用.
+     */
+    public void disconnectedBusServer() {
+        this.connectedBusServer = false;
+    }
+
+    /**
      * 获取是否连接到消息总线.
      *
      * @return true:已连接.

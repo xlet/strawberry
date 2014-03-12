@@ -38,6 +38,15 @@ public abstract class AbstractServer {
     }
 
     /**
+     * 服务关闭时调用.
+     */
+    public void stop() {
+        if (this.serverBasic.isStart()) {
+            this.serverBasic.setStart(false);
+        }
+    }
+
+    /**
      * 服务是否启动.
      *
      * @return true:启动.

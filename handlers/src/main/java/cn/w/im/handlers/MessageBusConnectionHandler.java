@@ -78,7 +78,10 @@ public class MessageBusConnectionHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.debug("message bus server stopped.");
+        if (ServerInstance.current(connectionServerType).isStart()) {
+            //TODO:jackie 消息总线服务崩溃处理
+            logger.debug("message bus server stopped.");
+        }
         super.channelInactive(ctx);
     }
 

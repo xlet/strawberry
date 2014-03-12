@@ -49,7 +49,7 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;
-        message.setReceivedTime(new Date());
+        message.setReceivedTime(new Date().getTime());
 
         HandlerContext context = new HandlerContext(message, ctx);
         for (Plugin plugin : plugins) {

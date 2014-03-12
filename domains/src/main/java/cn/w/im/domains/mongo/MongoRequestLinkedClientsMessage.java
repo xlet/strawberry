@@ -18,13 +18,13 @@ public class MongoRequestLinkedClientsMessage extends RequestLinkedClientsMessag
     @Id
     private ObjectId id;
 
-    private Date persistentDate;
+    private long persistentDate;
 
     /**
      * 构造函数.
      */
     public MongoRequestLinkedClientsMessage() {
-        persistentDate = new Date();
+        persistentDate = new Date().getTime();
     }
 
     /**
@@ -51,12 +51,12 @@ public class MongoRequestLinkedClientsMessage extends RequestLinkedClientsMessag
     }
 
     @Override
-    public Date getPersistentDate() {
+    public long getPersistentDate() {
         return persistentDate;
     }
 
     @Override
-    public void setPersistentDate(Date persistentDate) {
+    public void setPersistentDate(long persistentDate) {
         this.persistentDate = persistentDate;
     }
 }

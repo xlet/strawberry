@@ -2,8 +2,6 @@ package cn.w.im.domains.mongo;
 
 import org.bson.types.ObjectId;
 
-import java.util.Date;
-
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-14 下午7:35.
@@ -27,11 +25,11 @@ public interface MongoDomain {
      * 获取持久化时间.
      * @return 持久化时间.
      */
-    Date getPersistentDate();
+    long getPersistentDate();
 
     /**
      * 设置持久化时间.
      * @param persistentDate 持久化时间.
      */
-    void setPersistentDate(Date persistentDate);
+    void setPersistentDate(long persistentDate);
 }
