@@ -47,6 +47,17 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        String remoteIp = IpAddressProvider.getRemoteIpAddress(ctx);
+        int remotePort = IpAddressProvider.getRemotePort(ctx);
+        Client normalStopClient = MessageBus.current().getClient(remoteIp, remotePort);
+        //TODO:jackie 处理正常退出.
+        MessageBus.current().removeClient(remoteIp, remotePort);
+        logger.debug("client[" + remoteIp + ":" + remotePort + "] disconnected!");
+        super.channelInactive(ctx);
+    }
+
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         String remoteIp = IpAddressProvider.getRemoteIpAddress(ctx);
         int remotePort = IpAddressProvider.getRemotePort(ctx);

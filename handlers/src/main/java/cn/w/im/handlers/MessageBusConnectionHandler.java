@@ -77,6 +77,12 @@ public class MessageBusConnectionHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        logger.debug("message bus server stopped.");
+        super.channelInactive(ctx);
+    }
+
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         logger.error("connection interrupt! perhaps messageBusServer crashed!", cause);
     }
