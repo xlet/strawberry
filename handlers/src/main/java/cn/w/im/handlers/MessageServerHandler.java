@@ -5,8 +5,11 @@ import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.init.PluginInitializerFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.net.InetSocketAddress;
 import java.util.Date;
@@ -18,10 +21,10 @@ import java.util.List;
  * Summary: 负责处理消息的接收和发送.
  */
 public class MessageServerHandler extends ChannelInboundHandlerAdapter {
-    /**
-     * 注册的所有插件
-     */
+
     private List<Plugin> plugins;
+    private final Log logger = LogFactory.getLog(this.getClass());
+    private final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * 构造函数.
@@ -30,39 +33,31 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
         plugins = PluginInitializerFactory.getInitializer(MessageServer.current().getServerType()).init();
     }
 
-    /**
-     * channel Active.
-     * @param ctx 当前连接上下文.
-     * @throws Exception 异常.
-     */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-
+        //TODO:jackie 却绝链接
     }
 
-    /**
-     * channel read.
-     * @param ctx 当前上下文.
-     * @param msg 消息.
-     * @throws Exception 异常.
-     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;
         message.setReceivedTime(new Date().getTime());
 
+        logger.debug("received message:" + mapper.writeValueAsString(message));
+
         HandlerContext context = new HandlerContext(message, ctx);
         for (Plugin plugin : plugins) {
+            logger.info("processing: " + plugin.description());
             plugin.process(context);
+            logger.info("processed: " + plugin.description());
         }
     }
 
-    /**
-     * exceptionCaught.
-     * @param ctx 当前上下文.
-     * @param cause 异常信息.
-     * @throws Exception 异常.
-     */
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        //TODO:jackie 正常退出处理
+    }
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         InetSocketAddress remoteAddress = (InetSocketAddress) ctx.channel().remoteAddress();

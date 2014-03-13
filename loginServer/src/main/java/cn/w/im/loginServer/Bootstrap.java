@@ -162,7 +162,7 @@ public class Bootstrap {
     };
 
     private void registerToMessageBus() throws Exception {
-        logger.debug("register starting.");
+        logger.debug("connect message bus server starting.");
 
         io.netty.bootstrap.Bootstrap bootstrap = new io.netty.bootstrap.Bootstrap();
         bootstrap.group(clientGroup)
@@ -190,7 +190,7 @@ public class Bootstrap {
         public void operationComplete(ChannelFuture future) throws Exception {
             connecting = false;
             LoginServer.current().connectedBusServer();
-            logger.debug("register completed.");
+            logger.debug("connect message bus server completed.");
         }
     };
 

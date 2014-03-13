@@ -157,7 +157,7 @@ public class Bootstrap {
     };
 
     private void connectMessageBus() throws Exception {
-        logger.debug("register starting.");
+        logger.debug("connect message bus server starting.");
 
         String busHost = MessageServer.current().getBusHost();
         int busPort = MessageServer.current().getBusPort();
@@ -188,7 +188,7 @@ public class Bootstrap {
             if (future.isSuccess()) {
                 connecting = false;
                 MessageServer.current().connectedBusServer();
-                logger.debug("register completed.");
+                logger.debug("connect message bus server completed.");
             }
         }
     };

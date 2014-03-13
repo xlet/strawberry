@@ -30,6 +30,7 @@ public abstract class MessagePlugin extends AbstractPlugin {
     public void process(HandlerContext context) {
         try {
             if (isMatch(context)) {
+                logger.debug("matched.");
                 processMessage(context.getMessage(), context);
             }
         } catch (Exception ex) {
