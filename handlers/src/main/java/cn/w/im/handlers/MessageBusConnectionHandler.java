@@ -62,13 +62,17 @@ public class MessageBusConnectionHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void registerToMessageBus(ChannelHandlerContext ctx) throws Exception {
+        logger.debug("sending registerMessage.");
         ServerRegisterMessage registerMessage = new ServerRegisterMessage(ServerInstance.current(connectionServerType).getServerBasic(), connectionServerType);
         ctx.writeAndFlush(registerMessage);
+        logger.debug("sent registerMessage.");
     }
 
     private void getOtherMessageServerLinkedClients(ChannelHandlerContext ctx) throws Exception {
+        logger.debug("sending request other server linked clients message.");
         RequestLinkedClientsMessage requestLinkedClientsMessage = new RequestLinkedClientsMessage(ServerInstance.current(connectionServerType).getServerBasic());
         ctx.writeAndFlush(requestLinkedClientsMessage);
+        logger.debug("sent request other server linked clients message.");
     }
 
     @Override

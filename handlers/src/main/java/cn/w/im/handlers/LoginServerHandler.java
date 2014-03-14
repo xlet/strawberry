@@ -45,9 +45,9 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
 
         HandlerContext context = new HandlerContext(message, ctx);
         for (Plugin plugin : plugins) {
-            logger.info("processing: " + plugin.description());
+            logger.debug("processing: " + plugin.description());
             plugin.process(context);
-            logger.info("processed: " + plugin.description());
+            logger.debug("processed: " + plugin.description());
         }
     }
 
@@ -55,6 +55,6 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         String ip = IpAddressProvider.getRemoteIpAddress(ctx);
         int port = IpAddressProvider.getRemotePort(ctx);
-        logger.error("message Server[" + ip + ":" + port + "] down!");
+        logger.error("client[" + ip + ":" + port + "] error !", cause);
     }
 }

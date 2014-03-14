@@ -4,6 +4,8 @@ import cn.w.im.domains.messages.Message;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.List;
 
@@ -14,20 +16,12 @@ import java.util.List;
  */
 public class MessageDecoder extends MessageToMessageDecoder<String> {
 
-    /**
-     * json Mapper.
-     */
-    private final static ObjectMapper MAPPER = new ObjectMapper();
+    private final ObjectMapper MAPPER = new ObjectMapper();
+    private final Log logger = LogFactory.getLog(this.getClass());
 
-    /**
-     * 解码.
-     * @param channelHandlerContext 当前上下文.
-     * @param message 消息.
-     * @param objects 解码后的消息.
-     * @throws Exception 异常.
-     */
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, String message, List<Object> objects) throws Exception {
+        logger.debug("received message: [" + message + "]");
         Message messageObj = MAPPER.readValue(message, Message.class);
         objects.add(messageObj);
     }
