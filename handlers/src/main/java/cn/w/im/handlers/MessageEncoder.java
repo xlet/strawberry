@@ -16,11 +16,12 @@ import java.util.List;
  */
 public class MessageEncoder extends MessageToMessageEncoder<Message> {
 
-    private final ObjectMapper MAPPER = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
     private final Log logger = LogFactory.getLog(this.getClass());
 
+    @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Message message, List<Object> objects) throws Exception {
-        String messageStr = MAPPER.writeValueAsString(message);
+        String messageStr = mapper.writeValueAsString(message);
         logger.debug("send message:[" + messageStr + "]");
         objects.add(messageStr);
     }

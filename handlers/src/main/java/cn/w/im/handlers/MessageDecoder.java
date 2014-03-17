@@ -16,13 +16,13 @@ import java.util.List;
  */
 public class MessageDecoder extends MessageToMessageDecoder<String> {
 
-    private final ObjectMapper MAPPER = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
     private final Log logger = LogFactory.getLog(this.getClass());
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, String message, List<Object> objects) throws Exception {
         logger.debug("received message: [" + message + "]");
-        Message messageObj = MAPPER.readValue(message, Message.class);
+        Message messageObj = mapper.readValue(message, Message.class);
         objects.add(messageObj);
     }
 }
