@@ -5,7 +5,6 @@ import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.init.PluginInitializerFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.commons.logging.Log;
@@ -24,7 +23,6 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
 
     private List<Plugin> plugins;
     private final Log logger = LogFactory.getLog(this.getClass());
-    private final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * 构造函数.
@@ -42,8 +40,6 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;
         message.setReceivedTime(new Date().getTime());
-
-        logger.debug("received message:" + mapper.writeValueAsString(message));
 
         HandlerContext context = new HandlerContext(message, ctx);
         for (Plugin plugin : plugins) {

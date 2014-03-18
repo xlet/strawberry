@@ -6,7 +6,6 @@ import cn.w.im.domains.server.LoginServer;
 import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.init.PluginInitializerFactory;
 import cn.w.im.utils.netty.IpAddressProvider;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.commons.logging.Log;
@@ -27,8 +26,6 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
 
     private final Log logger = LogFactory.getLog(this.getClass());
 
-    private final ObjectMapper mapper = new ObjectMapper();
-
     /**
      * 构造函数.
      */
@@ -40,8 +37,6 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;
         message.setReceivedTime(new Date().getTime());
-
-        logger.debug("received message: " + mapper.writeValueAsString(message));
 
         HandlerContext context = new HandlerContext(message, ctx);
         for (Plugin plugin : plugins) {
