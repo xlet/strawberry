@@ -1,10 +1,12 @@
 package cn.w.im.messageServer;
 
-import cn.w.im.handlers.MessageDecoder;
-import cn.w.im.handlers.MessageEncoder;
+import cn.w.im.handlers.JsonMessageDecoder;
+import cn.w.im.handlers.JsonMessageEncoder;
 import cn.w.im.handlers.MessageServerHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
@@ -24,10 +26,12 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         socketChannel.pipeline().addLast(
+                new LengthFieldPrepender(4),
+                new LengthFieldBasedFrameDecoder(1048576,0,4,0,4),
                 new StringEncoder(CharsetUtil.UTF_8),
                 new StringDecoder(CharsetUtil.UTF_8),
-                new MessageEncoder(),
-                new MessageDecoder(),
+                new JsonMessageEncoder(),
+                new JsonMessageDecoder(),
                 new MessageServerHandler()
         );
     }

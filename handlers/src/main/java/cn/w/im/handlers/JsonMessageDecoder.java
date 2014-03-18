@@ -14,7 +14,7 @@ import java.util.List;
  * DateTime: 13-12-20 上午9:24.
  * Summary: 消息解码.
  */
-public class MessageDecoder extends MessageToMessageDecoder<String> {
+public class JsonMessageDecoder extends MessageToMessageDecoder<String> {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final Log logger = LogFactory.getLog(this.getClass());

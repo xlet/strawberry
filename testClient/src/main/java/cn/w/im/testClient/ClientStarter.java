@@ -1,8 +1,8 @@
 package cn.w.im.testClient;
 
 import cn.w.im.domains.HandlerContext;
-import cn.w.im.handlers.MessageDecoder;
-import cn.w.im.handlers.MessageEncoder;
+import cn.w.im.handlers.JsonMessageDecoder;
+import cn.w.im.handlers.JsonMessageEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
@@ -62,8 +62,8 @@ public class ClientStarter {
                         socketChannel.pipeline().addLast(
                                 new StringEncoder(CharsetUtil.UTF_8),
                                 new StringDecoder(CharsetUtil.UTF_8),
-                                new MessageEncoder(),
-                                new MessageDecoder(),
+                                new JsonMessageEncoder(),
+                                new JsonMessageDecoder(),
                                 handler
                         );
                     }

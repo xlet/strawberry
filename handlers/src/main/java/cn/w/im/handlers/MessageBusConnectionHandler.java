@@ -113,8 +113,8 @@ public class MessageBusConnectionHandler extends ChannelInboundHandlerAdapter {
                             ch.pipeline().addLast(
                                     new StringDecoder(CharsetUtil.UTF_8),
                                     new StringEncoder(CharsetUtil.UTF_8),
-                                    new MessageDecoder(),
-                                    new MessageEncoder(),
+                                    new JsonMessageDecoder(),
+                                    new JsonMessageEncoder(),
                                     new ForwardToServerHandler(message)
                             );
                         }

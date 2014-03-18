@@ -3,8 +3,8 @@ package cn.w.im.messageServer;
 import cn.w.im.domains.conf.Configuration;
 import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.server.ServerType;
-import cn.w.im.handlers.MessageDecoder;
-import cn.w.im.handlers.MessageEncoder;
+import cn.w.im.handlers.JsonMessageDecoder;
+import cn.w.im.handlers.JsonMessageEncoder;
 import cn.w.im.handlers.MessageBusConnectionHandler;
 import cn.w.im.utils.ConfigHelper;
 import io.netty.bootstrap.ServerBootstrap;
@@ -171,8 +171,8 @@ public class Bootstrap {
                         ch.pipeline().addLast(
                                 new StringEncoder(CharsetUtil.UTF_8),
                                 new StringDecoder(CharsetUtil.UTF_8),
-                                new MessageEncoder(),
-                                new MessageDecoder(),
+                                new JsonMessageEncoder(),
+                                new JsonMessageDecoder(),
                                 new MessageBusConnectionHandler(ServerType.MessageServer)
                         );
                     }

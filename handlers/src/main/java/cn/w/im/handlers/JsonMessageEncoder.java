@@ -14,7 +14,7 @@ import java.util.List;
  * DateTime: 13-12-20 上午9:24.
  * Summary: 消息编码.
  */
-public class MessageEncoder extends MessageToMessageEncoder<Message> {
+public class JsonMessageEncoder extends MessageToMessageEncoder<Message> {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final Log logger = LogFactory.getLog(this.getClass());
