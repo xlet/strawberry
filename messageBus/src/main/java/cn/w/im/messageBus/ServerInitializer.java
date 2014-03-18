@@ -21,7 +21,7 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline().addLast(
                 new LengthFieldPrepender(4),
-                new LengthFieldBasedFrameDecoder(1048576,0,4,0,4),
+                new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4),
                 new StringEncoder(CharsetUtil.UTF_8),
                 new StringDecoder(CharsetUtil.UTF_8),
                 new JsonMessageEncoder(),
