@@ -15,8 +15,9 @@ public abstract class ServerClient extends Client {
 
     /**
      * 构造函数.
+     *
      * @param serverBasic 服务基础信息.
-     * @param clientType 客户端类型.
+     * @param clientType  客户端类型.
      */
     public ServerClient(ServerBasic serverBasic, ClientType clientType) {
         super(clientType);
@@ -24,7 +25,17 @@ public abstract class ServerClient extends Client {
     }
 
     /**
+     * get server basic info.
+     *
+     * @return server basic.
+     */
+    public ServerBasic getServerBasic() {
+        return this.serverBasic;
+    }
+
+    /**
      * 获取消息服务绑定ip.
+     *
      * @return ip.
      */
     public String getserverhost() {
@@ -33,6 +44,7 @@ public abstract class ServerClient extends Client {
 
     /**
      * 消息服务监听端口号.
+     *
      * @return 端口.
      */
     public int getserverport() {
@@ -41,6 +53,7 @@ public abstract class ServerClient extends Client {
 
     /**
      * 获取服务是否启动.
+     *
      * @return true:启动.
      */
     public boolean isStart() {
@@ -49,6 +62,7 @@ public abstract class ServerClient extends Client {
 
     /**
      * 获取启动时间.
+     *
      * @return 启动时间.
      */
     public Date getStartDate() {
@@ -57,6 +71,7 @@ public abstract class ServerClient extends Client {
 
     /**
      * 获取服务标识.
+     *
      * @return 标识.
      */
     public String getNodeId() {

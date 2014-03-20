@@ -33,6 +33,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
         plugins = PluginInitializerFactory.getInitializer(LoginServer.current().getServerType()).init();
     }
 
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;

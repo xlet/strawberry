@@ -1,10 +1,7 @@
 package cn.w.im.domains.messages;
 
 import cn.w.im.domains.MessageType;
-import cn.w.im.domains.messages.responses.LoginResponseMessage;
-import cn.w.im.domains.messages.responses.LogoutResponseMessage;
-import cn.w.im.domains.messages.responses.MessageServerRegisterResponseMessage;
-import cn.w.im.domains.messages.responses.RegisterResponseMessage;
+import cn.w.im.domains.messages.responses.*;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -20,13 +17,16 @@ import java.util.Date;
         @JsonSubTypes.Type(value = LoginMessage.class, name = "LoginMessage"),
         @JsonSubTypes.Type(value = LoginResponseMessage.class, name = "LoginResponseMessage"),
         @JsonSubTypes.Type(value = LogoutMessage.class, name = "LogoutMessage"),
-        @JsonSubTypes.Type(value = LogoutResponseMessage.class, name = "LogoutResponse"),
-        @JsonSubTypes.Type(value = NormalMessage.class, name = "NormalResponse"),
+        @JsonSubTypes.Type(value = LogoutResponseMessage.class, name = "LogoutResponseMessage"),
+        @JsonSubTypes.Type(value = NormalMessage.class, name = "NormalMessage"),
         @JsonSubTypes.Type(value = ServerRegisterMessage.class, name = "ServerRegisterMessage"),
-        @JsonSubTypes.Type(value = RegisterResponseMessage.class, name = "RegisterResponseMessage"),
-        @JsonSubTypes.Type(value = MessageServerRegisterResponseMessage.class, name = "MessageServerRegisterResponseMessage"),
+        @JsonSubTypes.Type(value = ServerRegisterResponseMessage.class, name = "ServerRegisterResponseMessage"),
         @JsonSubTypes.Type(value = ConnectMessage.class, name = "ConnectMessage"),
-        @JsonSubTypes.Type(value = ForwardMessage.class, name = "ForwardMessage")
+        @JsonSubTypes.Type(value = ConnectResponseMessage.class, name = "ConnectResponseMessage"),
+        @JsonSubTypes.Type(value = RequestLinkedClientsMessage.class, name = "RequestLinkedClientsMessage"),
+        @JsonSubTypes.Type(value = ResponseLinkedClientsMessage.class, name = "ResponseLinkedClientsMessage"),
+        @JsonSubTypes.Type(value = ReadyMessage.class, name = "ReadyMessage"),
+        @JsonSubTypes.Type(value = TokenMessage.class, name = "TokenMessage")
 })
 public abstract class Message {
     /**
@@ -45,8 +45,9 @@ public abstract class Message {
     private long receivedTime;
 
     /**
-     * 构造函数.
-     * @param messageType 消息类型.
+     * constructor.
+     *
+     * @param messageType messageType.
      */
     public Message(MessageType messageType) {
         this.messageType = messageType;
@@ -55,6 +56,7 @@ public abstract class Message {
 
     /**
      * 获取消息类型.
+     *
      * @return 消息类型.
      */
     public MessageType getMessageType() {
@@ -63,6 +65,7 @@ public abstract class Message {
 
     /**
      * 设置消息类型.
+     *
      * @param messageType 消息类型.
      */
     public void setMessageType(MessageType messageType) {
@@ -71,6 +74,7 @@ public abstract class Message {
 
     /**
      * 获取发送时间.
+     *
      * @return 发送时间.
      */
     public long getSendTime() {
@@ -79,6 +83,7 @@ public abstract class Message {
 
     /**
      * 设置发送时间.
+     *
      * @param sendTime 发送时间.
      */
     public void setSendTime(long sendTime) {
@@ -87,6 +92,7 @@ public abstract class Message {
 
     /**
      * 获取接收时间.
+     *
      * @return 接收时间.
      */
     public long getReceivedTime() {
@@ -95,6 +101,7 @@ public abstract class Message {
 
     /**
      * 设置接收时间.
+     *
      * @param receivedTime 接收时间.
      */
     public void setReceivedTime(long receivedTime) {

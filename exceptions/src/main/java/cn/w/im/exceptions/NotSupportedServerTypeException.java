@@ -7,7 +7,7 @@ import cn.w.im.domains.server.ServerType;
  * DateTime: 14-1-16 上午11:20.
  * Summary: 不支持的服务类型异常.
  */
-public class NotSupportedServerTypeException extends RuntimeException {
+public class NotSupportedServerTypeException extends Exception {
 
     private ServerType currentType;
 

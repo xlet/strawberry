@@ -1,7 +1,6 @@
 package cn.w.im.handlers;
 
 import cn.w.im.domains.messages.ServerRegisterMessage;
-import cn.w.im.domains.messages.RequestLinkedClientsMessage;
 import cn.w.im.domains.server.LoginServer;
 import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.server.ServerInstance;
@@ -40,9 +39,6 @@ public class MessageBusConnectionHandler extends ChannelInboundHandlerAdapter {
      * @param connectionServerType 连接服务类型.
      */
     public MessageBusConnectionHandler(ServerType connectionServerType) {
-        if (connectionServerType == ServerType.MessageBus) {
-            throw new NotSupportedServerTypeException(connectionServerType);
-        }
         this.connectionServerType = connectionServerType;
     }
 
@@ -52,7 +48,6 @@ public class MessageBusConnectionHandler extends ChannelInboundHandlerAdapter {
             case MessageServer:
                 MessageServer.current().setForwardContext(ctx);
                 registerToMessageBus(ctx);
-                getOtherMessageServerLinkedClients(ctx);
                 break;
             case LoginServer:
                 LoginServer.current().setForwardContext(ctx);
@@ -68,13 +63,6 @@ public class MessageBusConnectionHandler extends ChannelInboundHandlerAdapter {
         ServerRegisterMessage registerMessage = new ServerRegisterMessage(ServerInstance.current(connectionServerType).getServerBasic(), connectionServerType);
         ctx.writeAndFlush(registerMessage);
         logger.debug("sent registerMessage.");
-    }
-
-    private void getOtherMessageServerLinkedClients(ChannelHandlerContext ctx) throws Exception {
-        logger.debug("sending request other server linked clients message.");
-        RequestLinkedClientsMessage requestLinkedClientsMessage = new RequestLinkedClientsMessage(ServerInstance.current(connectionServerType).getServerBasic());
-        ctx.writeAndFlush(requestLinkedClientsMessage);
-        logger.debug("sent request other server linked clients message.");
     }
 
     @Override

@@ -1,9 +1,14 @@
 package cn.w.im.domains.server;
 
 import cn.w.im.domains.LoginToken;
+import cn.w.im.domains.OtherServerBasic;
+import cn.w.im.domains.SourceType;
 import cn.w.im.domains.client.MessageClient;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClientBasic;
+import cn.w.im.domains.messages.ForwardMessage;
+import cn.w.im.domains.messages.ReadyMessage;
+import cn.w.im.domains.messages.RequestLinkedClientsMessage;
 import cn.w.im.utils.netty.IpAddressProvider;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -48,9 +53,11 @@ public class MessageServer extends AbstractServer {
 
     private List<MessageClient> clients;
 
-    private List<ServerBasic> startedMessageServices;
+    private List<OtherServerBasic> startedOtherMessageServices;
 
-    private Map<String, List<MessageClientBasic>> messageServerClientMap;
+    private List<OtherServerBasic> startedLoginServers;
+
+    private Map<String, List<MessageClientBasic>> otherMessageServerClientMap;
 
     private List<LoginToken> tokens;
 
@@ -60,9 +67,10 @@ public class MessageServer extends AbstractServer {
     private MessageServer() {
         super(ServerType.MessageServer);
         clients = new CopyOnWriteArrayList<MessageClient>();
-        startedMessageServices = new CopyOnWriteArrayList<ServerBasic>();
+        startedOtherMessageServices = new CopyOnWriteArrayList<OtherServerBasic>();
+        startedLoginServers = new CopyOnWriteArrayList<OtherServerBasic>();
         tokens = new CopyOnWriteArrayList<LoginToken>();
-        messageServerClientMap = new ConcurrentHashMap<String, List<MessageClientBasic>>();
+        otherMessageServerClientMap = new ConcurrentHashMap<String, List<MessageClientBasic>>();
     }
 
     /**
@@ -161,31 +169,56 @@ public class MessageServer extends AbstractServer {
     /**
      * 添加已启动的服务.
      *
-     * @param serverBasic 已启动的服务信息.
+     * @param startedOtherMessageServerBasic 已启动的服务信息.
+     * @param sourceType                     other server basic source type.
      */
-    public void addServer(ServerBasic serverBasic) {
-        this.startedMessageServices.add(serverBasic);
-        initClientMap(serverBasic);
+    public void addStartedOtherMessageServer(ServerBasic startedOtherMessageServerBasic, SourceType sourceType) {
+        OtherServerBasic otherServerBasic = new OtherServerBasic(startedOtherMessageServerBasic, sourceType);
+        this.startedOtherMessageServices.add(otherServerBasic);
     }
 
     /**
      * 添加已启动的服务集合.
      *
-     * @param serverBasics 已启动的服务信息集合.
+     * @param startedOtherMessageServers 已启动的服务信息集合.
+     * @param sourceType                 other server basic source type.
      */
-    public void addServers(List<ServerBasic> serverBasics) {
-        this.startedMessageServices.addAll(serverBasics);
-        Iterator<ServerBasic> iterator = serverBasics.iterator();
-        while (iterator.hasNext()) {
-            ServerBasic serverBasic = iterator.next();
-            initClientMap(serverBasic);
+    public void addStartedOtherMessageServers(List<ServerBasic> startedOtherMessageServers, SourceType sourceType) {
+        for (ServerBasic startedOtherMessageServer : startedOtherMessageServers) {
+            addStartedOtherMessageServer(startedOtherMessageServer, sourceType);
         }
     }
 
-    private void initClientMap(ServerBasic serverBasic) {
-        String nodeId = serverBasic.getNodeId();
-        List<MessageClientBasic> messageClientBasics = new CopyOnWriteArrayList<MessageClientBasic>();
-        messageServerClientMap.put(nodeId, messageClientBasics);
+    /**
+     * add started login servers basic.
+     *
+     * @param startedLoginServers started login servers basic.
+     * @param sourceType          other server basic source type.
+     */
+    public void addStartedLoginServers(List<ServerBasic> startedLoginServers, SourceType sourceType) {
+        for (ServerBasic startedLoginServer : startedLoginServers) {
+            addStartedLoginServer(startedLoginServer, sourceType);
+        }
+    }
+
+    /**
+     * add one started login server basic.
+     *
+     * @param startedLoginServer started login server basic.
+     * @param sourceType         other server basic source type.
+     */
+    public void addStartedLoginServer(ServerBasic startedLoginServer, SourceType sourceType) {
+        OtherServerBasic otherServerBasic = new OtherServerBasic(startedLoginServer, sourceType);
+        this.startedLoginServers.add(otherServerBasic);
+    }
+
+    /**
+     * get all started login servers basic.
+     *
+     * @return all started login servers.
+     */
+    public List<OtherServerBasic> getStartedLoginServers() {
+        return this.startedLoginServers;
     }
 
     /**
@@ -200,7 +233,7 @@ public class MessageServer extends AbstractServer {
             return null;
         }
 
-        Iterator<ServerBasic> serverIterator = startedMessageServices.iterator();
+        Iterator<OtherServerBasic> serverIterator = startedOtherMessageServices.iterator();
         while (serverIterator.hasNext()) {
             ServerBasic serverBasic = serverIterator.next();
             if (serverBasic.getNodeId().equals(matchedServerNodeId)) {
@@ -211,10 +244,10 @@ public class MessageServer extends AbstractServer {
     }
 
     private String getOtherServerNodeId(String loginId) {
-        Iterator<String> keyIterator = messageServerClientMap.keySet().iterator();
+        Iterator<String> keyIterator = otherMessageServerClientMap.keySet().iterator();
         while (keyIterator.hasNext()) {
             String nodeId = keyIterator.next();
-            List<MessageClientBasic> messageClients = messageServerClientMap.get(nodeId);
+            List<MessageClientBasic> messageClients = otherMessageServerClientMap.get(nodeId);
             Iterator<MessageClientBasic> clientIterator = messageClients.iterator();
             while (clientIterator.hasNext()) {
                 MessageClientBasic clientBasic = clientIterator.next();
@@ -233,23 +266,56 @@ public class MessageServer extends AbstractServer {
      * @param clients     连接在其他消息服务上的客户端.
      */
     public void addOtherServerClients(ServerBasic otherServer, List<MessageClientBasic> clients) {
-        if (messageServerClientMap.containsKey(otherServer.getNodeId())) {
-            List<MessageClientBasic> existedClients = messageServerClientMap.get(otherServer.getNodeId());
+        if (otherMessageServerClientMap.containsKey(otherServer.getNodeId())) {
+            List<MessageClientBasic> existedClients = otherMessageServerClientMap.get(otherServer.getNodeId());
             for (MessageClientBasic client : clients) {
                 existedClients.add(client);
             }
         } else {
-            messageServerClientMap.put(otherServer.getNodeId(), clients);
+            otherMessageServerClientMap.put(otherServer.getNodeId(), clients);
         }
     }
 
     /**
-     * 获取已启动的服务遍历对象.
-     *
-     * @return 服务遍历对象.
+     * send RequestLinkedClientsMessage to other started message server.
      */
-    public Iterator<ServerBasic> getServerIterator() {
-        return startedMessageServices.iterator();
+    public void requestLinkedClients() {
+        for (ServerBasic messageServerBasic : this.startedOtherMessageServices) {
+            RequestLinkedClientsMessage requestMessage = new RequestLinkedClientsMessage(MessageServer.current().getServerBasic());
+            ForwardMessage forwardMessage = new ForwardMessage(this.getServerBasic(), messageServerBasic, requestMessage);
+            this.getForwardContext().writeAndFlush(forwardMessage);
+        }
+    }
+
+    /**
+     * check all started message server has responded linked clients.
+     *
+     * @return true:finished.
+     */
+    public boolean finishedRequestLinkedClients() {
+        Iterator<OtherServerBasic> startedOtherMessageServerIterator = this.startedOtherMessageServices.iterator();
+        while (startedOtherMessageServerIterator.hasNext()) {
+            OtherServerBasic startedOtherMessageServer = startedOtherMessageServerIterator.next();
+            if ((startedOtherMessageServer.getSourceType() == SourceType.Pull) && (!otherMessageServerClientMap.containsKey(startedOtherMessageServer.getNodeId()))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * send ready message to login server.
+     */
+    public void ready() {
+        ReadyMessage readyMessage = new ReadyMessage();
+        readyMessage.setMessageServer(MessageServer.current().getServerBasic());
+        Iterator<OtherServerBasic> loginServerIterator = this.getStartedLoginServers().iterator();
+        while (loginServerIterator.hasNext()) {
+            ServerBasic loginServerBasic = loginServerIterator.next();
+            ForwardMessage forwardMessage = new ForwardMessage(this.getServerBasic(), loginServerBasic, readyMessage);
+            this.getForwardContext().writeAndFlush(forwardMessage);
+        }
     }
 
     /**

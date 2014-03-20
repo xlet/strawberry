@@ -5,7 +5,7 @@ package cn.w.im.exceptions;
  * DateTime: 13-12-25 上午11:23.
  * Summary:客户端没有找到异常.
  */
-public class ClientNotFoundException extends RuntimeException {
+public class ClientNotFoundException extends Exception {
 
     /**
      * 客户端登陆id.

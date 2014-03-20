@@ -3,10 +3,10 @@ package cn.w.im.plugins.token;
 import cn.w.im.domains.HandlerContext;
 import cn.w.im.domains.LoginToken;
 import cn.w.im.domains.MessageType;
-import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.messages.TokenMessage;
 import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.server.ServerType;
+import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
 
@@ -15,7 +15,7 @@ import cn.w.im.plugins.MessagePlugin;
  * DateTime: 14-1-16 下午5:11.
  * Summary: tokenMessage 处理插件.
  */
-public class TokenPlugin extends MessagePlugin {
+public class TokenPlugin extends MessagePlugin<TokenMessage> {
 
     /**
      * 构造函数.
@@ -32,11 +32,10 @@ public class TokenPlugin extends MessagePlugin {
     }
 
     @Override
-    public void processMessage(Message message, HandlerContext context) {
-        TokenMessage tokenMessage = (TokenMessage) message;
+    public void processMessage(TokenMessage message, HandlerContext context) throws NotSupportedServerTypeException, ClientNotFoundException {
         switch (this.containerType()) {
             case MessageServer:
-                processMessageWithMessageServer(tokenMessage, context);
+                processMessageWithMessageServer(message, context);
                 break;
             default:
                 throw new NotSupportedServerTypeException(this.containerType());

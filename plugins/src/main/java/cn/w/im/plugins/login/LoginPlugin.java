@@ -8,9 +8,9 @@ import cn.w.im.domains.messages.ForwardMessage;
 import cn.w.im.domains.messages.LoginMessage;
 import cn.w.im.domains.messages.TokenMessage;
 import cn.w.im.domains.messages.responses.LoginResponseMessage;
-import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.server.LoginServer;
 import cn.w.im.domains.server.ServerType;
+import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
 import cn.w.im.utils.netty.IpAddressProvider;
@@ -25,7 +25,7 @@ import java.util.UUID;
  * DateTime: 13-12-30 下午5:17.
  * Summary: 登陆消息处理插件.
  */
-public class LoginPlugin extends MessagePlugin {
+public class LoginPlugin extends MessagePlugin<LoginMessage> {
 
     private Log logger = LogFactory.getLog(this.getClass());
 
@@ -44,11 +44,10 @@ public class LoginPlugin extends MessagePlugin {
     }
 
     @Override
-    public void processMessage(Message message, HandlerContext context) {
-        LoginMessage loginMessage = (LoginMessage) message;
+    public void processMessage(LoginMessage message, HandlerContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
         switch (this.containerType()) {
             case LoginServer:
-                processWithLoginServer(loginMessage, context);
+                processWithLoginServer(message, context);
                 break;
             default:
                 throw new NotSupportedServerTypeException(this.containerType());
@@ -61,7 +60,7 @@ public class LoginPlugin extends MessagePlugin {
             LoginToken token = createToken(client);
 
             //通知消息服务登陆token信息.
-            ServerBasic messageServer = LoginServer.current().getMessageServer();
+            ServerBasic messageServer = LoginServer.current().getMatchedMessageServer();
             TokenMessage tokenMessage = new TokenMessage(token);
             ForwardMessage forwardMessage = new ForwardMessage(LoginServer.current().getServerBasic(), messageServer, tokenMessage);
             LoginServer.current().getForwardContext().writeAndFlush(forwardMessage);

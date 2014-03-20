@@ -35,6 +35,9 @@
     <bean id="mongoMessageServerRegisterMessageDao" class="cn.w.im.mongo.dao.message.MongoServerRegisterMessageDao">
         <constructor-arg ref="datastore" />
     </bean>
+    <bean id="mongoMessageServerRegisterResponseDao" class="cn.w.im.mongo.dao.message.MongoServerRegisterResponseMessageDao">
+        <constructor-arg ref="datastore" />
+    </bean>
     <bean id="mongoConnectMessageDao" class="cn.w.im.mongo.dao.message.MongoConnectMessageDao">
         <constructor-arg ref="datastore" />
     </bean>
@@ -45,6 +48,12 @@
         <constructor-arg ref="datastore" />
     </bean>
     <bean id="mongoRequestLinkedClientsMessageDao" class="cn.w.im.mongo.dao.message.MongoRequestLinkedClientsMessageDao">
+        <constructor-arg ref="datastore" />
+    </bean>
+    <bean id="mongoResponseLinkedClientsMessageDao" class="cn.w.im.mongo.dao.message.MongoResponseLinkedClientsMessageDao">
+        <constructor-arg ref="datastore" />
+    </bean>
+    <bean id="mongoReadyMessageDao" class="cn.w.im.mongo.dao.message.MongoReadyMessageDao">
         <constructor-arg ref="datastore" />
     </bean>
 
@@ -63,6 +72,9 @@
     <bean id="serverRegisterMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.ServerRegisterMessagePersistentProviderImpl">
         <constructor-arg ref="mongoMessageServerRegisterMessageDao" />
     </bean>
+    <bean id="serverRegisterResponseMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.ServerRegisterResponseMessagePersistentProviderImpl">
+        <constructor-arg ref="mongoMessageServerRegisterResponseDao" />
+    </bean>
     <bean id="connectMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.ConnectMessagePersistentProviderImpl">
         <constructor-arg ref="mongoConnectMessageDao" />
     </bean>
@@ -74,6 +86,12 @@
     </bean>
     <bean id="requestLinkedClientsMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.RequestLinkedClientsMessagePersistentProviderImpl">
         <constructor-arg ref="mongoRequestLinkedClientsMessageDao" />
+    </bean>
+    <bean id="responseLinkedClientMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.ResponseLinkedClientsMessagePersistentProviderImpl">
+        <constructor-arg ref="mongoResponseLinkedClientsMessageDao" />
+    </bean>
+    <bean id="readyMessageProvider" class="cn.w.im.plugins.persistentMessage.mongo.ReadyMessagePersistentProviderImpl">
+        <constructor-arg ref="mongoReadyMessageDao" />
     </bean>
 
     <!-- 插件初始化配置 -->

@@ -4,7 +4,6 @@ import cn.w.im.domains.HandlerContext;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.Client;
 import cn.w.im.domains.messages.ForwardMessage;
-import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.server.MessageBus;
 import cn.w.im.domains.server.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
@@ -16,7 +15,7 @@ import cn.w.im.plugins.MessagePlugin;
  * DateTime: 14-1-16 下午3:34.
  * Summary: 服务之间消息转发插件.
  */
-public class ForwardMessagePlugin extends MessagePlugin {
+public class ForwardMessagePlugin extends MessagePlugin<ForwardMessage> {
 
     /**
      * 构造函数.
@@ -33,18 +32,17 @@ public class ForwardMessagePlugin extends MessagePlugin {
     }
 
     @Override
-    public void processMessage(Message message, HandlerContext context) {
-        ForwardMessage forwardMessage = (ForwardMessage) message;
+    public void processMessage(ForwardMessage message, HandlerContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
         switch (this.containerType()) {
             case MessageBus:
-                processMessageWithMessageBus(forwardMessage, context);
+                processMessageWithMessageBus(message, context);
                 break;
             default:
                 throw new NotSupportedServerTypeException(this.containerType());
         }
     }
 
-    private void processMessageWithMessageBus(ForwardMessage message, HandlerContext context) {
+    private void processMessageWithMessageBus(ForwardMessage message, HandlerContext context) throws ClientNotFoundException {
         ServerBasic toServer = message.getToServer();
         Client client = MessageBus.current().getClient(toServer);
         if (client == null) {

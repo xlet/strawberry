@@ -17,6 +17,7 @@ public class ServerRegisterMessagePersistentProviderImpl implements MessagePersi
 
     /**
      * 构造函数.
+     *
      * @param dao 消息函数
      */
     public ServerRegisterMessagePersistentProviderImpl(MongoServerRegisterMessageDao dao) {

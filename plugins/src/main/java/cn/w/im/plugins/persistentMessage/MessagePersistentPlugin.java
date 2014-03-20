@@ -3,6 +3,7 @@ package cn.w.im.plugins.persistentMessage;
 import cn.w.im.domains.HandlerContext;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.server.ServerType;
+import cn.w.im.exceptions.NotSupportMessageTypeException;
 import cn.w.im.plugins.MessagePlugin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,6 +36,10 @@ public class MessagePersistentPlugin extends MessagePlugin {
 
     @Override
     public void processMessage(Message message, HandlerContext context) {
-        MessagePersistentProviderFactory.createProvider(message).save(message);
+        try {
+            MessagePersistentProviderFactory.createProvider(message).save(message);
+        } catch (NotSupportMessageTypeException notSupportException) {
+            logger.error("not support message[messageType:" + message.getMessageType().toString() + "]");
+        }
     }
 }

@@ -163,7 +163,7 @@ public class Bootstrap {
         }
     };
 
-    private void registerToMessageBus() throws Exception {
+    private void registerToMessageBus() throws InterruptedException  {
         logger.debug("connect message bus server starting.");
 
         io.netty.bootstrap.Bootstrap bootstrap = new io.netty.bootstrap.Bootstrap();

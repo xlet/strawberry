@@ -1,24 +1,24 @@
 package cn.w.im.plugins.messageServerRegisterResponse;
 
 import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.messages.ForwardMessage;
-import cn.w.im.domains.messages.Message;
-import cn.w.im.domains.messages.RequestLinkedClientsMessage;
-import cn.w.im.domains.messages.responses.MessageServerRegisterResponseMessage;
+import cn.w.im.domains.SourceType;
+import cn.w.im.domains.messages.responses.ServerRegisterResponseMessage;
 import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.server.ServerType;
+import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
 
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-16 下午5:03.
  * Summary:
  */
-public class MessageServerRegisterResponsePlugin extends MessagePlugin {
+public class MessageServerRegisterResponsePlugin extends MessagePlugin<ServerRegisterResponseMessage> {
 
     /**
      * 构造函数.
@@ -26,42 +26,37 @@ public class MessageServerRegisterResponsePlugin extends MessagePlugin {
      * @param containerType 服务类型.
      */
     public MessageServerRegisterResponsePlugin(ServerType containerType) {
-        super("MessageServerRegisterResponsePlugin", "message bus server response message server register.", containerType);
+        super("MessageServerRegisterResponsePlugin", "add response started message server to local and send request linked clients message to these message server.", containerType);
     }
 
     @Override
     public boolean isMatch(HandlerContext context) {
-        return context.getMessage() instanceof MessageServerRegisterResponseMessage;
+        boolean isMatch = context.getMessage().getMessageType() == MessageType.ServerRegisterResponse;
+        return isMatch;
     }
 
     @Override
-    public void processMessage(Message message, HandlerContext context) {
-        MessageServerRegisterResponseMessage responseMessage = (MessageServerRegisterResponseMessage) message;
+    public void processMessage(ServerRegisterResponseMessage message, HandlerContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
         switch (this.containerType()) {
             case MessageServer:
-                processMessageWithMessageServer(responseMessage, context);
+                processMessageWithMessageServer(message, context);
                 break;
             default:
                 throw new NotSupportedServerTypeException(this.containerType());
         }
     }
 
-    private void processMessageWithMessageServer(MessageServerRegisterResponseMessage message, HandlerContext context) {
+    private void processMessageWithMessageServer(ServerRegisterResponseMessage message, HandlerContext context) {
         if (message.isSuccess()) {
-            Iterator<ServerBasic> serverIterator = message.getStartedServers().iterator();
-            while (serverIterator.hasNext()) {
-                ServerBasic serverBasic = serverIterator.next();
-                if (!serverBasic.getNodeId().equals(MessageServer.current().getNodeId())) {
-                    MessageServer.current().addServer(serverBasic);
-                    requestLinkedClients(serverBasic);
-                }
+            List<ServerBasic> startedLoginServers = message.getStartedLoginServers();
+            MessageServer.current().addStartedLoginServers(startedLoginServers, SourceType.Pull);
+            List<ServerBasic> startedOtherMessageServers = message.getStartedMessageServers();
+            MessageServer.current().addStartedOtherMessageServers(startedOtherMessageServers, SourceType.Pull);
+            if (message.getStartedMessageServers().size() == 0) {
+                MessageServer.current().ready();
+            } else {
+                MessageServer.current().requestLinkedClients();
             }
         }
-    }
-
-    private void requestLinkedClients(ServerBasic serverBasic) {
-        RequestLinkedClientsMessage requestMessage = new RequestLinkedClientsMessage(MessageServer.current().getServerBasic());
-        ForwardMessage forwardMessage = new ForwardMessage(MessageServer.current().getServerBasic(), serverBasic, requestMessage);
-        MessageServer.current().getForwardContext().writeAndFlush(forwardMessage);
     }
 }

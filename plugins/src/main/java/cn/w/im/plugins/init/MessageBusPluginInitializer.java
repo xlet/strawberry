@@ -5,7 +5,6 @@ import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.forwardMessage.ForwardMessagePlugin;
 import cn.w.im.plugins.loginServerRegister.LoginServerRegisterPlugin;
 import cn.w.im.plugins.messageServerRegister.MessageServerRegisterPlugin;
-import cn.w.im.plugins.requestLinkedClients.RequestLinkedClientsPlugin;
 import cn.w.im.plugins.persistentMessage.MessagePersistentPlugin;
 
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ public class MessageBusPluginInitializer implements PluginInitializer {
 
         plugins.add(new MessageServerRegisterPlugin(ServerType.MessageBus));
         plugins.add(new LoginServerRegisterPlugin(ServerType.MessageBus));
-        plugins.add(new RequestLinkedClientsPlugin(ServerType.MessageBus));
         plugins.add(new ForwardMessagePlugin(ServerType.MessageBus));
         plugins.add(new MessagePersistentPlugin(ServerType.MessageBus));
 

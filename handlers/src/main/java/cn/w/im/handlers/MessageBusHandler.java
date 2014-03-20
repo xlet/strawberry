@@ -34,6 +34,13 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+
+        logger.debug("channel active.");
+        super.channelActive(ctx);
+    }
+
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;
         message.setReceivedTime(new Date().getTime());

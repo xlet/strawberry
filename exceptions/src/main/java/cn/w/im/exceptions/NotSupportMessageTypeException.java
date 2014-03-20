@@ -7,7 +7,7 @@ import cn.w.im.domains.messages.Message;
  * DateTime: 14-1-6 上午11:01.
  * Summary: 不支持的消息类型异常.
  */
-public class NotSupportMessageTypeException extends RuntimeException {
+public class NotSupportMessageTypeException extends Exception {
 
     /**
      * 消息.
@@ -16,6 +16,7 @@ public class NotSupportMessageTypeException extends RuntimeException {
 
     /**
      * 获取消息.
+     *
      * @return 消息.
      */
     public Message getMsg() {
@@ -24,6 +25,7 @@ public class NotSupportMessageTypeException extends RuntimeException {
 
     /**
      * 设置消息.
+     *
      * @param msg 消息.
      */
     public void setMsg(Message msg) {
@@ -32,6 +34,7 @@ public class NotSupportMessageTypeException extends RuntimeException {
 
     /**
      * 构造函数.
+     *
      * @param msg 消息.
      */
     public NotSupportMessageTypeException(Message msg) {

@@ -1,6 +1,8 @@
 package cn.w.im.domains.server;
 
+import cn.w.im.domains.OtherServerBasic;
 import cn.w.im.domains.ServerBasic;
+import cn.w.im.domains.SourceType;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Iterator;
@@ -35,11 +37,24 @@ public class LoginServer extends AbstractServer {
 
     private String busHost;
 
-    private List<ServerBasic> messageServers;
+    private List<OtherServerBasic> startedMessageServers;
 
-    private ConcurrentHashMap<String, Integer> messageServerClients;
+    /**
+     * record message server linked clients count.
+     * <p/>
+     * String: message server node id.
+     * Integer: linked this server clients count.
+     */
+    private ConcurrentHashMap<String, Integer> messageServerClientCount;
 
     private ChannelHandlerContext forwardContext;
+
+    /**
+     * started other login server.
+     * <p/>
+     * if a client login on this server and send a message to these started login server.
+     */
+    private List<OtherServerBasic> startedOtherLoginServers;
 
     /**
      * 获取注册到messageBusServer的线程是否启动.
@@ -55,8 +70,8 @@ public class LoginServer extends AbstractServer {
      *
      * @return 消息服务列表.
      */
-    public List<ServerBasic> getMessageServers() {
-        return this.messageServers;
+    public List<OtherServerBasic> getStartedMessageServers() {
+        return this.startedMessageServers;
     }
 
     /**
@@ -109,8 +124,9 @@ public class LoginServer extends AbstractServer {
      */
     private LoginServer() {
         super(ServerType.LoginServer);
-        this.messageServers = new CopyOnWriteArrayList<ServerBasic>();
-        this.messageServerClients = new ConcurrentHashMap<String, Integer>();
+        this.startedMessageServers = new CopyOnWriteArrayList<OtherServerBasic>();
+        this.messageServerClientCount = new ConcurrentHashMap<String, Integer>();
+        this.startedOtherLoginServers = new CopyOnWriteArrayList<OtherServerBasic>();
     }
 
     /**
@@ -150,11 +166,12 @@ public class LoginServer extends AbstractServer {
     /**
      * 添加消息服务信息.
      *
-     * @param serverBasic 消息服务信息.
+     * @param startedMessageServer 消息服务信息.
+     * @param sourceType           source type.
      */
-    public void addMessageServer(ServerBasic serverBasic) {
-        this.messageServers.add(serverBasic);
-        messageServerClients.put(serverBasic.getNodeId(), 0);
+    public void addStartedMessageServer(ServerBasic startedMessageServer, SourceType sourceType) {
+        OtherServerBasic otherServerBasic = new OtherServerBasic(startedMessageServer, sourceType);
+        this.startedMessageServers.add(otherServerBasic);
     }
 
     /**
@@ -162,13 +179,14 @@ public class LoginServer extends AbstractServer {
      *
      * @return 消息服务信息.
      */
-    public ServerBasic getMessageServer() {
+    public ServerBasic getMatchedMessageServer() {
+        //todo jackie : abstract message server allocation arithmetic.
         int minClientCount = Integer.MAX_VALUE;
         String minClientCountKey = "";
-        Iterator<String> keys = messageServerClients.keySet().iterator();
+        Iterator<String> keys = messageServerClientCount.keySet().iterator();
         while (keys.hasNext()) {
             String key = keys.next();
-            int clientCount = messageServerClients.get(key);
+            int clientCount = messageServerClientCount.get(key);
             if (clientCount < minClientCount) {
                 minClientCount = clientCount;
                 minClientCountKey = key;
@@ -177,7 +195,7 @@ public class LoginServer extends AbstractServer {
 
         ServerBasic matchedServer = null;
 
-        Iterator<ServerBasic> servers = messageServers.iterator();
+        Iterator<OtherServerBasic> servers = startedMessageServers.iterator();
         while (servers.hasNext()) {
             ServerBasic serverBasic = servers.next();
             if (minClientCountKey.equals(serverBasic.getNodeId())) {
@@ -185,7 +203,29 @@ public class LoginServer extends AbstractServer {
             }
         }
 
-        messageServerClients.replace(minClientCountKey, minClientCount + 1);
+        messageServerClientCount.replace(minClientCountKey, minClientCount + 1);
         return matchedServer;
+    }
+
+    /**
+     * add started other login server basic.
+     *
+     * @param startedOtherLoginServer started other login server basic.
+     * @param sourceType              source type.
+     */
+    public void addStartedOtherLoginServer(ServerBasic startedOtherLoginServer, SourceType sourceType) {
+        OtherServerBasic otherServerBasic = new OtherServerBasic(startedOtherLoginServer, sourceType);
+        this.startedOtherLoginServers.add(otherServerBasic);
+    }
+
+    /**
+     * init messageServerClientCount with this ready message server.
+     *
+     * @param readyMessageServer ready message server basic.
+     */
+    public void messageServerReady(ServerBasic readyMessageServer) {
+        if (!messageServerClientCount.containsKey(readyMessageServer.getNodeId())) {
+            messageServerClientCount.put(readyMessageServer.getNodeId(), 0);
+        }
     }
 }

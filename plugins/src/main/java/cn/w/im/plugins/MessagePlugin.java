@@ -3,6 +3,8 @@ package cn.w.im.plugins;
 import cn.w.im.domains.HandlerContext;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.server.ServerType;
+import cn.w.im.exceptions.ClientNotFoundException;
+import cn.w.im.exceptions.NotSupportedServerTypeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -11,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
  * DateTime: 13-12-30 下午5:05.
  * Summary: 插件抽象类.
  */
-public abstract class MessagePlugin extends AbstractPlugin {
+public abstract class MessagePlugin<T extends Message> extends AbstractPlugin {
 
     private Log logger = LogFactory.getLog(this.getClass());
 
@@ -31,8 +33,13 @@ public abstract class MessagePlugin extends AbstractPlugin {
         try {
             if (isMatch(context)) {
                 logger.debug("matched.");
-                processMessage(context.getMessage(), context);
+                T message = (T) context.getMessage();
+                processMessage(message, context);
             }
+        } catch (ClassCastException castException) {
+            logger.error("isMatch perhaps error.", castException);
+        } catch (NotSupportedServerTypeException notSupportException) {
+            logger.error("this plugin[" + this.name() + "] not support this server.", notSupportException);
         } catch (Exception ex) {
             logger.error(ex);
         }
@@ -44,13 +51,14 @@ public abstract class MessagePlugin extends AbstractPlugin {
      * @param context 当前Context.
      * @return 匹配:true  不匹配:false.
      */
-    public abstract boolean isMatch(HandlerContext context);
+    protected abstract boolean isMatch(HandlerContext context);
 
     /**
-     * 处理消息.
-     *
-     * @param message 消息.
-     * @param context 当前Context.
+     * process message.
+     * @param message message.
+     * @param context current context.
+     * @throws ClientNotFoundException server not found client.
+     * @throws NotSupportedServerTypeException this plugin not support server type.
      */
-    public abstract void processMessage(Message message, HandlerContext context);
+    protected abstract void processMessage(T message, HandlerContext context) throws ClientNotFoundException, NotSupportedServerTypeException;
 }

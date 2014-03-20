@@ -4,10 +4,10 @@ import cn.w.im.domains.HandlerContext;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClientBasic;
-import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.messages.responses.ResponseLinkedClientsMessage;
 import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.server.ServerType;
+import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
 
@@ -18,10 +18,11 @@ import java.util.List;
  * DateTime: 14-1-17 下午3:39.
  * Summary: 处理请求所有已连接客户端消息响应消息插件.
  */
-public class ResponseLinkedClientsPlugin extends MessagePlugin {
+public class ResponseLinkedClientsPlugin extends MessagePlugin<ResponseLinkedClientsMessage> {
 
     /**
      * 构造函数.
+     *
      * @param containerType 服务类型.
      */
     public ResponseLinkedClientsPlugin(ServerType containerType) {
@@ -34,11 +35,10 @@ public class ResponseLinkedClientsPlugin extends MessagePlugin {
     }
 
     @Override
-    public void processMessage(Message message, HandlerContext context) {
-        ResponseLinkedClientsMessage responseMessage = (ResponseLinkedClientsMessage) message;
+    public void processMessage(ResponseLinkedClientsMessage message, HandlerContext context) throws NotSupportedServerTypeException, ClientNotFoundException {
         switch (this.containerType()) {
             case MessageServer:
-                processMessageWithMessageServer(responseMessage, context);
+                processMessageWithMessageServer(message, context);
                 break;
             default:
                 throw new NotSupportedServerTypeException(this.containerType());
@@ -49,5 +49,9 @@ public class ResponseLinkedClientsPlugin extends MessagePlugin {
         List<MessageClientBasic> clients = message.getLinkedClients();
         ServerBasic messageServer = message.getMessageServer();
         MessageServer.current().addOtherServerClients(messageServer, clients);
+
+        if (MessageServer.current().finishedRequestLinkedClients()) {
+            MessageServer.current().ready();
+        }
     }
 }

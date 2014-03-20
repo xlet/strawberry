@@ -37,7 +37,7 @@ public enum MessageType {
     /**
      * 所有注册消息的回复消息.
      */
-    RegisterResponse(0x08),
+    ServerRegisterResponse(0x08),
     /**
      * 连接消息服务器消息.
      */
@@ -66,7 +66,12 @@ public enum MessageType {
     /**
      * 请求已连接消息响应消息.
      */
-    ResponseLinkedClients(0x0F);
+    ResponseLinkedClients(0x0F),
+
+    /**
+     * message server ready message type.
+     */
+    Ready(0x10);
 
     /**
      * 构造函数.

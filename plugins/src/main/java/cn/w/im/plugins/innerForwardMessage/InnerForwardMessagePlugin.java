@@ -5,9 +5,9 @@ import cn.w.im.domains.client.MessageClient;
 import cn.w.im.domains.HandlerContext;
 import cn.w.im.domains.messages.ForwardMessage;
 import cn.w.im.domains.server.MessageServer;
-import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.messages.NormalMessage;
 import cn.w.im.domains.server.ServerType;
+import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
 import org.apache.commons.logging.Log;
@@ -17,14 +17,14 @@ import org.apache.commons.logging.LogFactory;
  * Creator: JackieHan.
  * DateTime: 14-1-6 下午4:48.
  * Summary: 转发一般消息.
- *                 one server
- *       message ----------------> client
- *          |                        /|\
- *          | other server            |
- *         \|/        the server      |
- *       messageBus  --------->   messageServer
+ * one server
+ * message ----------------> client
+ *  |                        /|\
+ *  | other server            |
+ * \|/        the server      |
+ * messageBus  --------->   messageServer
  */
-public class InnerForwardMessagePlugin extends MessagePlugin {
+public class InnerForwardMessagePlugin extends MessagePlugin<NormalMessage> {
 
     /**
      * 日志.
@@ -46,11 +46,10 @@ public class InnerForwardMessagePlugin extends MessagePlugin {
     }
 
     @Override
-    public void processMessage(Message message, HandlerContext context) {
-        NormalMessage normalMessage = (NormalMessage) message;
+    public void processMessage(NormalMessage message, HandlerContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
         switch (this.containerType()) {
             case MessageServer:
-                processMessageWithMessageServer(normalMessage, context);
+                processMessageWithMessageServer(message, context);
                 break;
             default:
                 throw new NotSupportedServerTypeException(this.containerType());
