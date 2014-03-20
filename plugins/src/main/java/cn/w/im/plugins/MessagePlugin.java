@@ -1,6 +1,6 @@
 package cn.w.im.plugins;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.server.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
@@ -29,7 +29,7 @@ public abstract class MessagePlugin<T extends Message> extends AbstractPlugin {
     }
 
     @Override
-    public void process(HandlerContext context) {
+    public void process(PluginContext context) {
         try {
             if (isMatch(context)) {
                 logger.debug("matched.");
@@ -51,7 +51,7 @@ public abstract class MessagePlugin<T extends Message> extends AbstractPlugin {
      * @param context 当前Context.
      * @return 匹配:true  不匹配:false.
      */
-    protected abstract boolean isMatch(HandlerContext context);
+    protected abstract boolean isMatch(PluginContext context);
 
     /**
      * process message.
@@ -60,5 +60,5 @@ public abstract class MessagePlugin<T extends Message> extends AbstractPlugin {
      * @throws ClientNotFoundException server not found client.
      * @throws NotSupportedServerTypeException this plugin not support server type.
      */
-    protected abstract void processMessage(T message, HandlerContext context) throws ClientNotFoundException, NotSupportedServerTypeException;
+    protected abstract void processMessage(T message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException;
 }

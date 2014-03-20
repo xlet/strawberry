@@ -7,9 +7,9 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-3 上午10:43.
- * Summary: handlerContext.
+ * Summary: plugin context.
  */
-public class HandlerContext {
+public class PluginContext {
 
     /**
      * 当前Mesage.
@@ -26,7 +26,7 @@ public class HandlerContext {
      * @param message 当前message.
      * @param ctx 当前ChannelHandlerContext.
      */
-    public HandlerContext(Message message, ChannelHandlerContext ctx) {
+    public PluginContext(Message message, ChannelHandlerContext ctx) {
         this.message = message;
         this.ctx = ctx;
     }

@@ -1,8 +1,8 @@
 package cn.w.im.plugins.innerForwardMessage;
 
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClient;
-import cn.w.im.domains.HandlerContext;
 import cn.w.im.domains.messages.ForwardMessage;
 import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.messages.NormalMessage;
@@ -41,12 +41,12 @@ public class InnerForwardMessagePlugin extends MessagePlugin<NormalMessage> {
     }
 
     @Override
-    public boolean isMatch(HandlerContext context) {
+    public boolean isMatch(PluginContext context) {
         return context.getMessage() instanceof NormalMessage;
     }
 
     @Override
-    public void processMessage(NormalMessage message, HandlerContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
+    public void processMessage(NormalMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
         switch (this.containerType()) {
             case MessageServer:
                 processMessageWithMessageServer(message, context);
@@ -56,7 +56,7 @@ public class InnerForwardMessagePlugin extends MessagePlugin<NormalMessage> {
         }
     }
 
-    private void processMessageWithMessageServer(NormalMessage message, HandlerContext context) {
+    private void processMessageWithMessageServer(NormalMessage message, PluginContext context) {
         MessageClient toClient = MessageServer.current().getClient(message.getTo());
         if (toClient != null) {
             toClient.getContext().write(message);

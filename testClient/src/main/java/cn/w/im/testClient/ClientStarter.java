@@ -1,6 +1,6 @@
 package cn.w.im.testClient;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 import cn.w.im.handlers.JsonMessageDecoder;
 import cn.w.im.handlers.JsonMessageEncoder;
 import io.netty.bootstrap.Bootstrap;
@@ -73,7 +73,7 @@ public class ClientStarter {
 
     private HandlerListener loginListener = new HandlerListener() {
         @Override
-        public void operationComplete(HandlerContext context) {
+        public void operationComplete(PluginContext context) {
             System.out.println("登陆成功!");
         }
     };

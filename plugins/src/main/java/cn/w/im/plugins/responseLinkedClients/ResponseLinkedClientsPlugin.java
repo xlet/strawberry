@@ -1,6 +1,6 @@
 package cn.w.im.plugins.responseLinkedClients;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClientBasic;
@@ -30,12 +30,12 @@ public class ResponseLinkedClientsPlugin extends MessagePlugin<ResponseLinkedCli
     }
 
     @Override
-    public boolean isMatch(HandlerContext context) {
+    public boolean isMatch(PluginContext context) {
         return context.getMessage().getMessageType() == MessageType.ResponseLinkedClients;
     }
 
     @Override
-    public void processMessage(ResponseLinkedClientsMessage message, HandlerContext context) throws NotSupportedServerTypeException, ClientNotFoundException {
+    public void processMessage(ResponseLinkedClientsMessage message, PluginContext context) throws NotSupportedServerTypeException, ClientNotFoundException {
         switch (this.containerType()) {
             case MessageServer:
                 processMessageWithMessageServer(message, context);
@@ -45,7 +45,7 @@ public class ResponseLinkedClientsPlugin extends MessagePlugin<ResponseLinkedCli
         }
     }
 
-    private void processMessageWithMessageServer(ResponseLinkedClientsMessage message, HandlerContext context) {
+    private void processMessageWithMessageServer(ResponseLinkedClientsMessage message, PluginContext context) {
         List<MessageClientBasic> clients = message.getLinkedClients();
         ServerBasic messageServer = message.getMessageServer();
         MessageServer.current().addOtherServerClients(messageServer, clients);

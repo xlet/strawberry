@@ -1,6 +1,6 @@
 package cn.w.im.plugins.requestLinkedClients;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.messages.ForwardMessage;
@@ -31,12 +31,12 @@ public class RequestLinkedClientsPlugin extends MessagePlugin<RequestLinkedClien
     }
 
     @Override
-    public boolean isMatch(HandlerContext context) {
+    public boolean isMatch(PluginContext context) {
         return context.getMessage().getMessageType() == MessageType.RequestLinkedClients;
     }
 
     @Override
-    public void processMessage(RequestLinkedClientsMessage message, HandlerContext context) throws NotSupportedServerTypeException, ClientNotFoundException {
+    public void processMessage(RequestLinkedClientsMessage message, PluginContext context) throws NotSupportedServerTypeException, ClientNotFoundException {
         switch (this.containerType()) {
             case MessageServer:
                 processMessageWithMessageServer(message, context);
@@ -46,7 +46,7 @@ public class RequestLinkedClientsPlugin extends MessagePlugin<RequestLinkedClien
         }
     }
 
-    private void processMessageWithMessageServer(RequestLinkedClientsMessage message, HandlerContext context) {
+    private void processMessageWithMessageServer(RequestLinkedClientsMessage message, PluginContext context) {
         List<MessageClientBasic> clients = MessageServer.current().getLinkedClients();
         ResponseLinkedClientsMessage responseMessage = new ResponseLinkedClientsMessage(MessageServer.current().getServerBasic(), clients);
         ForwardMessage forwardMessage = new ForwardMessage(MessageServer.current().getServerBasic(), message.getRequestServer(), responseMessage);

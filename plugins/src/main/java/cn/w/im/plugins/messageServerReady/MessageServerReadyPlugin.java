@@ -1,6 +1,6 @@
 package cn.w.im.plugins.messageServerReady;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.ReadyMessage;
@@ -28,12 +28,12 @@ public class MessageServerReadyPlugin extends MessagePlugin<ReadyMessage> {
     }
 
     @Override
-    public boolean isMatch(HandlerContext context) {
+    public boolean isMatch(PluginContext context) {
         return context.getMessage().getMessageType() == MessageType.Ready;
     }
 
     @Override
-    public void processMessage(ReadyMessage message, HandlerContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
+    public void processMessage(ReadyMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
         switch (containerType()) {
             case LoginServer:
                 processMessageWithLoginServer(message, context);
@@ -43,7 +43,7 @@ public class MessageServerReadyPlugin extends MessagePlugin<ReadyMessage> {
         }
     }
 
-    private void processMessageWithLoginServer(ReadyMessage readyMessage, HandlerContext context) {
+    private void processMessageWithLoginServer(ReadyMessage readyMessage, PluginContext context) {
         ServerBasic readyMessageServer = readyMessage.getMessageServer();
         LoginServer.current().messageServerReady(readyMessageServer);
     }

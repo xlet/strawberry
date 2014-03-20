@@ -1,6 +1,6 @@
 package cn.w.im.plugins.forwardMessage;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.Client;
 import cn.w.im.domains.messages.ForwardMessage;
@@ -27,12 +27,12 @@ public class ForwardMessagePlugin extends MessagePlugin<ForwardMessage> {
     }
 
     @Override
-    public boolean isMatch(HandlerContext context) {
+    public boolean isMatch(PluginContext context) {
         return context.getMessage() instanceof ForwardMessage;
     }
 
     @Override
-    public void processMessage(ForwardMessage message, HandlerContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
+    public void processMessage(ForwardMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
         switch (this.containerType()) {
             case MessageBus:
                 processMessageWithMessageBus(message, context);
@@ -42,7 +42,7 @@ public class ForwardMessagePlugin extends MessagePlugin<ForwardMessage> {
         }
     }
 
-    private void processMessageWithMessageBus(ForwardMessage message, HandlerContext context) throws ClientNotFoundException {
+    private void processMessageWithMessageBus(ForwardMessage message, PluginContext context) throws ClientNotFoundException {
         ServerBasic toServer = message.getToServer();
         Client client = MessageBus.current().getClient(toServer);
         if (client == null) {

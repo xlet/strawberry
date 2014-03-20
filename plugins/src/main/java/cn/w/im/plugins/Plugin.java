@@ -1,6 +1,6 @@
 package cn.w.im.plugins;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.server.ServerType;
 
 /**
@@ -32,5 +32,5 @@ public interface Plugin {
      * 处理.
      * @param context hanlder上下文.
      */
-    void process(HandlerContext context);
+    void process(PluginContext context);
 }

@@ -1,6 +1,6 @@
 package cn.w.im.plugins.persistentMessage;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.server.ServerType;
 import cn.w.im.exceptions.NotSupportMessageTypeException;
@@ -30,12 +30,12 @@ public class MessagePersistentPlugin extends MessagePlugin {
     }
 
     @Override
-    public boolean isMatch(HandlerContext context) {
+    public boolean isMatch(PluginContext context) {
         return true;
     }
 
     @Override
-    public void processMessage(Message message, HandlerContext context) {
+    public void processMessage(Message message, PluginContext context) {
         try {
             MessagePersistentProviderFactory.createProvider(message).save(message);
         } catch (NotSupportMessageTypeException notSupportException) {

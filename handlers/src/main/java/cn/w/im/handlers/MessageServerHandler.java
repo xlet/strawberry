@@ -1,6 +1,6 @@
 package cn.w.im.handlers;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.plugins.Plugin;
@@ -41,7 +41,7 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
         Message message = (Message) msg;
         message.setReceivedTime(new Date().getTime());
 
-        HandlerContext context = new HandlerContext(message, ctx);
+        PluginContext context = new PluginContext(message, ctx);
         for (Plugin plugin : plugins) {
             logger.info("processing: " + plugin.description());
             plugin.process(context);

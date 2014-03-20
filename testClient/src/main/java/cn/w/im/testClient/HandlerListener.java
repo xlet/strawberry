@@ -1,6 +1,6 @@
 package cn.w.im.testClient;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 
 /**
  * Creator: JackieHan.
@@ -13,5 +13,5 @@ public interface HandlerListener {
      * 操作完成.
      * @param context 当前上下文.
      */
-    void operationComplete(HandlerContext context);
+    void operationComplete(PluginContext context);
 }

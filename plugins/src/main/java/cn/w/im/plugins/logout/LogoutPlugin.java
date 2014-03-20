@@ -1,6 +1,6 @@
 package cn.w.im.plugins.logout;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.server.MessageServer;
 import cn.w.im.domains.messages.LogoutMessage;
 import cn.w.im.domains.messages.responses.LogoutResponseMessage;
@@ -31,12 +31,12 @@ public class LogoutPlugin extends MessagePlugin<LogoutMessage> {
     }
 
     @Override
-    public boolean isMatch(HandlerContext context) {
+    public boolean isMatch(PluginContext context) {
         return context.getMessage() instanceof LogoutMessage;
     }
 
     @Override
-    public void processMessage(LogoutMessage message, HandlerContext context) {
+    public void processMessage(LogoutMessage message, PluginContext context) {
         //Todo jackie this is not unreasonable.
         try {
             if (logout(message)) {

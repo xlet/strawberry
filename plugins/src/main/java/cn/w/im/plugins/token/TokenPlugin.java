@@ -1,6 +1,6 @@
 package cn.w.im.plugins.token;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.LoginToken;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.messages.TokenMessage;
@@ -27,12 +27,12 @@ public class TokenPlugin extends MessagePlugin<TokenMessage> {
     }
 
     @Override
-    public boolean isMatch(HandlerContext context) {
+    public boolean isMatch(PluginContext context) {
         return context.getMessage().getMessageType() == MessageType.Token;
     }
 
     @Override
-    public void processMessage(TokenMessage message, HandlerContext context) throws NotSupportedServerTypeException, ClientNotFoundException {
+    public void processMessage(TokenMessage message, PluginContext context) throws NotSupportedServerTypeException, ClientNotFoundException {
         switch (this.containerType()) {
             case MessageServer:
                 processMessageWithMessageServer(message, context);
@@ -42,7 +42,7 @@ public class TokenPlugin extends MessagePlugin<TokenMessage> {
         }
     }
 
-    private void processMessageWithMessageServer(TokenMessage message, HandlerContext context) {
+    private void processMessageWithMessageServer(TokenMessage message, PluginContext context) {
         LoginToken token = message.getToken();
         MessageServer.current().addToken(token);
     }

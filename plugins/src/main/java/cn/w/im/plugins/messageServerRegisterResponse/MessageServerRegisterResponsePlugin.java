@@ -1,6 +1,6 @@
 package cn.w.im.plugins.messageServerRegisterResponse;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.SourceType;
@@ -30,13 +30,13 @@ public class MessageServerRegisterResponsePlugin extends MessagePlugin<ServerReg
     }
 
     @Override
-    public boolean isMatch(HandlerContext context) {
+    public boolean isMatch(PluginContext context) {
         boolean isMatch = context.getMessage().getMessageType() == MessageType.ServerRegisterResponse;
         return isMatch;
     }
 
     @Override
-    public void processMessage(ServerRegisterResponseMessage message, HandlerContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
+    public void processMessage(ServerRegisterResponseMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
         switch (this.containerType()) {
             case MessageServer:
                 processMessageWithMessageServer(message, context);
@@ -46,7 +46,7 @@ public class MessageServerRegisterResponsePlugin extends MessagePlugin<ServerReg
         }
     }
 
-    private void processMessageWithMessageServer(ServerRegisterResponseMessage message, HandlerContext context) {
+    private void processMessageWithMessageServer(ServerRegisterResponseMessage message, PluginContext context) {
         if (message.isSuccess()) {
             List<ServerBasic> startedLoginServers = message.getStartedLoginServers();
             MessageServer.current().addStartedLoginServers(startedLoginServers, SourceType.Pull);

@@ -1,8 +1,8 @@
 package cn.w.im.plugins.login;
 
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClient;
-import cn.w.im.domains.HandlerContext;
 import cn.w.im.domains.LoginToken;
 import cn.w.im.domains.messages.ForwardMessage;
 import cn.w.im.domains.messages.LoginMessage;
@@ -39,12 +39,12 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
     }
 
     @Override
-    public boolean isMatch(HandlerContext context) {
+    public boolean isMatch(PluginContext context) {
         return context.getMessage() instanceof LoginMessage;
     }
 
     @Override
-    public void processMessage(LoginMessage message, HandlerContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
+    public void processMessage(LoginMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
         switch (this.containerType()) {
             case LoginServer:
                 processWithLoginServer(message, context);
@@ -54,7 +54,7 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
         }
     }
 
-    private void processWithLoginServer(LoginMessage message, HandlerContext context) {
+    private void processWithLoginServer(LoginMessage message, PluginContext context) {
         if (login(message)) {
             MessageClient client = new MessageClient(context.getCtx(), message.getLoginId());
             LoginToken token = createToken(client);
