@@ -1,6 +1,6 @@
 package cn.w.im.testClient;
 
-import cn.w.im.domains.HandlerContext;
+import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.messages.ConnectMessage;
 import cn.w.im.domains.messages.LoginMessage;
 import cn.w.im.domains.messages.responses.LoginResponseMessage;
@@ -90,7 +90,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof LoginResponseMessage) {
             LoginResponseMessage message = (LoginResponseMessage) msg;
-            HandlerContext handlerContext = new HandlerContext(message, ctx);
+            PluginContext handlerContext = new PluginContext(message, ctx);
             for (HandlerListener listener : listeners) {
                 listener.operationComplete(handlerContext);
             }
