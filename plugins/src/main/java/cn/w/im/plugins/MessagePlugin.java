@@ -33,6 +33,7 @@ public abstract class MessagePlugin<T extends Message> extends AbstractPlugin {
         try {
             if (isMatch(context)) {
                 logger.debug("matched.");
+                @SuppressWarnings("unchecked")
                 T message = (T) context.getMessage();
                 processMessage(message, context);
             }
