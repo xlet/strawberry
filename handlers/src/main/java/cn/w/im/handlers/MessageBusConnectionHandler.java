@@ -44,17 +44,28 @@ public class MessageBusConnectionHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        waitServerStart();
         switch (connectionServerType) {
             case MessageServer:
                 MessageServer.current().setForwardContext(ctx);
-                registerToMessageBus(ctx);
-                break;
             case LoginServer:
                 LoginServer.current().setForwardContext(ctx);
-                registerToMessageBus(ctx);
                 break;
             default:
                 throw new NotSupportedServerTypeException(connectionServerType);
+        }
+        registerToMessageBus(ctx);
+    }
+
+    private synchronized void waitServerStart() throws Exception{
+        while (true) {
+            if (!ServerInstance.current(connectionServerType).isStart()){
+                logger.debug("wait server started.");
+                this.wait(200);
+            }
+            else{
+                break;
+            }
         }
     }
 

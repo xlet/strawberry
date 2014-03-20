@@ -1,18 +1,23 @@
 package cn.w.im.domains;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-9 下午4:34.
  * Summary: 消息服务基础信息.
  */
+@JsonTypeInfo(use= JsonTypeInfo.Id.CLASS,include = JsonTypeInfo.As.PROPERTY,property = "@class")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = OtherServerBasic.class,name = "OtherServerBasic")
+})
 public class ServerBasic {
 
     private String host;
     private int port;
     private boolean start;
-    private Date startDateTime;
+    private long startDateTime;
     private String nodeId;
 
     /**
@@ -67,7 +72,7 @@ public class ServerBasic {
      * 获取服务启动时间.
      * @return 服务启动时间.
      */
-    public Date getStartDateTime() {
+    public long getStartDateTime() {
         return startDateTime;
     }
 
@@ -75,7 +80,7 @@ public class ServerBasic {
      * 设置服务启动时间.
      * @param startDateTime 服务启动时间.
      */
-    public void setStartDateTime(Date startDateTime) {
+    public void setStartDateTime(long startDateTime) {
         this.startDateTime = startDateTime;
     }
 

@@ -54,13 +54,12 @@ public class ServerRegisterPlugin extends MessagePlugin<ServerRegisterMessage> {
 
         ServerBasic serverBasic = registerMessage.getServerBasic();
         //注册服务
-        switch (registerMessage.getServerType())
-        {
+        switch (registerMessage.getServerType()) {
             case LoginServer:
                 MessageBus.current().addLoginServer(serverBasic, context.getCtx());
                 break;
             case MessageServer:
-                MessageBus.current().addMessageServer(serverBasic,context.getCtx());
+                MessageBus.current().addMessageServer(serverBasic, context.getCtx());
                 break;
             default:
                 throw new NotSupportedServerTypeException(registerMessage.getServerType());

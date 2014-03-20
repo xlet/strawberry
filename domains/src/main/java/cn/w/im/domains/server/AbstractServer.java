@@ -33,7 +33,7 @@ public abstract class AbstractServer {
     public void start() {
         if (!this.serverBasic.isStart()) {
             this.serverBasic.setStart(true);
-            this.serverBasic.setStartDateTime(new Date());
+            this.serverBasic.setStartDateTime(new Date().getTime());
         }
     }
 
@@ -60,7 +60,7 @@ public abstract class AbstractServer {
      *
      * @return true:启动.
      */
-    public Date getStartDate() {
+    public long getStartDate() {
         return this.serverBasic.getStartDateTime();
     }
 

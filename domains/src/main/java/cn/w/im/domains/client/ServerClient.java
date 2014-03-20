@@ -2,8 +2,6 @@ package cn.w.im.domains.client;
 
 import cn.w.im.domains.ServerBasic;
 
-import java.util.Date;
-
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-14 下午3:04.
@@ -65,7 +63,7 @@ public abstract class ServerClient extends Client {
      *
      * @return 启动时间.
      */
-    public Date getStartDate() {
+    public long getStartDate() {
         return serverBasic.getStartDateTime();
     }
 

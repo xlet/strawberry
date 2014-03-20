@@ -6,7 +6,6 @@ import cn.w.im.domains.client.LoginServerClient;
 import cn.w.im.domains.client.MessageServerClient;
 import cn.w.im.domains.client.ServerClient;
 import cn.w.im.domains.client.ClientType;
-import cn.w.im.domains.messages.ServerRegisterMessage;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
