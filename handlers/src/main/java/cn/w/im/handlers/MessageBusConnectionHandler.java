@@ -57,13 +57,12 @@ public class MessageBusConnectionHandler extends ChannelInboundHandlerAdapter {
         registerToMessageBus(ctx);
     }
 
-    private synchronized void waitServerStart() throws Exception{
+    private synchronized void waitServerStart() throws Exception {
         while (true) {
-            if (!ServerInstance.current(connectionServerType).isStart()){
+            if (!ServerInstance.current(connectionServerType).isStart()) {
                 logger.debug("wait server started.");
                 this.wait(200);
-            }
-            else{
+            } else {
                 break;
             }
         }
