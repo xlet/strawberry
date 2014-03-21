@@ -12,6 +12,8 @@ public abstract class ResponseMessage extends Message {
 
     private boolean success;
 
+    private String errorMessage;
+
     /**
      * 构造函数.
      *

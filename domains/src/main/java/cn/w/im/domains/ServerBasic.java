@@ -8,9 +8,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * DateTime: 14-1-9 下午4:34.
  * Summary: 消息服务基础信息.
  */
-@JsonTypeInfo(use= JsonTypeInfo.Id.CLASS,include = JsonTypeInfo.As.PROPERTY,property = "@class")
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = OtherServerBasic.class,name = "OtherServerBasic")
+        @JsonSubTypes.Type(value = OtherServerBasic.class, name = "OtherServerBasic")
 })
 public class ServerBasic {
 
@@ -22,6 +22,7 @@ public class ServerBasic {
 
     /**
      * 获取服务绑定ip地址.
+     *
      * @return 服务绑定ip地址.
      */
     public String getHost() {
@@ -30,6 +31,7 @@ public class ServerBasic {
 
     /**
      * 设置服务绑定ip地址.
+     *
      * @param host 服务绑定ip地址.
      */
     public void setHost(String host) {
@@ -38,6 +40,7 @@ public class ServerBasic {
 
     /**
      * 获取服务监听端口号.
+     *
      * @return 服务监听端口号.
      */
     public int getPort() {
@@ -46,6 +49,7 @@ public class ServerBasic {
 
     /**
      * 设置服务监听端口号.
+     *
      * @param port 服务监听端口号.
      */
     public void setPort(int port) {
@@ -54,6 +58,7 @@ public class ServerBasic {
 
     /**
      * 获取服务是否启动.
+     *
      * @return 启动:true.
      */
     public boolean isStart() {
@@ -62,6 +67,7 @@ public class ServerBasic {
 
     /**
      * 设置服务是否启动.
+     *
      * @param start 启动:true.
      */
     public void setStart(boolean start) {
@@ -70,6 +76,7 @@ public class ServerBasic {
 
     /**
      * 获取服务启动时间.
+     *
      * @return 服务启动时间.
      */
     public long getStartDateTime() {
@@ -78,6 +85,7 @@ public class ServerBasic {
 
     /**
      * 设置服务启动时间.
+     *
      * @param startDateTime 服务启动时间.
      */
     public void setStartDateTime(long startDateTime) {
@@ -86,6 +94,7 @@ public class ServerBasic {
 
     /**
      * 获取服务节点标识.
+     *
      * @return 服务节点标识.
      */
     public String getNodeId() {
@@ -94,6 +103,7 @@ public class ServerBasic {
 
     /**
      * 设置服务节点标识.
+     *
      * @param nodeId 服务节点标识.
      */
     public void setNodeId(String nodeId) {

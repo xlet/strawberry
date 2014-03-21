@@ -21,7 +21,7 @@ public class OtherServerBasic extends ServerBasic {
     /**
      * default constructor.
      */
-    protected OtherServerBasic(){
+    protected OtherServerBasic() {
 
     }
 
