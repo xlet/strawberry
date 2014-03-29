@@ -59,6 +59,11 @@ public enum MessageType {
     Token(0x0D),
 
     /**
+     * TokenResponse.
+     */
+    TokenResponse(0x11),
+
+    /**
      * 请求已连接客户端消息.
      */
     RequestLinkedClients(0x0E),
@@ -71,10 +76,51 @@ public enum MessageType {
     /**
      * message server ready message type.
      */
-    Ready(0x10);
+    Ready(0x10),
+
+    /**
+     * send to login server and other message server when message client connected the message server.
+     */
+    Connected(0x11),
+
+    /**
+     * send to message server when login server or other message server received Connected type message.
+     */
+    ConnectedResponse(0x12),
+
+    /**
+     * send to forward server when forward server started.
+     */
+    ForwardRequest(0x13),
+
+    /**
+     * connected server response request message.
+     */
+    ForwardResponse(0x14),
+
+    /**
+     * forward server ready message.
+     */
+    ForwardReady(0x15),
+
+    /**
+     * forward server crashed message.
+     */
+    ForwardCrashed(0x16),
+
+    /**
+     * server stopped message.
+     */
+    ServerStopped(0x17),
+
+    /**
+     * server crashed message.
+     */
+    ServerCrashed(0x18);
 
     /**
      * 构造函数.
+     *
      * @param value 参数值.
      */
     private MessageType(int value) {
@@ -83,6 +129,7 @@ public enum MessageType {
 
     /**
      * 获取值.
+     *
      * @return 值.
      */
     public int getValue() {

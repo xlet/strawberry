@@ -1,14 +1,18 @@
 package cn.w.im.plugins.init;
 
-import cn.w.im.domains.server.ServerType;
+import cn.w.im.domains.ServerType;
 import cn.w.im.plugins.Plugin;
-import cn.w.im.plugins.logout.LogoutPlugin;
-import cn.w.im.plugins.messageServerRegisterResponse.MessageServerRegisterResponsePlugin;
+import cn.w.im.plugins.connected.ConnectedPlugin;
+import cn.w.im.plugins.connected.ConnectedResponsePlugin;
+import cn.w.im.plugins.connected.MessageClientConnectPlugin;
+import cn.w.im.plugins.forward.ForwardReadyPlugin;
+import cn.w.im.plugins.forward.ForwardRequestPlugin;
+import cn.w.im.plugins.serverRegister.MessageServerRegisterResponsePlugin;
 import cn.w.im.plugins.persistentMessage.MessagePersistentPlugin;
 import cn.w.im.plugins.innerForwardMessage.InnerForwardMessagePlugin;
 import cn.w.im.plugins.requestLinkedClients.RequestLinkedClientsPlugin;
-import cn.w.im.plugins.responseLinkedClients.ResponseLinkedClientsPlugin;
-import cn.w.im.plugins.token.TokenPlugin;
+import cn.w.im.plugins.requestLinkedClients.ResponseLinkedClientsPlugin;
+import cn.w.im.plugins.login.TokenPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +26,27 @@ public class MessageServerPluginInitializer implements PluginInitializer {
     @Override
     public List<Plugin> init() {
         List<Plugin> plugins = new ArrayList<Plugin>();
-        plugins.add(new LogoutPlugin(ServerType.MessageServer));
-        plugins.add(new InnerForwardMessagePlugin(ServerType.MessageServer));
+        //forward
+        plugins.add(new ForwardRequestPlugin(ServerType.LoginServer));
+        plugins.add(new ForwardReadyPlugin(ServerType.LoginServer));
+
+        //starting
         plugins.add(new MessageServerRegisterResponsePlugin(ServerType.MessageServer));
-        plugins.add(new TokenPlugin(ServerType.MessageServer));
         plugins.add(new RequestLinkedClientsPlugin(ServerType.MessageServer));
         plugins.add(new ResponseLinkedClientsPlugin(ServerType.MessageServer));
+
+        //login
+        plugins.add(new TokenPlugin(ServerType.MessageServer));
+
+        //connect
+        plugins.add(new ConnectedPlugin(ServerType.MessageServer));
+        plugins.add(new ConnectedResponsePlugin(ServerType.MessageServer));
+        plugins.add(new MessageClientConnectPlugin(ServerType.MessageServer));
+
+        //inner forward
+        plugins.add(new InnerForwardMessagePlugin(ServerType.MessageServer));
+
+        //persistent
         plugins.add(new MessagePersistentPlugin(ServerType.MessageServer));
 
         return plugins;

@@ -1,9 +1,8 @@
 package cn.w.im.handlers;
 
 import cn.w.im.domains.PluginContext;
-import cn.w.im.domains.client.Client;
 import cn.w.im.domains.messages.Message;
-import cn.w.im.domains.server.MessageBus;
+import cn.w.im.server.MessageBus;
 import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.init.PluginInitializerFactory;
 import cn.w.im.utils.netty.IpAddressProvider;
@@ -35,7 +34,7 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-
+        MessageBus.current().clientCacheProvider().registerClient(ctx);
         logger.debug("channel active.");
         super.channelActive(ctx);
     }
@@ -57,9 +56,7 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         String remoteIp = IpAddressProvider.getRemoteIpAddress(ctx);
         int remotePort = IpAddressProvider.getRemotePort(ctx);
-        Client normalStopClient = MessageBus.current().getClient(remoteIp, remotePort);
-        //TODO:jackie 处理正常退出.
-        MessageBus.current().removeClient(remoteIp, remotePort);
+        //TODO:jackie 处理正常退出, tell all server.
         logger.debug("client[" + remoteIp + ":" + remotePort + "] disconnected!");
         super.channelInactive(ctx);
     }
@@ -68,10 +65,7 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         String remoteIp = IpAddressProvider.getRemoteIpAddress(ctx);
         int remotePort = IpAddressProvider.getRemotePort(ctx);
-        Client crashClient = MessageBus.current().getClient(remoteIp, remotePort);
         //TODO: 容错处理
-
-        MessageBus.current().removeClient(remoteIp, remotePort);
         logger.error("client[" + remoteIp + ":" + remotePort + "] crashed!", cause);
     }
 }

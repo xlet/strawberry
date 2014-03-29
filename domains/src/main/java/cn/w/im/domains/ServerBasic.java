@@ -19,6 +19,7 @@ public class ServerBasic {
     private boolean start;
     private long startDateTime;
     private String nodeId;
+    private ServerType serverType;
 
     /**
      * 获取服务绑定ip地址.
@@ -108,5 +109,21 @@ public class ServerBasic {
      */
     public void setNodeId(String nodeId) {
         this.nodeId = nodeId;
+    }
+
+    /**
+     * get server type.
+     * @return server type.
+     */
+    public ServerType getServerType() {
+        return serverType;
+    }
+
+    /**
+     * set server type.
+     * @param serverType server type.
+     */
+    public void setServerType(ServerType serverType) {
+        this.serverType = serverType;
     }
 }

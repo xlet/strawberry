@@ -5,30 +5,26 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * Creator: JackieHan.
  * DateTime: 13-12-17 下午3:59.
- * Summary: 一般消息客户端.
+ * Summary: message client.
  */
 public class MessageClient extends Client {
 
-    /**
-     * 登陆id.
-     */
-    private String id;
+    private String loginId;
 
     /**
-     * 获取登陆id.
-     * @return 登陆id.
+     * get login id.
+     * @return login id.
      */
-    public String getId() {
-        return id;
+    public String getLoginId() {
+        return this.loginId;
     }
 
      /**
-     * 构造函数.
-     * @param id 登陆id.
+     * constructor.
+     * @param loginId login id.
      */
-    public MessageClient(ChannelHandlerContext context, String id) {
-        super(ClientType.MessageClient);
-        this.setContext(context);
-        this.id = id;
+    public MessageClient(ChannelHandlerContext context, String loginId) {
+        super(context);
+        this.loginId = loginId;
     }
 }

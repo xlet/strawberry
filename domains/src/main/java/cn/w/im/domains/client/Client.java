@@ -6,32 +6,24 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-14 下午2:51.
- * Summary: 客户端信息.
+ * Summary: client.
  */
-public abstract class Client {
-
-    private ClientType clientType;
+public class Client {
 
     private ChannelHandlerContext context;
 
     /**
-     * 构造函数.
-     * @param clientType 客户端类型.
+     * constructor.
+     *
+     * @param context
      */
-    public Client(ClientType clientType) {
-        this.clientType = clientType;
-    }
-
-    /**
-     * 获取客户端类型.
-     * @return 客户端类型.
-     */
-    public ClientType getClientType() {
-        return clientType;
+    public Client(ChannelHandlerContext context) {
+        this.context = context;
     }
 
     /**
      * 获取当前channelContext.
+     *
      * @return channelContext.
      */
     public ChannelHandlerContext getContext() {
@@ -40,6 +32,7 @@ public abstract class Client {
 
     /**
      * 设置当前channelContext.
+     *
      * @param context channelContext.
      */
     public void setContext(ChannelHandlerContext context) {
@@ -48,6 +41,7 @@ public abstract class Client {
 
     /**
      * 获取远程host.
+     *
      * @return host.
      */
     public String getRemoteHost() {
@@ -56,6 +50,7 @@ public abstract class Client {
 
     /**
      * 获取远程端口.
+     *
      * @return 端口.
      */
     public int getRemotePort() {

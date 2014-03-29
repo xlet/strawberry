@@ -50,6 +50,8 @@
         <module>mongo</module>
         <module>resources</module>
         <module>messageBus</module>
+        <module>server</module>
+        <module>forwardServer</module>
     </modules>
 
     <dependencies>

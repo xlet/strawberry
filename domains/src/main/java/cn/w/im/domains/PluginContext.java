@@ -11,15 +11,12 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class PluginContext {
 
-    /**
-     * 当前Mesage.
-     */
     private Message message;
 
-    /**
-     * 当前的ChannelHandlerContext.
-     */
-    private ChannelHandlerContext ctx;
+    private String currentHost;
+
+    private int currentPort;
+
 
     /**
      * 构造函数.
@@ -28,7 +25,8 @@ public class PluginContext {
      */
     public PluginContext(Message message, ChannelHandlerContext ctx) {
         this.message = message;
-        this.ctx = ctx;
+        this.currentHost = IpAddressProvider.getRemoteIpAddress(ctx);
+        this.currentPort = IpAddressProvider.getRemotePort(ctx);
     }
 
     /**
@@ -40,41 +38,18 @@ public class PluginContext {
     }
 
     /**
-     * 获取客户端Ip地址.
-     * @return 客户端Ip地址.
+     * get current host.
+     * @return current host.
      */
-    public String getClientIpAddress() {
-        return IpAddressProvider.getRemoteIpAddress(ctx);
+    public String getCurrentHost() {
+        return currentHost;
     }
 
     /**
-     * 获取客户端端口号.
-     * @return 客户端端口号.
+     * get current port.
+     * @return current port.
      */
-    public int getClientPort() {
-        return IpAddressProvider.getRemotePort(ctx);
-    }
-
-    /**
-     * 获取连接Context.
-     * @return 连接Context.
-     */
-    public ChannelHandlerContext getCtx() {
-        return this.ctx;
-    }
-
-    /**
-     * 回复客户端消息.
-     * @param message 需要回复的消息.
-     */
-    public void write(Message message) {
-        ctx.writeAndFlush(message);
-    }
-
-    /**
-     * 关闭连接.
-     */
-    public void close() {
-        ctx.close();
+    public int getCurrentPort() {
+        return currentPort;
     }
 }

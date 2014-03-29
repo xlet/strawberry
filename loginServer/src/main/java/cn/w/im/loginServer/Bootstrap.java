@@ -2,26 +2,14 @@ package cn.w.im.loginServer;
 
 
 import cn.w.im.domains.conf.Configuration;
-import cn.w.im.domains.server.LoginServer;
-import cn.w.im.domains.server.ServerType;
-import cn.w.im.handlers.JsonMessageDecoder;
-import cn.w.im.handlers.JsonMessageEncoder;
-import cn.w.im.handlers.MessageBusConnectionHandler;
+import cn.w.im.server.LoginServer;
 import cn.w.im.utils.ConfigHelper;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-import io.netty.util.CharsetUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -75,13 +63,9 @@ public class Bootstrap {
 
     private final EventLoopGroup bossGroup = new NioEventLoopGroup();
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
-    private final EventLoopGroup clientGroup = new NioEventLoopGroup();
-    private boolean serverStarting = false;
-    private boolean connecting = false;
-    private boolean startError = false;
 
     /**
-     * 启动服务器.
+     * load config.
      */
     private void loadConfig() throws Exception {
         logger.debug("loading config.");
@@ -91,47 +75,13 @@ public class Bootstrap {
 
         String hostIp = properties.getProperty("host");
         int port = Integer.parseInt(properties.getProperty("port"));
-        String busHost = properties.getProperty("bus.host");
-        int busPort = Integer.parseInt(properties.getProperty("bus.port"));
-        LoginServer.current().init(hostIp, port, busHost, busPort);
+        LoginServer.current().init(hostIp, port);
 
-        logger.debug("read configuration: loginServer[" + hostIp + ":" + port + "],messageBus[" + busHost + ":" + busPort + "]");
+        logger.debug("read configuration: loginServer[" + hostIp + ":" + port + "]");
         logger.debug("loaded config.");
     }
 
     private void startServer() throws Exception {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    serverStarting = true;
-                    start();
-                } catch (Exception ex) {
-                    startError = true;
-                    logger.error("start server error.", ex);
-                    serverStarting = false;
-                    stopServer();
-                }
-            }
-        }).start();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    connecting = true;
-                    registerToMessageBus();
-                } catch (Exception ex) {
-                    startError = true;
-                    logger.error("register to message bus error.", ex);
-                    connecting = false;
-                    stopServer();
-                }
-            }
-        }).start();
-    }
-
-    private void start() throws Exception {
         logger.debug("server starting.");
 
         String host = LoginServer.current().getHost();
@@ -156,82 +106,30 @@ public class Bootstrap {
         @Override
         public void operationComplete(ChannelFuture future) throws Exception {
             if (future.isSuccess()) {
-                serverStarting = false;
                 LoginServer.current().start();
                 logger.debug("server started.");
             }
         }
     };
 
-    private void registerToMessageBus() throws InterruptedException  {
-        logger.debug("connect message bus server starting.");
-
-        io.netty.bootstrap.Bootstrap bootstrap = new io.netty.bootstrap.Bootstrap();
-        bootstrap.group(clientGroup)
-                .channel(NioSocketChannel.class)
-                .handler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel ch) throws Exception {
-                        ch.pipeline().addLast(
-                                new LengthFieldPrepender(4),
-                                new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4),
-                                new StringEncoder(CharsetUtil.UTF_8),
-                                new StringDecoder(CharsetUtil.UTF_8),
-                                new JsonMessageEncoder(),
-                                new JsonMessageDecoder(),
-                                new MessageBusConnectionHandler(ServerType.LoginServer)
-                        );
-                    }
-                });
-
-        ChannelFuture connectFuture = bootstrap.connect(LoginServer.current().getBusHost(), LoginServer.current().getBusPort()).sync();
-        connectFuture.addListener(connectionFutureListener);
-        connectFuture.channel().closeFuture().sync();
-    }
-
-    private ChannelFutureListener connectionFutureListener = new ChannelFutureListener() {
-        @Override
-        public void operationComplete(ChannelFuture future) throws Exception {
-            connecting = false;
-            LoginServer.current().connectedBusServer();
-            logger.debug("connect message bus server completed.");
-        }
-    };
-
     private synchronized void stopServer() {
         try {
             logger.debug("stopping.");
-            if (startError) {
-                waitStarted();
+
+            if (bossGroup != null) {
+                bossGroup.shutdownGracefully();
+            }
+            if (workerGroup != null) {
+                workerGroup.shutdownGracefully();
             }
 
             LoginServer.current().stop();
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
-
-            LoginServer.current().disconnectedBusServer();
-            clientGroup.shutdownGracefully();
-            if (startError) {
-                logger.debug("start error.stopped.");
-            } else {
-                logger.debug("manual stopped.");
-            }
+            logger.debug("stopped.");
             System.exit(0);
         } catch (Exception ex) {
             logger.error("stop error.", ex);
             logger.debug("error stopped.");
             System.exit(1);
-        }
-    }
-
-    private synchronized void waitStarted() throws Exception {
-        while (true) {
-            if (serverStarting || connecting) {
-                logger.debug("wait starting is done.");
-                this.wait(200);
-            } else {
-                break;
-            }
         }
     }
 }

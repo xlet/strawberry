@@ -1,7 +1,7 @@
 package cn.w.im.handlers;
 
 import cn.w.im.domains.PluginContext;
-import cn.w.im.domains.server.MessageServer;
+import cn.w.im.server.MessageServer;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.init.PluginInitializerFactory;
@@ -59,7 +59,6 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
         InetSocketAddress remoteAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         String ipAddress = remoteAddress.getHostString();
         int port = remoteAddress.getPort();
-
-        MessageServer.current().removeClient(ipAddress, port);
+        //TODO:jackie 异常处理.
     }
 }

@@ -1,7 +1,9 @@
 package cn.w.im.domains.messages;
 
 import cn.w.im.domains.MessageType;
-import cn.w.im.domains.messages.responses.*;
+import cn.w.im.domains.messages.client.*;
+import cn.w.im.domains.messages.forward.*;
+import cn.w.im.domains.messages.server.*;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -14,19 +16,29 @@ import java.util.Date;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = LoginMessage.class, name = "LoginMessage"),
-        @JsonSubTypes.Type(value = LoginResponseMessage.class, name = "LoginResponseMessage"),
-        @JsonSubTypes.Type(value = LogoutMessage.class, name = "LogoutMessage"),
-        @JsonSubTypes.Type(value = LogoutResponseMessage.class, name = "LogoutResponseMessage"),
-        @JsonSubTypes.Type(value = NormalMessage.class, name = "NormalMessage"),
-        @JsonSubTypes.Type(value = ServerRegisterMessage.class, name = "ServerRegisterMessage"),
-        @JsonSubTypes.Type(value = ServerRegisterResponseMessage.class, name = "ServerRegisterResponseMessage"),
-        @JsonSubTypes.Type(value = ConnectMessage.class, name = "ConnectMessage"),
-        @JsonSubTypes.Type(value = ConnectResponseMessage.class, name = "ConnectResponseMessage"),
-        @JsonSubTypes.Type(value = RequestLinkedClientsMessage.class, name = "RequestLinkedClientsMessage"),
-        @JsonSubTypes.Type(value = ResponseLinkedClientsMessage.class, name = "ResponseLinkedClientsMessage"),
-        @JsonSubTypes.Type(value = ReadyMessage.class, name = "ReadyMessage"),
-        @JsonSubTypes.Type(value = TokenMessage.class, name = "TokenMessage")
+        //client message
+        @JsonSubTypes.Type(value = ConnectMessage.class, name = "Connect"),
+        @JsonSubTypes.Type(value = ConnectResponseMessage.class, name = "ConnectResponse"),
+        @JsonSubTypes.Type(value = LoginMessage.class, name = "Login"),
+        @JsonSubTypes.Type(value = LoginResponseMessage.class, name = "LoginResponse"),
+        @JsonSubTypes.Type(value = LogoutMessage.class, name = "Logout"),
+        @JsonSubTypes.Type(value = LogoutResponseMessage.class, name = "LogoutResponse"),
+        @JsonSubTypes.Type(value = NormalMessage.class, name = "Normal"),
+        //forward
+        @JsonSubTypes.Type(value = ForwardReadyMessage.class, name = "ForwardReady"),
+        @JsonSubTypes.Type(value = ForwardRequestMessage.class, name = "ForwardRequest"),
+        @JsonSubTypes.Type(value = ForwardResponseMessage.class, name = "ForwardResponse"),
+        //server
+        @JsonSubTypes.Type(value = ConnectedMessage.class, name = "Connected"),
+        @JsonSubTypes.Type(value = ConnectedResponseMessage.class, name = "ConnectedResponse"),
+        @JsonSubTypes.Type(value = ForwardMessage.class, name = "Forward"),
+        @JsonSubTypes.Type(value = ReadyMessage.class, name = "Ready"),
+        @JsonSubTypes.Type(value = RequestLinkedClientsMessage.class, name = "RequestLinkedClients"),
+        @JsonSubTypes.Type(value = ResponseLinkedClientsMessage.class, name = "ResponseLinkedClients"),
+        @JsonSubTypes.Type(value = ServerRegisterMessage.class, name = "ServerRegister"),
+        @JsonSubTypes.Type(value = ServerRegisterResponseMessage.class, name = "ServerRegisterResponse"),
+        @JsonSubTypes.Type(value = TokenMessage.class, name = "Token"),
+        @JsonSubTypes.Type(value = TokenResponseMessage.class, name = "TokenResponse")
 })
 public abstract class Message {
     /**

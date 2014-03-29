@@ -1,7 +1,9 @@
 package cn.w.im.plugins.init;
 
-import cn.w.im.domains.server.ServerType;
+import cn.w.im.domains.ServerType;
 import cn.w.im.plugins.Plugin;
+import cn.w.im.plugins.forward.ForwardReadyPlugin;
+import cn.w.im.plugins.forward.ForwardRequestPlugin;
 import cn.w.im.plugins.forwardMessage.ForwardMessagePlugin;
 import cn.w.im.plugins.serverRegister.ServerRegisterPlugin;
 import cn.w.im.plugins.persistentMessage.MessagePersistentPlugin;
@@ -19,8 +21,17 @@ public class MessageBusPluginInitializer implements PluginInitializer {
     public List<Plugin> init() {
         List<Plugin> plugins = new ArrayList<Plugin>();
 
+        //forward
+        plugins.add(new ForwardRequestPlugin(ServerType.LoginServer));
+        plugins.add(new ForwardReadyPlugin(ServerType.LoginServer));
+
+        //starting
         plugins.add(new ServerRegisterPlugin(ServerType.MessageBus));
+
+        //forward message
         plugins.add(new ForwardMessagePlugin(ServerType.MessageBus));
+
+        //persistent
         plugins.add(new MessagePersistentPlugin(ServerType.MessageBus));
 
         return plugins;

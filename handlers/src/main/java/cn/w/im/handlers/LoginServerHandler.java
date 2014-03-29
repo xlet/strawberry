@@ -2,7 +2,7 @@ package cn.w.im.handlers;
 
 import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.messages.Message;
-import cn.w.im.domains.server.LoginServer;
+import cn.w.im.server.LoginServer;
 import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.init.PluginInitializerFactory;
 import cn.w.im.utils.netty.IpAddressProvider;
@@ -33,6 +33,10 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
         plugins = PluginInitializerFactory.getInitializer(LoginServer.current().getServerType()).init();
     }
 
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

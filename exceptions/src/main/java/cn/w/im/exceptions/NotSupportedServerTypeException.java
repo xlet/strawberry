@@ -1,6 +1,6 @@
 package cn.w.im.exceptions;
 
-import cn.w.im.domains.server.ServerType;
+import cn.w.im.domains.ServerType;
 
 /**
  * Creator: JackieHan.

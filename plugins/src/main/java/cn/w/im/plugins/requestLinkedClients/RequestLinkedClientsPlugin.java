@@ -2,16 +2,21 @@ package cn.w.im.plugins.requestLinkedClients;
 
 import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.MessageType;
+import cn.w.im.domains.client.Client;
+import cn.w.im.domains.client.MessageClient;
 import cn.w.im.domains.client.MessageClientBasic;
-import cn.w.im.domains.messages.ForwardMessage;
-import cn.w.im.domains.messages.RequestLinkedClientsMessage;
-import cn.w.im.domains.messages.responses.ResponseLinkedClientsMessage;
-import cn.w.im.domains.server.MessageServer;
-import cn.w.im.domains.server.ServerType;
+import cn.w.im.domains.messages.server.RequestLinkedClientsMessage;
+import cn.w.im.domains.messages.server.ResponseLinkedClientsMessage;
+import cn.w.im.server.MessageServer;
+import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -21,6 +26,8 @@ import java.util.List;
  */
 public class RequestLinkedClientsPlugin extends MessagePlugin<RequestLinkedClientsMessage> {
 
+    private Log logger;
+
     /**
      * 构造函数.
      *
@@ -28,6 +35,7 @@ public class RequestLinkedClientsPlugin extends MessagePlugin<RequestLinkedClien
      */
     public RequestLinkedClientsPlugin(ServerType containerType) {
         super("RequestLinkedClientsPlugin", "message server request other server linked clients.", containerType);
+        this.logger = LogFactory.getLog(this.getClass());
     }
 
     @Override
@@ -47,9 +55,14 @@ public class RequestLinkedClientsPlugin extends MessagePlugin<RequestLinkedClien
     }
 
     private void processMessageWithMessageServer(RequestLinkedClientsMessage message, PluginContext context) {
-        List<MessageClientBasic> clients = MessageServer.current().getLinkedClients();
-        ResponseLinkedClientsMessage responseMessage = new ResponseLinkedClientsMessage(MessageServer.current().getServerBasic(), clients);
-        ForwardMessage forwardMessage = new ForwardMessage(MessageServer.current().getServerBasic(), message.getRequestServer(), responseMessage);
-        MessageServer.current().getForwardContext().writeAndFlush(forwardMessage);
+        Collection<Client> clients = MessageServer.current().clientCacheProvider().getAllMessageClients();
+        List<MessageClientBasic> clientBasics = new ArrayList<MessageClientBasic>();
+        for (Client client : clients) {
+            MessageClient messageClient = (MessageClient) client;
+            clientBasics.add(new MessageClientBasic(messageClient.getLoginId(), messageClient.getRemoteHost(), messageClient.getRemotePort()));
+        }
+
+        ResponseLinkedClientsMessage responseMessage = new ResponseLinkedClientsMessage(MessageServer.current().getServerBasic(), clientBasics, message.getRespondKey());
+        MessageServer.current().sendMessageProvider().send(message.getRequestServer(), responseMessage);
     }
 }

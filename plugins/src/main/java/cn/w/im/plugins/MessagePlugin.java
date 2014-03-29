@@ -2,7 +2,7 @@ package cn.w.im.plugins;
 
 import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.messages.Message;
-import cn.w.im.domains.server.ServerType;
+import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import org.apache.commons.logging.Log;
@@ -42,7 +42,7 @@ public abstract class MessagePlugin<T extends Message> extends AbstractPlugin {
         } catch (NotSupportedServerTypeException notSupportException) {
             logger.error("this plugin[" + this.name() + "] not support this server.", notSupportException);
         } catch (Exception ex) {
-            logger.error(ex);
+            logger.error(ex.getMessage(), ex);
         }
     }
 
@@ -56,9 +56,10 @@ public abstract class MessagePlugin<T extends Message> extends AbstractPlugin {
 
     /**
      * process message.
+     *
      * @param message message.
      * @param context current context.
-     * @throws ClientNotFoundException server not found client.
+     * @throws ClientNotFoundException         server not found client.
      * @throws NotSupportedServerTypeException this plugin not support server type.
      */
     protected abstract void processMessage(T message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException;

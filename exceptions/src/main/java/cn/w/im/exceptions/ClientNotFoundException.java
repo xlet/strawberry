@@ -1,33 +1,57 @@
 package cn.w.im.exceptions;
 
+import cn.w.im.domains.ServerBasic;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Creator: JackieHan.
  * DateTime: 13-12-25 上午11:23.
  * Summary:客户端没有找到异常.
  */
-public class ClientNotFoundException extends Exception {
+public class ClientNotFoundException extends ServerInnerException {
+
+    private Map<String, Object> searchConditions = new HashMap<String, Object>();
 
     /**
-     * 客户端登陆id.
-     */
-    public String id;
-
-    /**
-     * 构造函数.
+     * constructor.
      *
-     * @param id 客户端登陆id.
+     * @param loginId login id.
      */
-    public ClientNotFoundException(String id) {
-        super("Client[" + id + "] not found!");
-        this.id = id;
+    public ClientNotFoundException(String loginId) {
+        super("Client[" + loginId + "] not found.");
+        this.searchConditions.put("loginId", loginId);
     }
 
     /**
-     * 获取登陆Id.
+     * constructor.
      *
-     * @return 登陆id.
+     * @param host host.
+     * @param port port.
      */
-    public String getId() {
-        return id;
+    public ClientNotFoundException(String host, int port) {
+        super("Client[" + host + ":" + port + "] not found.");
+        this.searchConditions.put("host", host);
+        this.searchConditions.put("port", port);
+    }
+
+    /**
+     * constructor.
+     *
+     * @param serverBasic server basic.
+     */
+    public ClientNotFoundException(ServerBasic serverBasic) {
+        super("Client[nodeId:" + serverBasic.getNodeId() + "] not found.");
+        this.searchConditions.put("serverBasic", serverBasic);
+    }
+
+    /**
+     * get search conditions.
+     *
+     * @return search conditions.
+     */
+    public Map<String, Object> getSearchConditions() {
+        return searchConditions;
     }
 }

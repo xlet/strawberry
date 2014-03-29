@@ -1,7 +1,7 @@
 package cn.w.im.messageBus;
 
 import cn.w.im.domains.conf.Configuration;
-import cn.w.im.domains.server.MessageBus;
+import cn.w.im.server.MessageBus;
 import cn.w.im.utils.ConfigHelper;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -109,15 +109,19 @@ public final class Bootstrap {
 
     private void stopServer() throws Exception {
         try {
+            logger.debug("server stopping.");
             if (bossGroup != null) {
                 bossGroup.shutdownGracefully();
             }
             if (workerGroup != null) {
                 workerGroup.shutdownGracefully();
             }
+            MessageBus.current().stop();
+            logger.debug("server stopped.");
             System.exit(0);
         } catch (Throwable t) {
             logger.error("stopped error.", t);
+            logger.debug("error stopped.");
             System.exit(1);
         }
     }

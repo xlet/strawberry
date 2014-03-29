@@ -28,6 +28,8 @@ public class Configuration {
 
     private boolean debug = false;
 
+    private String dataStoreType = "Mongo";
+
     private MongoConfiguration mongoConfiguration;
 
     private boolean isInit = false;
@@ -43,6 +45,9 @@ public class Configuration {
             if (configProperties.containsKey("debug")) {
                 this.debug = Boolean.parseBoolean(configProperties.getProperty("debug"));
             }
+            if (configProperties.containsKey("dataStoreType")) {
+                this.dataStoreType = configProperties.getProperty("dataStoreType");
+            }
             isInit = true;
         }
     }
@@ -54,6 +59,15 @@ public class Configuration {
      */
     public boolean isDebug() {
         return debug;
+    }
+
+    /**
+     * get data store type.
+     *
+     * @return data store type.
+     */
+    public String getDataStoreType() {
+        return this.dataStoreType;
     }
 
     /**

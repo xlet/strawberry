@@ -1,7 +1,7 @@
 package cn.w.im.plugins;
 
 import cn.w.im.domains.PluginContext;
-import cn.w.im.domains.server.ServerType;
+import cn.w.im.domains.ServerType;
 
 /**
  * Creator: JackieHan.

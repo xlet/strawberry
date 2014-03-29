@@ -1,12 +1,9 @@
 package cn.w.im.plugins.innerForwardMessage;
 
 import cn.w.im.domains.PluginContext;
-import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.client.MessageClient;
-import cn.w.im.domains.messages.ForwardMessage;
-import cn.w.im.domains.server.MessageServer;
-import cn.w.im.domains.messages.NormalMessage;
-import cn.w.im.domains.server.ServerType;
+import cn.w.im.server.MessageServer;
+import cn.w.im.domains.messages.client.NormalMessage;
+import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
@@ -19,8 +16,8 @@ import org.apache.commons.logging.LogFactory;
  * Summary: 转发一般消息.
  * one server
  * message ----------------> client
- *  |                        /|\
- *  | other server            |
+ ** |                        /|\
+ ** | other server            |
  * \|/        the server      |
  * messageBus  --------->   messageServer
  */
@@ -57,16 +54,6 @@ public class InnerForwardMessagePlugin extends MessagePlugin<NormalMessage> {
     }
 
     private void processMessageWithMessageServer(NormalMessage message, PluginContext context) {
-        MessageClient toClient = MessageServer.current().getClient(message.getTo());
-        if (toClient != null) {
-            toClient.getContext().write(message);
-            message.setForward(true);
-        } else {
-            ServerBasic otherServer = MessageServer.current().getOtherServer(message.getTo());
-            if (otherServer != null) {
-                ForwardMessage forwardMessage = new ForwardMessage(MessageServer.current().getServerBasic(), otherServer, message);
-                MessageServer.current().getForwardContext().writeAndFlush(forwardMessage);
-            }
-        }
+        MessageServer.current().sendMessageProvider().send(message.getTo(), message);
     }
 }

@@ -28,6 +28,7 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-beans:4.0.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-core:4.0.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-expression:4.0.0.RELEASE" level="project" />
+    <orderEntry type="module" module-name="im-server" />
     <orderEntry type="module" module-name="im-exceptions" />
     <orderEntry type="module" module-name="im-plugins" />
     <orderEntry type="module" module-name="im-mongo" />

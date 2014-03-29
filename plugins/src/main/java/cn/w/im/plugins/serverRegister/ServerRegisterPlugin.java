@@ -4,17 +4,21 @@ import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.Client;
-import cn.w.im.domains.client.LoginServerClient;
-import cn.w.im.domains.client.MessageServerClient;
-import cn.w.im.domains.messages.ServerRegisterMessage;
-import cn.w.im.domains.messages.responses.ServerRegisterResponseMessage;
-import cn.w.im.domains.server.MessageBus;
-import cn.w.im.domains.server.ServerType;
+import cn.w.im.domains.client.ServerClient;
+import cn.w.im.domains.messages.server.ServerRegisterMessage;
+import cn.w.im.domains.messages.server.ServerRegisterResponseMessage;
+import cn.w.im.exceptions.ServerInnerException;
+import cn.w.im.server.MessageBus;
+import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Creator: JackieHan.
@@ -25,6 +29,9 @@ import java.util.Iterator;
  * this plugin only add to message bus server.
  */
 public class ServerRegisterPlugin extends MessagePlugin<ServerRegisterMessage> {
+
+    private Log logger;
+
     /**
      * 构造函数.
      *
@@ -32,6 +39,7 @@ public class ServerRegisterPlugin extends MessagePlugin<ServerRegisterMessage> {
      */
     public ServerRegisterPlugin(ServerType containerType) {
         super("serverRegisterPlugin", "server register to message bus server.", containerType);
+        logger = LogFactory.getLog(this.getClass());
     }
 
     @Override
@@ -53,37 +61,25 @@ public class ServerRegisterPlugin extends MessagePlugin<ServerRegisterMessage> {
     private void processMessageWithMessageBus(ServerRegisterMessage registerMessage, PluginContext context) throws NotSupportedServerTypeException {
 
         ServerBasic serverBasic = registerMessage.getServerBasic();
-        //注册服务
-        switch (registerMessage.getServerType()) {
-            case LoginServer:
-                MessageBus.current().addLoginServer(serverBasic, context.getCtx());
-                break;
-            case MessageServer:
-                MessageBus.current().addMessageServer(serverBasic, context.getCtx());
-                break;
-            default:
-                throw new NotSupportedServerTypeException(registerMessage.getServerType());
+        try {
+            //注册服务
+            MessageBus.current().clientCacheProvider().registerClient(serverBasic, context.getCurrentHost(), context.getCurrentPort());
 
-        }
+            //ToDo:jackie split this plugin to two plugin(register plugin and response plugin)
 
-        //ToDo:jackie split this plugin to two plugin(register plugin and response plugin)
-
-        //回复
-        ServerRegisterResponseMessage responseMessage = new ServerRegisterResponseMessage(true);
-        Iterator<Client> registeredLoginServerIterator = MessageBus.current().getRegisteredLoginServers().iterator();
-        while (registeredLoginServerIterator.hasNext()) {
-            LoginServerClient loginServerClient = (LoginServerClient) registeredLoginServerIterator.next();
-            if (!loginServerClient.getNodeId().equals(serverBasic.getNodeId())) {
-                responseMessage.addStartedLoginServer(loginServerClient.getServerBasic());
+            //回复
+            List<ServerBasic> startedServers = new ArrayList<ServerBasic>();
+            Iterator<Client> registeredServerIterator = MessageBus.current().clientCacheProvider().getAllServerClients().iterator();
+            while (registeredServerIterator.hasNext()) {
+                ServerClient serverClient = (ServerClient) registeredServerIterator.next();
+                if (!serverClient.getServerBasic().getNodeId().equals(serverBasic.getNodeId())) {
+                    startedServers.add(serverClient.getServerBasic());
+                }
             }
+            ServerRegisterResponseMessage responseMessage = new ServerRegisterResponseMessage(startedServers, MessageBus.current().getServerBasic());
+            MessageBus.current().sendMessageProvider().send(serverBasic, responseMessage);
+        } catch (ServerInnerException ex) {
+            logger.error(ex.getMessage(), ex);
         }
-        Iterator<Client> registeredMessageServerIterator = MessageBus.current().getRegisteredMessageServers().iterator();
-        while (registeredMessageServerIterator.hasNext()) {
-            MessageServerClient messageServerClient = (MessageServerClient) registeredMessageServerIterator.next();
-            if (!messageServerClient.getNodeId().equals(serverBasic.getNodeId())) {
-                responseMessage.addStartedMessageServer(messageServerClient.getServerBasic());
-            }
-        }
-        context.getCtx().writeAndFlush(responseMessage);
     }
 }

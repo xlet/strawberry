@@ -1,11 +1,9 @@
 package cn.w.im.plugins.forwardMessage;
 
 import cn.w.im.domains.PluginContext;
-import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.client.Client;
-import cn.w.im.domains.messages.ForwardMessage;
-import cn.w.im.domains.server.MessageBus;
-import cn.w.im.domains.server.ServerType;
+import cn.w.im.domains.messages.server.ForwardMessage;
+import cn.w.im.server.MessageBus;
+import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
@@ -43,11 +41,6 @@ public class ForwardMessagePlugin extends MessagePlugin<ForwardMessage> {
     }
 
     private void processMessageWithMessageBus(ForwardMessage message, PluginContext context) throws ClientNotFoundException {
-        ServerBasic toServer = message.getToServer();
-        Client client = MessageBus.current().getClient(toServer);
-        if (client == null) {
-            throw new ClientNotFoundException(toServer.getNodeId());
-        }
-        client.getContext().writeAndFlush(message.getMessage());
+        MessageBus.current().sendMessageProvider().send(message.getToServer(), message);
     }
 }

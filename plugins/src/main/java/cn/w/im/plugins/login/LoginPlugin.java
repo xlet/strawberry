@@ -1,29 +1,26 @@
 package cn.w.im.plugins.login;
 
+import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.PluginContext;
-import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.client.MessageClient;
-import cn.w.im.domains.LoginToken;
-import cn.w.im.domains.messages.ForwardMessage;
-import cn.w.im.domains.messages.LoginMessage;
-import cn.w.im.domains.messages.TokenMessage;
-import cn.w.im.domains.messages.responses.LoginResponseMessage;
-import cn.w.im.domains.server.LoginServer;
-import cn.w.im.domains.server.ServerType;
-import cn.w.im.exceptions.ClientNotFoundException;
-import cn.w.im.exceptions.NotSupportedServerTypeException;
+import cn.w.im.domains.messages.client.LoginMessage;
+import cn.w.im.domains.messages.server.TokenMessage;
+import cn.w.im.domains.messages.client.LoginResponseMessage;
+import cn.w.im.exceptions.*;
+import cn.w.im.server.LoginServer;
+import cn.w.im.domains.ServerType;
 import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.utils.netty.IpAddressProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * Creator: JackieHan.
  * DateTime: 13-12-30 下午5:17.
- * Summary: 登陆消息处理插件.
+ * Summary: check message client login info.
+ * if login success:
+ * save this message client context.
+ * send TokenMessage to matched message server and wait for the message server send TokenResponseMessage.
+ * if login error:
+ * send LoginResponseMessage to message client,the LoginResponseMessage contains the error code.
  */
 public class LoginPlugin extends MessagePlugin<LoginMessage> {
 
@@ -55,40 +52,32 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
     }
 
     private void processWithLoginServer(LoginMessage message, PluginContext context) {
-        if (login(message)) {
-            MessageClient client = new MessageClient(context.getCtx(), message.getLoginId());
-            LoginToken token = createToken(client);
+        try {
+            LoginServer.current().clientCacheProvider().registerClient(message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
+            login(message);
+            ConnectToken token = LoginServer.current().allocateProvider().allocate(message.getLoginId(), context.getCurrentHost());
 
             //通知消息服务登陆token信息.
-            ServerBasic messageServer = LoginServer.current().getMatchedMessageServer();
-            TokenMessage tokenMessage = new TokenMessage(token);
-            ForwardMessage forwardMessage = new ForwardMessage(LoginServer.current().getServerBasic(), messageServer, tokenMessage);
-            LoginServer.current().getForwardContext().writeAndFlush(forwardMessage);
+            TokenMessage tokenMessage = new TokenMessage(token, LoginServer.current().getServerBasic());
+            LoginServer.current().sendMessageProvider().send(token.getAllocatedMessageServer(), tokenMessage);
 
-            //发送登陆token给客户端. 并关闭连接.
-            LoginResponseMessage loginResponseMessage = new LoginResponseMessage(true, token, messageServer);
-            context.write(loginResponseMessage);
-        } else {
-            context.write(new LoginResponseMessage(false));
+            //notify other started login server that this has allocated a message server to login client.
+            LoginServer.current().sendMessageProvider().send(ServerType.LoginServer, tokenMessage);
+        } catch (IdPasswordException idPasswordException) {
+            LoginResponseMessage idPasswordErrorMessage = new LoginResponseMessage(idPasswordException.getErrorCode(), idPasswordException.getMessage());
+            LoginServer.current().sendMessageProvider().send(message.getLoginId(), idPasswordErrorMessage);
+        } catch (LoggedInException loggedInException) {
+            LoginResponseMessage loggedInErrorMessage = new LoginResponseMessage(loggedInException.getErrorCode(), loggedInException.getMessage(), loggedInException.getLocalizedMessage());
+            LoginServer.current().sendMessageProvider().send(message.getLoginId(), loggedInErrorMessage);
+        } catch (ServerInnerException ex) {
+            logger.error(ex.getMessage(), ex);
         }
-        context.close();
     }
 
-    private LoginToken createToken(MessageClient client) {
-        LoginToken token = new LoginToken();
-        token.setLoginId(client.getId());
-        token.setClientIp(IpAddressProvider.getRemoteIpAddress(client.getContext()));
-        token.setLoginDate(new Date().getTime());
-        token.setToken(UUID.randomUUID().toString().replace("-", ""));
-
-        return token;
-    }
-
-    private boolean login(LoginMessage message) {
+    private void login(LoginMessage message) throws IdPasswordException, LoggedInException {
         String loginId = message.getLoginId();
         String password = message.getPassword();
-        //TODO:jackie 验证用户名密码
-        //TODO:jackie 验证是否重复登陆，如有则发送强制退出命令给前一个客户端
-        return true;
+        //TODO:jackie check id and password,not correct throw IdPasswordException
+        //TODO:jackie check id has been logged in. if logged in throw LoggedInException
     }
 }

@@ -1,10 +1,8 @@
 package cn.w.im.plugins.logout;
 
 import cn.w.im.domains.PluginContext;
-import cn.w.im.domains.server.MessageServer;
-import cn.w.im.domains.messages.LogoutMessage;
-import cn.w.im.domains.messages.responses.LogoutResponseMessage;
-import cn.w.im.domains.server.ServerType;
+import cn.w.im.domains.messages.client.LogoutMessage;
+import cn.w.im.domains.ServerType;
 import cn.w.im.plugins.MessagePlugin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,21 +35,6 @@ public class LogoutPlugin extends MessagePlugin<LogoutMessage> {
 
     @Override
     public void processMessage(LogoutMessage message, PluginContext context) {
-        //Todo jackie this is not unreasonable.
-        try {
-            if (logout(message)) {
-                context.write(new LogoutResponseMessage(true));
-            } else {
-                context.write(new LogoutResponseMessage(false));
-            }
-        } catch (Exception ex) {
-            logger.error("logout Error!", ex);
-            context.write(new LogoutResponseMessage(false));
-        }
-    }
-
-    private boolean logout(LogoutMessage message) throws Exception {
-        MessageServer.current().removeClient(message.getLoginId());
-        return true;
+        //todo jackie
     }
 }

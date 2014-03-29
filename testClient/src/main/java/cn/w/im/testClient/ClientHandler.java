@@ -1,11 +1,11 @@
 package cn.w.im.testClient;
 
 import cn.w.im.domains.PluginContext;
-import cn.w.im.domains.messages.ConnectMessage;
-import cn.w.im.domains.messages.LoginMessage;
-import cn.w.im.domains.messages.responses.LoginResponseMessage;
-import cn.w.im.domains.messages.responses.LogoutResponseMessage;
-import cn.w.im.domains.messages.NormalMessage;
+import cn.w.im.domains.messages.client.ConnectMessage;
+import cn.w.im.domains.messages.client.LoginMessage;
+import cn.w.im.domains.messages.client.LoginResponseMessage;
+import cn.w.im.domains.messages.client.LogoutResponseMessage;
+import cn.w.im.domains.messages.client.NormalMessage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.commons.logging.Log;
@@ -71,10 +71,10 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         if (!id.equals("") && !password.equals("")) {
-            LoginMessage loginMessage = new LoginMessage(id, password);
+            LoginMessage loginMessage = new LoginMessage(this.id, this.password);
             ctx.writeAndFlush(loginMessage);
         } else {
-            ConnectMessage connectMessage = new ConnectMessage(token);
+            ConnectMessage connectMessage = new ConnectMessage(this.id, this.token);
             ctx.writeAndFlush(connectMessage);
         }
     }

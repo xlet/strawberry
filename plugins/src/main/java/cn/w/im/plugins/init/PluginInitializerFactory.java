@@ -1,6 +1,6 @@
 package cn.w.im.plugins.init;
 
-import cn.w.im.domains.server.ServerType;
+import cn.w.im.domains.ServerType;
 import cn.w.im.utils.spring.SpringContext;
 
 /**

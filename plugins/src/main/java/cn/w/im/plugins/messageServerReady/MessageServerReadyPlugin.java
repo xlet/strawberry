@@ -3,9 +3,9 @@ package cn.w.im.plugins.messageServerReady;
 import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.messages.ReadyMessage;
-import cn.w.im.domains.server.LoginServer;
-import cn.w.im.domains.server.ServerType;
+import cn.w.im.domains.messages.server.ReadyMessage;
+import cn.w.im.server.LoginServer;
+import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
@@ -45,6 +45,6 @@ public class MessageServerReadyPlugin extends MessagePlugin<ReadyMessage> {
 
     private void processMessageWithLoginServer(ReadyMessage readyMessage, PluginContext context) {
         ServerBasic readyMessageServer = readyMessage.getMessageServer();
-        LoginServer.current().messageServerReady(readyMessageServer);
+        LoginServer.current().allocateProvider().messageServerReady(readyMessageServer);
     }
 }
