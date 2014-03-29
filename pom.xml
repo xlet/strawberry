@@ -47,7 +47,7 @@
         <module>domains</module>
         <module>exceptions</module>
         <module>loginServer</module>
-        <module>mongo</module>
+        <module>persistent</module>
         <module>resources</module>
         <module>messageBus</module>
         <module>server</module>

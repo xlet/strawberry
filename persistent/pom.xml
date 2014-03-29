@@ -9,10 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>im-mongo</artifactId>
+    <artifactId>im-persistent</artifactId>
     <packaging>bundle</packaging>
 
-    <name>IM/Mongo</name>
+    <name>IM/Persistent</name>
 
     <dependencies>
         <dependency>

@@ -37,7 +37,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-mongo</artifactId>
+            <artifactId>im-persistent</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
