@@ -31,7 +31,7 @@
     <orderEntry type="module" module-name="im-server" />
     <orderEntry type="module" module-name="im-exceptions" />
     <orderEntry type="module" module-name="im-plugins" />
-    <orderEntry type="module" module-name="im-mongo" />
+    <orderEntry type="module" module-name="im-persistent" />
     <orderEntry type="module" module-name="im-handlers" />
     <orderEntry type="module" module-name="im-resources" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.11" level="project" />

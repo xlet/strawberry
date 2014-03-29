@@ -33,7 +33,7 @@
     <orderEntry type="module" module-name="im-resources" />
     <orderEntry type="module" module-name="im-handlers" />
     <orderEntry type="module" module-name="im-plugins" />
-    <orderEntry type="module" module-name="im-mongo" />
+    <orderEntry type="module" module-name="im-persistent" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:3.2" level="project" />
