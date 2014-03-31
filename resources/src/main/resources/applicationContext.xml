@@ -4,18 +4,18 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
     <context:property-placeholder location="classpath:config.properties"/>
-    <bean id="mongo" class="cn.w.im.mongo.MongoFactoryBean">
+    <bean id="mongo" class="cn.w.im.persistent.mongo.MongoFactoryBean">
         <property name="readSecondary" value="false" />
         <property name="writeConcern" value="SAFE" />
     </bean>
-    <bean id="morphia" class="cn.w.im.mongo.MorphiaFactoryBean">
+    <bean id="morphia" class="cn.w.im.persistent.mongo.MorphiaFactoryBean">
         <property name="mapPackages">
             <array>
                 <value>cn.w.im.domains.mongo</value>
             </array>
         </property>
     </bean>
-    <bean id="dataStore" class="cn.w.im.mongo.DatastoreFactoryBean">
+    <bean id="dataStore" class="cn.w.im.persistent.mongo.DatastoreFactoryBean">
         <property name="morphia" ref="morphia" />
         <property name="mongo" ref="mongo" />
         <property name="dbName" value="im" />
@@ -24,68 +24,68 @@
     </bean>
     <!-- mongo Message dao -->
     <!-- client message -->
-    <bean id="mongoConnectMessageDao" class="cn.w.im.mongo.dao.message.client.MongoConnectMessageDao">
+    <bean id="mongoConnectMessageDao" class="cn.w.im.persistent.mongo.message.client.MongoConnectMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoConnectResponseMessageDao" class="cn.w.im.mongo.dao.message.client.MongoConnectResponseMessageDao">
+    <bean id="mongoConnectResponseMessageDao" class="cn.w.im.persistent.mongo.message.client.MongoConnectResponseMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoLoginMessageDao" class="cn.w.im.mongo.dao.message.client.MongoLoginMessageDao">
+    <bean id="mongoLoginMessageDao" class="cn.w.im.persistent.mongo.message.client.MongoLoginMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoLoginResponseMessageDao" class="cn.w.im.mongo.dao.message.client.MongoLoginResponseMessageDao">
+    <bean id="mongoLoginResponseMessageDao" class="cn.w.im.persistent.mongo.message.client.MongoLoginResponseMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoLogoutMessageDao" class="cn.w.im.mongo.dao.message.client.MongoLogoutMessageDao">
+    <bean id="mongoLogoutMessageDao" class="cn.w.im.persistent.mongo.message.client.MongoLogoutMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoLogoutResponseMessageDao" class="cn.w.im.mongo.dao.message.client.MongoLogoutResponseMessageDao">
+    <bean id="mongoLogoutResponseMessageDao" class="cn.w.im.persistent.mongo.message.client.MongoLogoutResponseMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoNormalMessageDao" class="cn.w.im.mongo.dao.message.client.MongoNormalMessageDao">
+    <bean id="mongoNormalMessageDao" class="cn.w.im.persistent.mongo.message.client.MongoNormalMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
     <!-- client message -->
     <!-- forward server message -->
-    <bean id="mongoForwardReadyMessageDao" class="cn.w.im.mongo.dao.message.forward.MongoForwardReadyMessageDao">
+    <bean id="mongoForwardReadyMessageDao" class="cn.w.im.persistent.mongo.message.forward.MongoForwardReadyMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoForwardRequestMessageDao" class="cn.w.im.mongo.dao.message.forward.MongoForwardRequestMessageDao">
+    <bean id="mongoForwardRequestMessageDao" class="cn.w.im.persistent.mongo.message.forward.MongoForwardRequestMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoForwardResponseMessageDao" class="cn.w.im.mongo.dao.message.forward.MongoForwardResponseMessageDao">
+    <bean id="mongoForwardResponseMessageDao" class="cn.w.im.persistent.mongo.message.forward.MongoForwardResponseMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
     <!-- forward server message -->
     <!-- server message -->
-    <bean id="mongoConnectedMessageDao" class="cn.w.im.mongo.dao.message.server.MongoConnectedMessageDao">
+    <bean id="mongoConnectedMessageDao" class="cn.w.im.persistent.mongo.message.server.MongoConnectedMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoConnectedResponseMessageDao" class="cn.w.im.mongo.dao.message.server.MongoConnectedResponseMessageDao">
+    <bean id="mongoConnectedResponseMessageDao" class="cn.w.im.persistent.mongo.message.server.MongoConnectedResponseMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoForwardMessageDao" class="cn.w.im.mongo.dao.message.server.MongoForwardMessageDao">
+    <bean id="mongoForwardMessageDao" class="cn.w.im.persistent.mongo.message.server.MongoForwardMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoReadyMessageDao" class="cn.w.im.mongo.dao.message.server.MongoReadyMessageDao">
+    <bean id="mongoReadyMessageDao" class="cn.w.im.persistent.mongo.message.server.MongoReadyMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoRequestLinkedClientsMessageDao" class="cn.w.im.mongo.dao.message.server.MongoRequestLinkedClientsMessageDao">
+    <bean id="mongoRequestLinkedClientsMessageDao" class="cn.w.im.persistent.mongo.message.server.MongoRequestLinkedClientsMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoResponseLinkedClientsMessageDao" class="cn.w.im.mongo.dao.message.server.MongoResponseLinkedClientsMessageDao">
+    <bean id="mongoResponseLinkedClientsMessageDao" class="cn.w.im.persistent.mongo.message.server.MongoResponseLinkedClientsMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoMessageServerRegisterMessageDao" class="cn.w.im.mongo.dao.message.server.MongoServerRegisterMessageDao">
+    <bean id="mongoServerRegisterMessageDao" class="cn.w.im.persistent.mongo.message.server.MongoServerRegisterMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoMessageServerRegisterResponseDao" class="cn.w.im.mongo.dao.message.server.MongoServerRegisterResponseMessageDao">
+    <bean id="mongoServerRegisterResponseMessageDao" class="cn.w.im.persistent.mongo.message.server.MongoServerRegisterResponseMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoTokenMessageDao" class="cn.w.im.mongo.dao.message.server.MongoTokenMessageDao">
+    <bean id="mongoTokenMessageDao" class="cn.w.im.persistent.mongo.message.server.MongoTokenMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
-    <bean id="mongoTokenResponseMessageDao" class="cn.w.im.mongo.dao.message.server.MongoTokenResponseMessageDao">
+    <bean id="mongoTokenResponseMessageDao" class="cn.w.im.persistent.mongo.message.server.MongoTokenResponseMessageDao">
         <constructor-arg ref="dataStore" />
     </bean>
     <!-- server message -->
