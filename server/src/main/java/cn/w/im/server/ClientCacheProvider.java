@@ -52,6 +52,7 @@ public interface ClientCacheProvider {
      * @param messageClientBasic message client basic.
      * @param serverBasic        linked server basic.
      * @throws MessageClientRegisteredException message client has registered exception.
+     * @throws ServerNotRegisterException server not registered exception.
      */
     void registerClient(MessageClientBasic messageClientBasic, ServerBasic serverBasic) throws ServerNotRegisterException, MessageClientRegisteredException;
 
