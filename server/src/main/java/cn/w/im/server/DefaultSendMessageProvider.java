@@ -99,6 +99,9 @@ public class DefaultSendMessageProvider implements SendMessageProvider {
         if ((this.containerServer.getServerType() != ServerType.MessageBus) && (client instanceof ServerClient)) {
             ForwardMessage forwardMessage = new ForwardMessage(this.containerServer, ((ServerClient) client).getServerBasic(), message);
             client.getContext().writeAndFlush(forwardMessage);
+        } else if((this.containerServer.getServerType() == ServerType.MessageBus)&&(message instanceof ForwardMessage)) {
+            ForwardMessage forwardMessage = (ForwardMessage) message;
+            client.getContext().writeAndFlush(forwardMessage.getMessage());
         } else {
             client.getContext().writeAndFlush(message);
         }

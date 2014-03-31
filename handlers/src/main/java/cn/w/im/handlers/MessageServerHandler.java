@@ -34,6 +34,7 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //TODO:jackie 却绝链接
+        MessageServer.current().clientCacheProvider().registerClient(ctx);
     }
 
     @Override
@@ -51,7 +52,8 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        //TODO:jackie 正常退出处理
+        //TODO:jackie 退出处理
+        MessageServer.current().clientCacheProvider().removeClient(ctx);
     }
 
     @Override
@@ -60,5 +62,6 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
         String ipAddress = remoteAddress.getHostString();
         int port = remoteAddress.getPort();
         //TODO:jackie 异常处理.
+        logger.error("client[" + ipAddress + ":" + port + "] error !", cause);
     }
 }

@@ -65,18 +65,22 @@ public class ForwardServerHandler extends ChannelInboundHandlerAdapter {
                 ForwardServer.current().forwardMessage(message, ctx);
             }
         } catch (Exception ex) {
+            logger.error("forward server crashed.");
+            logger.error(ex.getMessage(), ex);
             ForwardServer.current().crashed();
         }
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        logger.error("forward server stopped.");
         ForwardServer.current().serverStopped();
         super.channelInactive(ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        logger.error("server crashed.", cause);
         ForwardServer.current().serverCrashed();
     }
 }

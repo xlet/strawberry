@@ -24,7 +24,7 @@ public class NotSupportedDataStoreException extends ServerInnerException {
      * @param dataStoreType data store type.
      */
     public NotSupportedDataStoreException(String dataStoreType) {
-        super("not support messageType[" + dataStoreType + "]");
+        super("not support data store type[" + dataStoreType + "]");
         this.dataStoreType = dataStoreType;
     }
 }

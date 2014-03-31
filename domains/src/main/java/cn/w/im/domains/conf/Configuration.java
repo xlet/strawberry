@@ -28,7 +28,7 @@ public class Configuration {
 
     private boolean debug = false;
 
-    private String dataStoreType = "Mongo";
+    private String dataStoreType = "mongo";
 
     private MongoConfiguration mongoConfiguration;
 

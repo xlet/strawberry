@@ -5,6 +5,7 @@ import cn.w.im.domains.messages.Message;
 import cn.w.im.server.MessageBus;
 import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.init.PluginInitializerFactory;
+import cn.w.im.server.MessageServer;
 import cn.w.im.utils.netty.IpAddressProvider;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -56,8 +57,9 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         String remoteIp = IpAddressProvider.getRemoteIpAddress(ctx);
         int remotePort = IpAddressProvider.getRemotePort(ctx);
-        //TODO:jackie 处理正常退出, tell all server.
+        //TODO:jackie 处理退出, tell all server.
         logger.debug("client[" + remoteIp + ":" + remotePort + "] disconnected!");
+        MessageBus.current().clientCacheProvider().removeClient(ctx);
         super.channelInactive(ctx);
     }
 

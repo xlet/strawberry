@@ -35,6 +35,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        LoginServer.current().clientCacheProvider().registerClient(ctx);
         super.channelActive(ctx);
     }
 
@@ -52,9 +53,17 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        //TODO: channel inactive process.
+        LoginServer.current().clientCacheProvider().removeClient(ctx);
+        super.channelInactive(ctx);
+    }
+
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         String ip = IpAddressProvider.getRemoteIpAddress(ctx);
         int port = IpAddressProvider.getRemotePort(ctx);
         logger.error("client[" + ip + ":" + port + "] error !", cause);
+        //TODO: not cached exception process.
     }
 }

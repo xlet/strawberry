@@ -22,8 +22,8 @@ public class MessageBusPluginInitializer implements PluginInitializer {
         List<Plugin> plugins = new ArrayList<Plugin>();
 
         //forward
-        plugins.add(new ForwardRequestPlugin(ServerType.LoginServer));
-        plugins.add(new ForwardReadyPlugin(ServerType.LoginServer));
+        plugins.add(new ForwardRequestPlugin(ServerType.MessageBus));
+        plugins.add(new ForwardReadyPlugin(ServerType.MessageBus));
 
         //starting
         plugins.add(new ServerRegisterPlugin(ServerType.MessageBus));

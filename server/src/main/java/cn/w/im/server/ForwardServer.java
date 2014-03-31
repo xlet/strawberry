@@ -2,9 +2,9 @@ package cn.w.im.server;
 
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.*;
+import cn.w.im.domains.messages.forward.ForwardReadyMessage;
 import cn.w.im.domains.messages.forward.ForwardRequestMessage;
 import cn.w.im.domains.messages.forward.ForwardResponseMessage;
-import cn.w.im.domains.messages.server.ReadyMessage;
 import cn.w.im.utils.netty.IpAddressProvider;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.logging.Log;
@@ -232,7 +232,7 @@ public class ForwardServer {
     public void forwardMessage(Message message, ChannelHandlerContext ctx) {
         String currentKey = getKey(ctx);
         for (String key : this.contextMap.keySet()) {
-            if (key != currentKey) {
+            if (!key.equals(currentKey)) {
                 this.contextMap.get(key).writeAndFlush(message);
             }
         }
@@ -262,7 +262,7 @@ public class ForwardServer {
      * @param ctx current ChannelHandlerContext.
      */
     public void ready(ChannelHandlerContext ctx) {
-        ReadyMessage readyMessage = new ReadyMessage();
+        ForwardReadyMessage readyMessage = new ForwardReadyMessage();
         ctx.writeAndFlush(readyMessage);
     }
 
@@ -278,7 +278,8 @@ public class ForwardServer {
      * connected server stopped.
      */
     public void serverStopped() {
-        for (ChannelHandlerContext context : this.contextMap.values()) {
+        for (String key : this.contextMap.keySet()) {
+            ChannelHandlerContext context = this.contextMap.get(key);
             context.close();
         }
         System.exit(0);

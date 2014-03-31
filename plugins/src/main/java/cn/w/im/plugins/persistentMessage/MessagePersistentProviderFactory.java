@@ -21,7 +21,7 @@ public class MessagePersistentProviderFactory {
      * @throws NotSupportedDataStoreException data store is not supported.
      */
     public static <TMessage extends Message> MessagePersistentProvider<TMessage> create(TMessage message, String dataStoreType) throws NotSupportMessageTypeException, NotSupportedDataStoreException {
-        if (dataStoreType.equals("Mongo")) {
+        if (dataStoreType.equals("mongo")) {
             return new MongoMessagePersistentProviderImpl(message.getMessageType());
         }
         throw new NotSupportedDataStoreException(dataStoreType);

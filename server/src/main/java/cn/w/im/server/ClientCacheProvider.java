@@ -31,7 +31,7 @@ public interface ClientCacheProvider {
      * @param linkedHost linked host.
      * @param linkedPort linked port.
      * @throws MessageClientRegisteredException message client has registered exception.
-     * @throws ClientNotRegisterException client dit not register exception.
+     * @throws ClientNotRegisterException       client dit not register exception.
      */
     void registerClient(String loginId, String linkedHost, int linkedPort) throws MessageClientRegisteredException, ClientNotRegisterException;
 
@@ -53,7 +53,7 @@ public interface ClientCacheProvider {
      * @param serverBasic        linked server basic.
      * @throws MessageClientRegisteredException message client has registered exception.
      */
-    void registerClient(MessageClientBasic messageClientBasic, ServerBasic serverBasic) throws MessageClientRegisteredException;
+    void registerClient(MessageClientBasic messageClientBasic, ServerBasic serverBasic) throws ServerNotRegisterException, MessageClientRegisteredException;
 
     /**
      * remove a registered client.

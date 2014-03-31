@@ -14,7 +14,7 @@ import java.util.Date;
  * DateTime: 13-12-17 下午4:35.
  * Summary:所有消息的父类.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
 @JsonSubTypes({
         //client message
         @JsonSubTypes.Type(value = ConnectMessage.class, name = "Connect"),

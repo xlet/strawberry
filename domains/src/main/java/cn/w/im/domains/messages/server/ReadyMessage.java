@@ -3,6 +3,7 @@ package cn.w.im.domains.messages.server;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.Message;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Creator: JackieHan.
@@ -51,6 +52,7 @@ public class ReadyMessage extends Message implements ServerToServerMessage {
         this.messageServer = messageServer;
     }
 
+    @JsonIgnore
     @Override
     public ServerBasic getFromServer() {
         return this.messageServer;

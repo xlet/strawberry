@@ -27,8 +27,8 @@ public class MessageServerPluginInitializer implements PluginInitializer {
     public List<Plugin> init() {
         List<Plugin> plugins = new ArrayList<Plugin>();
         //forward
-        plugins.add(new ForwardRequestPlugin(ServerType.LoginServer));
-        plugins.add(new ForwardReadyPlugin(ServerType.LoginServer));
+        plugins.add(new ForwardRequestPlugin(ServerType.MessageServer));
+        plugins.add(new ForwardReadyPlugin(ServerType.MessageServer));
 
         //starting
         plugins.add(new MessageServerRegisterResponsePlugin(ServerType.MessageServer));
