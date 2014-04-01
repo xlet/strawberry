@@ -7,6 +7,7 @@ import cn.w.im.domains.client.MessageClient;
 import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.messages.server.RequestLinkedClientsMessage;
 import cn.w.im.domains.messages.server.ResponseLinkedClientsMessage;
+import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.server.MessageServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
@@ -55,14 +56,19 @@ public class RequestLinkedClientsPlugin extends MessagePlugin<RequestLinkedClien
     }
 
     private void processMessageWithMessageServer(RequestLinkedClientsMessage message, PluginContext context) {
-        Collection<Client> clients = MessageServer.current().clientCacheProvider().getAllMessageClients();
-        List<MessageClientBasic> clientBasics = new ArrayList<MessageClientBasic>();
-        for (Client client : clients) {
-            MessageClient messageClient = (MessageClient) client;
-            clientBasics.add(new MessageClientBasic(messageClient.getLoginId(), messageClient.getRemoteHost(), messageClient.getRemotePort()));
-        }
+        try {
+            MessageServer.current().clientCacheProvider().registerClient(message.getFromServer(), context.getCurrentHost(), context.getCurrentPort());
+            Collection<Client> clients = MessageServer.current().clientCacheProvider().getAllMessageClients();
+            List<MessageClientBasic> clientBasics = new ArrayList<MessageClientBasic>();
+            for (Client client : clients) {
+                MessageClient messageClient = (MessageClient) client;
+                clientBasics.add(new MessageClientBasic(messageClient.getLoginId(), messageClient.getRemoteHost(), messageClient.getRemotePort()));
+            }
 
-        ResponseLinkedClientsMessage responseMessage = new ResponseLinkedClientsMessage(MessageServer.current().getServerBasic(), clientBasics, message.getRespondKey());
-        MessageServer.current().sendMessageProvider().send(message.getRequestServer(), responseMessage);
+            ResponseLinkedClientsMessage responseMessage = new ResponseLinkedClientsMessage(MessageServer.current().getServerBasic(), clientBasics, message.getRespondKey());
+            MessageServer.current().sendMessageProvider().send(message.getRequestServer(), responseMessage);
+        } catch (ServerInnerException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
     }
 }
