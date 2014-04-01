@@ -3,16 +3,18 @@
     <formats>
         <format>tar.gz</format>
     </formats>
-    <dependencySets>
-        <dependencySet>
-            <useProjectArtifact>true</useProjectArtifact>
-            <outputDirectory>/lib</outputDirectory>
-        </dependencySet>
-    </dependencySets>
     <fileSets>
+        <fileSet>
+            <directory>target/bin</directory>
+            <outputDirectory>/bin</outputDirectory>
+        </fileSet>
         <fileSet>
             <directory>target/conf</directory>
             <outputDirectory>/conf</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>target/lib</directory>
+            <outputDirectory>/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>target</directory>
@@ -20,6 +22,10 @@
             <includes>
                 <include>*.jar</include>
             </includes>
+            <excludes>
+                <exclude>*-sources.jar</exclude>
+                <exclude>*-javadoc.jar</exclude>
+            </excludes>
         </fileSet>
     </fileSets>
 </assembly>
