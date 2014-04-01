@@ -4,6 +4,7 @@ import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.messages.ResponseMessage;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 
@@ -104,6 +105,7 @@ public class ResponseLinkedClientsMessage extends ResponseMessage implements Res
         this.respondKey = respondKey;
     }
 
+    @JsonIgnore
     @Override
     public ServerBasic getFromServer() {
         return this.messageServer;

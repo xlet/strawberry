@@ -3,6 +3,7 @@ package cn.w.im.domains.messages.server;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.Message;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.UUID;
 
@@ -53,6 +54,7 @@ public class RequestLinkedClientsMessage extends Message implements RespondMessa
         this.requestServer = requestServer;
     }
 
+    @JsonIgnore
     @Override
     public ServerBasic getFromServer() {
         return this.requestServer;
