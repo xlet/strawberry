@@ -22,7 +22,7 @@ public class ConnectToken {
     /**
      * default constructor.
      */
-    public ConnectToken(){
+    public ConnectToken() {
 
     }
 

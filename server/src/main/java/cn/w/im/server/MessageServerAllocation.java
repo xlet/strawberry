@@ -116,7 +116,8 @@ public class MessageServerAllocation {
 
     /**
      * message client disconnected message server.
-     * @param loginId login id.
+     *
+     * @param loginId    login id.
      * @param clientHost client host.
      */
     public synchronized void disconnected(String loginId, String clientHost) {
@@ -134,7 +135,7 @@ public class MessageServerAllocation {
      */
     public ConnectToken getLoginToken(String loginId, String host) {
         List<ConnectToken> loginIdTokens = this.loginIdConnectingTokenMap.get(loginId);
-        if (loginIdTokens==null){
+        if (loginIdTokens == null) {
             return null;
         }
         Iterator<ConnectToken> loginIdTokenIterator = loginIdTokens.iterator();

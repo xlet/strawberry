@@ -25,7 +25,7 @@ public class LoginHandler extends ChannelInboundHandlerAdapter {
     /**
      * 日志
      */
-    private static Log log ;
+    private static Log log;
 
     private List<HandlerListener> listeners = new ArrayList<HandlerListener>();
 
