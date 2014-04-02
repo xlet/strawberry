@@ -134,6 +134,9 @@ public class MessageServerAllocation {
      */
     public ConnectToken getLoginToken(String loginId, String host) {
         List<ConnectToken> loginIdTokens = this.loginIdConnectingTokenMap.get(loginId);
+        if (loginIdTokens==null){
+            return null;
+        }
         Iterator<ConnectToken> loginIdTokenIterator = loginIdTokens.iterator();
         while (loginIdTokenIterator.hasNext()) {
             ConnectToken connectToken = loginIdTokenIterator.next();

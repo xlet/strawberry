@@ -20,12 +20,12 @@ import java.util.List;
  * DateTime: 13-12-16 上午10:32.
  * Summary: 客户端netty handler.
  */
-public class ClientHandler extends ChannelInboundHandlerAdapter {
+public class LoginHandler extends ChannelInboundHandlerAdapter {
 
     /**
      * 日志
      */
-    private static Log log = LogFactory.getLog(ClientHandler.class);
+    private static Log log ;
 
     private List<HandlerListener> listeners = new ArrayList<HandlerListener>();
 
@@ -41,15 +41,16 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
      * @param id       登陆id.
      * @param password 登陆密码.
      */
-    public ClientHandler(String id, String password) {
+    public LoginHandler(String id, String password) {
         this.id = id;
         this.password = password;
+        log = LogFactory.getLog(this.getClass());
     }
 
     /**
      * 构造函数.
      */
-    public ClientHandler(String token) {
+    public LoginHandler(String token) {
         this.token = token;
     }
 
@@ -91,10 +92,10 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof LoginResponseMessage) {
             LoginResponseMessage message = (LoginResponseMessage) msg;
             PluginContext handlerContext = new PluginContext(message, ctx);
+            ctx.close();
             for (HandlerListener listener : listeners) {
                 listener.operationComplete(handlerContext);
             }
-            ctx.close();
         } else if (msg instanceof NormalMessage) {
             NormalMessage normalMessage = (NormalMessage) msg;
             System.out.println(normalMessage.getFrom() + "-->" + normalMessage.getTo());

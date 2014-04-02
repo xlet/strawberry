@@ -35,6 +35,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        logger.debug("client linked in");
         LoginServer.current().clientCacheProvider().registerClient(ctx);
         super.channelActive(ctx);
     }
@@ -55,6 +56,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //TODO: channel inactive process.
+        logger.debug("client channel inactive,remove cached client info.");
         LoginServer.current().clientCacheProvider().removeClient(ctx);
         super.channelInactive(ctx);
     }

@@ -20,6 +20,13 @@ public class ConnectToken {
     private ServerBasic allocatedMessageServer;
 
     /**
+     * default constructor.
+     */
+    public ConnectToken(){
+
+    }
+
+    /**
      * constructor.
      *
      * @param clientHost            client host.

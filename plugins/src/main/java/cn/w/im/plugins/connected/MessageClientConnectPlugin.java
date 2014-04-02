@@ -48,13 +48,13 @@ public class MessageClientConnectPlugin extends MessagePlugin<ConnectMessage> {
 
     private void processMessageWithMessageServer(ConnectMessage message, PluginContext context) {
         try {
+            MessageServer.current().clientCacheProvider().registerClient(message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
             MessageServer.current().connect(message.getToken(), message.getLoginId(), context.getCurrentHost());
             MessageClientBasic messageClientBasic = new MessageClientBasic(message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
             ConnectedMessage connectedMessage = new ConnectedMessage(message.getToken(), messageClientBasic, MessageServer.current().getServerBasic());
 
             MessageServer.current().sendMessageProvider().send(ServerType.MessageServer, connectedMessage);
-            MessageServer.current().sendMessageProvider().send(ServerType.MessageServer, connectedMessage);
-
+            MessageServer.current().sendMessageProvider().send(ServerType.LoginServer, connectedMessage);
         } catch (TokenNotExistedException ex) {
             logger.info(ex.getMessage(), ex);
             ConnectResponseMessage errorResponse = new ConnectResponseMessage(ex.getErrorCode(), ex.getMessage());
@@ -63,7 +63,8 @@ public class MessageClientConnectPlugin extends MessagePlugin<ConnectMessage> {
             logger.info(ex.getMessage(), ex);
             ConnectResponseMessage errorResponse = new ConnectResponseMessage(ex.getErrorCode(), ex.getMessage());
             MessageServer.current().sendMessageProvider().send(message.getLoginId(), errorResponse);
+        } catch (ServerInnerException ex) {
+            logger.error(ex.getMessage(), ex);
         }
-
     }
 }

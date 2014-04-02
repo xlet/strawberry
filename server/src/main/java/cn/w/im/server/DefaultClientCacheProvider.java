@@ -248,7 +248,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
             }
         }
         if (deleteKey != "") {
-            this.serverClientMap.remove(deleteKey);
+            this.messageClientMap.remove(deleteKey);
         }
     }
 

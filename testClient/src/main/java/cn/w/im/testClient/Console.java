@@ -11,7 +11,7 @@ import java.util.Scanner;
  * DateTime: 13-12-24 上午11:28.
  * Summary: 命令行主程序.
  */
-public class Console extends Thread {
+public class Console {
 
     /**
      * 连接上下文.
@@ -69,9 +69,10 @@ public class Console extends Thread {
 
     /**
      * 发送消息.
+     *
      * @throws Exception 异常.
      */
-    public void sendMessage() throws Exception {
+    public synchronized void sendMessage() throws Exception {
         Scanner scanner = new Scanner(System.in);
         System.out.println("请输入接收方id:");
         String id = scanner.next();

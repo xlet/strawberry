@@ -51,7 +51,7 @@ public class DefaultMessageServerAllocateProvider implements MessageServerAlloca
      * @return ConnectToken.
      */
     public ConnectToken allocate(String loginId, String loginHost) {
-        int minAllocatedClientCount = Integer.MAX_VALUE;
+        int minAllocatedClientCount = Integer.MIN_VALUE;
         MessageServerAllocation matchedMessageServerAllocation = null;
         Iterator<MessageServerAllocation> allocationIterator = this.messageServerAllocations.values().iterator();
         while (allocationIterator.hasNext()) {

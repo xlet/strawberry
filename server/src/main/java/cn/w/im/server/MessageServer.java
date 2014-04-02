@@ -49,8 +49,8 @@ public class MessageServer extends AbstractServer {
     /**
      * 初始化.
      *
-     * @param host    服务绑定ip.
-     * @param port    服务监听端口.
+     * @param host 服务绑定ip.
+     * @param port 服务监听端口.
      * @return MessageServer.
      */
     public MessageServer init(String host, int port) {
@@ -92,7 +92,7 @@ public class MessageServer extends AbstractServer {
      * @throws TokenErrorException      token info is different with cached token.
      */
     public void connect(String token, String loginId, String host) throws TokenNotExistedException, TokenErrorException {
-        if (this.tokens.containsKey(token)) {
+        if (!this.tokens.containsKey(token)) {
             throw new TokenNotExistedException(token);
         }
         ConnectToken connectToken = this.tokens.get(token);

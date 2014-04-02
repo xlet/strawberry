@@ -4,11 +4,14 @@ import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.server.ReadyMessage;
+import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.server.LoginServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Creator: JackieHan.
@@ -18,6 +21,9 @@ import cn.w.im.plugins.MessagePlugin;
  * login server received message server ready message that means login server can allocation normal client to this message server.
  */
 public class MessageServerReadyPlugin extends MessagePlugin<ReadyMessage> {
+
+    private Log logger;
+
     /**
      * 构造函数.
      *
@@ -25,6 +31,7 @@ public class MessageServerReadyPlugin extends MessagePlugin<ReadyMessage> {
      */
     public MessageServerReadyPlugin(ServerType containerType) {
         super("MessageServerReadyPlugin", "message server ready.", containerType);
+        logger = LogFactory.getLog(this.getClass());
     }
 
     @Override
@@ -44,7 +51,12 @@ public class MessageServerReadyPlugin extends MessagePlugin<ReadyMessage> {
     }
 
     private void processMessageWithLoginServer(ReadyMessage readyMessage, PluginContext context) {
-        ServerBasic readyMessageServer = readyMessage.getMessageServer();
-        LoginServer.current().allocateProvider().messageServerReady(readyMessageServer);
+        try {
+            ServerBasic readyMessageServer = readyMessage.getMessageServer();
+            LoginServer.current().clientCacheProvider().registerClient(readyMessageServer, context.getCurrentHost(), context.getCurrentPort());
+            LoginServer.current().allocateProvider().messageServerReady(readyMessageServer);
+        } catch (ServerInnerException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
     }
 }

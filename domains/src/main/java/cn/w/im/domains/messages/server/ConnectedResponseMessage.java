@@ -32,7 +32,7 @@ public class ConnectedResponseMessage extends ResponseMessage implements Respond
      * @param respondKey must responded message key.
      */
     public ConnectedResponseMessage(String token, ServerBasic fromServer, String respondKey) {
-        super(MessageType.ConnectResponse);
+        this();
         this.token = token;
         this.fromServer = fromServer;
         this.respondKey = respondKey;
