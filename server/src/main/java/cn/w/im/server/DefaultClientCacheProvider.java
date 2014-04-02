@@ -95,16 +95,16 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
 
     @Override
     public void registerClient(MessageClientBasic messageClientBasic, ServerBasic serverBasic) throws ServerNotRegisterException, MessageClientRegisteredException {
-        if (this.serverClientMap.containsKey(serverBasic.getNodeId())) {
+        if (!this.serverClientMap.containsKey(serverBasic.getNodeId())) {
             throw new ServerNotRegisterException(serverBasic.getNodeId());
         }
-        if (this.serverMessageClientMap.containsKey(serverBasic.getNodeId())) {
+        if (!this.serverMessageClientMap.containsKey(serverBasic.getNodeId())) {
             throw new ServerNotRegisterException(serverBasic.getNodeId());
         }
 
         Map<String, MessageClientBasic> loginIdMessageClientMap = this.serverMessageClientMap.get(serverBasic.getNodeId());
 
-        if (!loginIdMessageClientMap.containsKey(messageClientBasic.getLoginId())) {
+        if (loginIdMessageClientMap.containsKey(messageClientBasic.getLoginId())) {
             throw new MessageClientRegisteredException(messageClientBasic.getLoginId());
         }
         loginIdMessageClientMap.put(messageClientBasic.getLoginId(), messageClientBasic);
