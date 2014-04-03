@@ -99,7 +99,17 @@
                         <configuration>
                             <tasks>
                                 <echo>Ant Task - copying files.....</echo>
-                                <copy file="${project.basedir}/../config/loginServer.conf" tofile="${project.build.directory}/conf/server.conf"></copy>
+                                <copy file="${project.basedir}/../config/loginServer.conf"
+                                      tofile="${project.build.directory}/conf/server.conf"></copy>
+                                <copy todir="${project.build.directory}/conf" overwrite="true">
+                                    <fileset dir="${project.basedir}/../config/wrapper/loginServer/conf"/>
+                                </copy>
+                                <copy todir="${project.build.directory}/bin" overwrite="true">
+                                    <fileset dir="${project.basedir}/../config/wrapper/loginServer/bin"/>
+                                </copy>
+                                <copy todir="${project.build.directory}/lib" overwrite="true">
+                                    <fileset dir="${project.basedir}/../config/wrapper/lib"/>
+                                </copy>
                             </tasks>
                         </configuration>
                     </execution>

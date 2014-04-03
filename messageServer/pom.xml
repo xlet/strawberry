@@ -101,6 +101,15 @@
                                 <echo>Ant Task - copying files.....</echo>
                                 <copy file="${project.basedir}/../config/messageServer.conf"
                                       tofile="${project.build.directory}/conf/server.conf"></copy>
+                                <copy todir="${project.build.directory}/conf" overwrite="true">
+                                    <fileset dir="${project.basedir}/../config/wrapper/messageServer/conf" />
+                                </copy>
+                                <copy todir="${project.build.directory}/bin" overwrite="true">
+                                    <fileset dir="${project.basedir}/../config/wrapper/messageServer/bin" />
+                                </copy>
+                                <copy todir="${project.build.directory}/lib" overwrite="true">
+                                    <fileset dir="${project.basedir}/../config/wrapper/lib" />
+                                </copy>
                             </tasks>
                         </configuration>
                     </execution>
