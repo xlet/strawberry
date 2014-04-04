@@ -24,9 +24,6 @@ public class LoginServer extends AbstractServer {
         return currentLoginServer;
     }
 
-    private boolean init = false;
-
-
     private MessageServerAllocateProvider messageServerAllocateProvider;
 
     /**
@@ -38,32 +35,8 @@ public class LoginServer extends AbstractServer {
     }
 
     /**
-     * 获取服务是否初始化.
-     *
-     * @return true:已经初始化
-     */
-    public boolean isInit() {
-        return init;
-    }
-
-    /**
-     * 初始化.
-     *
-     * @param host    绑定Ip.
-     * @param port    监听端口.
-     * @return 登陆服务信息实例.
-     */
-    public LoginServer init(String host, int port) {
-        if (!init) {
-            this.setPort(port);
-            this.setHost(host);
-            this.init = true;
-        }
-        return this;
-    }
-
-    /**
      * get message server allocate provider.
+     *
      * @return allocate provider.
      */
     public MessageServerAllocateProvider allocateProvider() {

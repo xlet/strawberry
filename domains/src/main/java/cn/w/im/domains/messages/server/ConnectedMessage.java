@@ -12,7 +12,7 @@ import java.util.UUID;
  * DateTime: 14-3-24 下午8:29.
  * Summary: notify message client connected.
  */
-public class ConnectedMessage extends Message implements RespondMessage {
+public class ConnectedMessage extends Message implements MustRespondMessage {
 
     private String token;
 

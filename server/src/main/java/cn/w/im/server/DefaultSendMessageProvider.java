@@ -6,7 +6,7 @@ import cn.w.im.domains.client.Client;
 import cn.w.im.domains.client.ServerClient;
 import cn.w.im.domains.messages.server.ForwardMessage;
 import cn.w.im.domains.messages.Message;
-import cn.w.im.domains.messages.server.RespondMessage;
+import cn.w.im.domains.messages.server.MustRespondMessage;
 import cn.w.im.exceptions.RegisteredRespondMessageException;
 import cn.w.im.exceptions.RegisteredRespondServerException;
 import cn.w.im.exceptions.ServerInnerException;
@@ -89,20 +89,27 @@ public class DefaultSendMessageProvider implements SendMessageProvider {
     }
 
     private void registeredRespond(Client client, Message message) throws RegisteredRespondMessageException, RegisteredRespondServerException {
-        if ((message instanceof RespondMessage) && (client instanceof ServerClient)) {
-            this.respondProvider.registerResponded(((RespondMessage) message).getRespondKey(), ((ServerClient) client).getServerBasic());
+        if ((message instanceof MustRespondMessage) && (client instanceof ServerClient)) {
+            MustRespondMessage mustRespondMessage = (MustRespondMessage) message;
+            ServerClient serverClient = (ServerClient) client;
+            logger.debug("respond register[" + mustRespondMessage.getRespondKey() + ":" + serverClient.getServerBasic().getNodeId() + "]");
+            this.respondProvider.registerResponded(mustRespondMessage.getRespondKey(), serverClient.getServerBasic());
         }
     }
 
     private void sendMessage(Client client, Message message) throws ServerInnerException {
         registeredRespond(client, message);
         if ((this.containerServer.getServerType() != ServerType.MessageBus) && (client instanceof ServerClient)) {
-            ForwardMessage forwardMessage = new ForwardMessage(this.containerServer, ((ServerClient) client).getServerBasic(), message);
+            ServerClient serverClient = (ServerClient) client;
+            logger.debug("send to server[" + serverClient.getServerBasic().getNodeId() + "]");
+            ForwardMessage forwardMessage = new ForwardMessage(this.containerServer, serverClient.getServerBasic(), message);
             client.getContext().writeAndFlush(forwardMessage);
         } else if ((this.containerServer.getServerType() == ServerType.MessageBus) && (message instanceof ForwardMessage)) {
             ForwardMessage forwardMessage = (ForwardMessage) message;
+            logger.debug("send to messageBus");
             client.getContext().writeAndFlush(forwardMessage.getMessage());
         } else {
+            logger.debug("send to client[" + client.getRemoteHost() + ":" + client.getRemotePort() + "]");
             client.getContext().writeAndFlush(message);
         }
     }

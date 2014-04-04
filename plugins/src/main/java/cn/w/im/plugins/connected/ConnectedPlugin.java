@@ -56,7 +56,7 @@ public class ConnectedPlugin extends MessagePlugin<ConnectedMessage> {
     }
 
     private void processMessageWithLoginServer(ConnectedMessage message, PluginContext context) {
-        LoginServer.current().allocateProvider().connected(message.getToken(), message.getFromServer());
+        LoginServer.current().allocateProvider().connected(message.getToken(), message.getMessageClientBasic(), message.getFromServer());
         ConnectedResponseMessage connectedResponseMessage = new ConnectedResponseMessage(message.getToken(), LoginServer.current().getServerBasic(), message.getRespondKey());
         LoginServer.current().sendMessageProvider().send(message.getFromServer(), connectedResponseMessage);
     }

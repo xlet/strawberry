@@ -56,4 +56,12 @@ public class Client {
     public int getRemotePort() {
         return IpAddressProvider.getRemotePort(this.getContext());
     }
+
+    /**
+     * 获取客户端Key.
+     * @return host:port.
+     */
+    public String getKey() {
+        return this.getRemoteHost() + ":" + this.getRemotePort();
+    }
 }

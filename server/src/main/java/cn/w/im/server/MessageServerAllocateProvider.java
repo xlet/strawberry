@@ -2,6 +2,7 @@ package cn.w.im.server;
 
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.ServerBasic;
+import cn.w.im.domains.client.MessageClientBasic;
 
 /**
  * Creator: JackieHan.
@@ -39,9 +40,10 @@ public interface MessageServerAllocateProvider {
      * message client connected message sever.
      *
      * @param connectToken           token string.
+     * @param messageClientBasic     message client basic.
      * @param allocatedMessageServer allocated message server basic.
      */
-    void connected(String connectToken, ServerBasic allocatedMessageServer);
+    void connected(String connectToken, MessageClientBasic messageClientBasic, ServerBasic allocatedMessageServer);
 
     /**
      * message client disconnected message server.

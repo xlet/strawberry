@@ -8,6 +8,8 @@ import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.client.ServerClient;
 import cn.w.im.exceptions.*;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Summary: implement ClientCacheProvider.
  */
 public class DefaultClientCacheProvider implements ClientCacheProvider {
+
+    private Log logger;
 
     /**
      * all linked clients contains serverClient and message Client.
@@ -50,6 +54,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
      * constructor.
      */
     public DefaultClientCacheProvider() {
+        this.logger = LogFactory.getLog(this.getClass());
         this.clientMap = new ConcurrentHashMap<String, Map<Integer, Client>>();
         this.serverClientMap = new ConcurrentHashMap<String, Client>();
         this.messageClientMap = new ConcurrentHashMap<String, Client>();
@@ -59,6 +64,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
     @Override
     public void registerClient(ChannelHandlerContext context) throws ClientRegisteredException {
         Client client = new Client(context);
+        logger.debug("register client[" + client.getKey() + "]");
         if (this.clientMap.containsKey(client.getRemoteHost())) {
             Map<Integer, Client> portClients = this.clientMap.get(client.getRemoteHost());
             if (portClients.containsKey(client.getRemotePort())) {
@@ -74,6 +80,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
 
     @Override
     public void registerClient(String loginId, String linkedHost, int linkedPort) throws MessageClientRegisteredException, ClientNotRegisterException {
+        logger.debug("register message client:" + loginId + "[" + linkedHost + ":" + linkedPort + "]");
         if (this.messageClientMap.containsKey(loginId)) {
             throw new MessageClientRegisteredException(loginId);
         }
@@ -95,6 +102,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
 
     @Override
     public void registerClient(MessageClientBasic messageClientBasic, ServerBasic serverBasic) throws ServerNotRegisterException, MessageClientRegisteredException {
+        logger.debug("register other server message client:" + messageClientBasic.getLoginId() + "[" + serverBasic.getNodeId() + "]");
         if (!this.serverClientMap.containsKey(serverBasic.getNodeId())) {
             throw new ServerNotRegisterException(serverBasic.getNodeId());
         }
@@ -112,7 +120,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
 
     @Override
     public void registerClient(ServerBasic serverBasic, String linkedHost, int linkedPort) throws ServerRegisteredException, ClientNotRegisterException {
-
+        logger.debug("register server client:" + serverBasic.getNodeId() + "[" + linkedHost + ":" + linkedPort + "]");
         if (this.serverClientMap.containsKey(serverBasic.getNodeId())) {
             throw new ServerRegisteredException(serverBasic);
         }
@@ -142,6 +150,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
 
     @Override
     public void removeClient(String host, int port) throws ServerNotRegisterException, ClientNotRegisterException {
+        logger.debug("remove registered client[" + host + ":" + port + "]");
         if (this.clientMap.containsKey(host)) {
             Map<Integer, Client> portClientMap = this.clientMap.get(host);
             if (portClientMap.containsKey(port)) {
@@ -234,7 +243,9 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
     }
 
     private void removeMessageClientOnThisServer(String serverNode) {
-
+        if (this.serverMessageClientMap.containsKey(serverNode)) {
+            this.serverMessageClientMap.remove(serverNode);
+        }
     }
 
 

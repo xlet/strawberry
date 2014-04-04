@@ -12,7 +12,7 @@ import java.util.UUID;
  * DateTime: 14-1-16 下午4:17.
  * Summary: token消息. 用于通知消息服务token信息.
  */
-public class TokenMessage extends Message implements RespondMessage {
+public class TokenMessage extends Message implements MustRespondMessage {
 
     private ConnectToken token;
 

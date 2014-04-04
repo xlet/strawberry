@@ -1,13 +1,11 @@
 package cn.w.im.domains.messages.server;
 
-
 /**
  * Creator: JackieHan.
- * DateTime: 14-3-25 上午11:10.
- * Summary:  message is a response message.
+ * DateTime: 14-4-3 下午5:33.
+ * Summary: the message must respond.
  */
-public interface RespondMessage extends ServerToServerMessage {
-
+public interface MustRespondMessage extends ServerToServerMessage {
     /**
      * get respond key.
      * @return respond key.

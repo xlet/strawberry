@@ -12,7 +12,7 @@ import java.util.UUID;
  * DateTime: 14-1-17 下午3:00.
  * Summary: 请求消息服务现有已连接的客户端信息.
  */
-public class RequestLinkedClientsMessage extends Message implements RespondMessage {
+public class RequestLinkedClientsMessage extends Message implements MustRespondMessage {
 
     private ServerBasic requestServer;
 

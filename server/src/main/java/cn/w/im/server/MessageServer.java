@@ -31,8 +31,6 @@ public class MessageServer extends AbstractServer {
         return currentServer;
     }
 
-    private boolean init = false;
-
     /**
      * key:token String.
      */
@@ -45,23 +43,6 @@ public class MessageServer extends AbstractServer {
         super(ServerType.MessageServer);
         this.tokens = new ConcurrentHashMap<String, ConnectToken>();
     }
-
-    /**
-     * 初始化.
-     *
-     * @param host 服务绑定ip.
-     * @param port 服务监听端口.
-     * @return MessageServer.
-     */
-    public MessageServer init(String host, int port) {
-        if (!init) {
-            this.init = true;
-            this.setHost(host);
-            this.setPort(port);
-        }
-        return this;
-    }
-
 
     /**
      * 添加登陆token.
@@ -110,14 +91,5 @@ public class MessageServer extends AbstractServer {
         if (this.tokens.containsKey(token)) {
             this.tokens.remove(token);
         }
-    }
-
-    /**
-     * 获取服务是否初始化.
-     *
-     * @return true:已经初始化
-     */
-    public boolean isInit() {
-        return init;
     }
 }

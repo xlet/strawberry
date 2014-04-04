@@ -6,17 +6,20 @@ import cn.w.im.domains.messages.ResponseMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-10 下午2:31.
  * Summary: 注册回复消息.
  */
-public class ServerRegisterResponseMessage extends ResponseMessage implements ServerToServerMessage {
+public class ServerRegisterResponseMessage extends ResponseMessage implements RespondMessage{
 
     private List<ServerBasic> startedServers;
 
     private ServerBasic fromServer;
+
+    private String respondKey;
 
     /**
      * 构造函数.
@@ -36,6 +39,7 @@ public class ServerRegisterResponseMessage extends ResponseMessage implements Se
         this();
         this.startedServers = startedServers;
         this.fromServer = fromServer;
+        this.respondKey = UUID.randomUUID().toString();
     }
 
     /**
@@ -80,5 +84,18 @@ public class ServerRegisterResponseMessage extends ResponseMessage implements Se
      */
     public void setFromServer(ServerBasic fromServer) {
         this.fromServer = fromServer;
+    }
+
+    @Override
+    public String getRespondKey() {
+        return this.respondKey;
+    }
+
+    /**
+     * set respond key.
+     * @param respondKey respond key.
+     */
+    public void setRespondKey(String respondKey) {
+        this.respondKey = respondKey;
     }
 }

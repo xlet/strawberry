@@ -18,6 +18,7 @@ public abstract class AbstractServer {
     private ClientCacheProvider clientCacheProvider;
     private SendMessageProvider sendMessageProvider;
     private RespondProvider respondProvider;
+    private boolean init = false;
 
     /**
      * 构造函数.
@@ -26,8 +27,24 @@ public abstract class AbstractServer {
      */
     public AbstractServer(ServerType serverType) {
         this.serverBasic = new ServerBasic();
-        this.serverBasic.setNodeId(UUID.randomUUID().toString().replace("-", ""));
         this.serverBasic.setServerType(serverType);
+    }
+
+    /**
+     * 初始化.
+     *
+     * @param host 服务绑定ip.
+     * @param port 服务监听端口.
+     * @return AbstractServer.
+     */
+    public AbstractServer init(String host, int port) {
+        if (!init) {
+            this.init = true;
+            this.setHost(host);
+            this.setPort(port);
+            this.serverBasic.setNodeId(host + ":" + port);
+        }
+        return this;
     }
 
     /**
@@ -50,6 +67,15 @@ public abstract class AbstractServer {
         if (this.serverBasic.isStart()) {
             this.serverBasic.setStart(false);
         }
+    }
+
+    /**
+     * 获取服务是否初始化.
+     *
+     * @return true:已经初始化
+     */
+    public boolean isInit() {
+        return init;
     }
 
     /**
