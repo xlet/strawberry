@@ -13,7 +13,7 @@ import java.util.UUID;
  * DateTime: 14-1-10 下午2:31.
  * Summary: 注册回复消息.
  */
-public class ServerRegisterResponseMessage extends ResponseMessage implements RespondMessage{
+public class ServerRegisterResponseMessage extends ResponseMessage implements RespondMessage {
 
     private List<ServerBasic> startedServers;
 
@@ -93,6 +93,7 @@ public class ServerRegisterResponseMessage extends ResponseMessage implements Re
 
     /**
      * set respond key.
+     *
      * @param respondKey respond key.
      */
     public void setRespondKey(String respondKey) {
