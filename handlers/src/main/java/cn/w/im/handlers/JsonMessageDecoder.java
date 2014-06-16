@@ -21,8 +21,9 @@ public class JsonMessageDecoder extends MessageToMessageDecoder<String> {
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, String message, List<Object> objects) throws Exception {
-        logger.debug("received message: [" + message + "]");
         Message messageObj = mapper.readValue(message, Message.class);
+        logger.debug("receive message:");
+        logger.debug(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(messageObj));
         objects.add(messageObj);
     }
 }
