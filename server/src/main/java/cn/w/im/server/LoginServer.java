@@ -7,6 +7,7 @@ import cn.w.im.domains.ServerType;
  * Creator: JackieHan.
  * DateTime: 14-1-8 下午3:16.
  * Summary: 登录服务信息.
+ * update: 测试提交
  */
 public class LoginServer extends AbstractServer {
 
