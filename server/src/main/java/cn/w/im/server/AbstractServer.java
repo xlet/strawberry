@@ -4,7 +4,6 @@ import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Creator: JackieHan.
