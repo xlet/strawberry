@@ -47,9 +47,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
 
         PluginContext context = new PluginContext(message, ctx);
         for (Plugin plugin : plugins) {
-            logger.debug("processing: " + plugin.description());
             plugin.process(context);
-            logger.debug("processed: " + plugin.description());
         }
     }
 
