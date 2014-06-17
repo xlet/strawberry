@@ -45,7 +45,7 @@ public class Bootstrap {
                 command = args[0];
             }
 
-            if (command.endsWith("start"))
+            if (command.endsWith("start")) {
                 if (args.length == 5) {
                     String serverHost = args[1];
                     int serverPort = Integer.parseInt(args[2]);
