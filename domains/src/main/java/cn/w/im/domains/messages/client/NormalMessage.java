@@ -1,6 +1,7 @@
 package cn.w.im.domains.messages.client;
 
 import cn.w.im.domains.MessageType;
+import cn.w.im.domains.client.MessageClientType;
 import cn.w.im.domains.messages.Message;
 
 /**
@@ -10,17 +11,8 @@ import cn.w.im.domains.messages.Message;
  */
 public class NormalMessage extends Message implements ServerToClientMessage, ClientToServerMessage {
 
-    /**
-     * from:发送方id.
-     * to:接收方id.
-     * content:消息内容.
-     */
     private String from, to, content;
-
-    /**
-     * 是否转发.
-     */
-    private boolean forward;
+    private MessageClientType clientType;
 
     /**
      * 构造函数.
@@ -32,15 +24,35 @@ public class NormalMessage extends Message implements ServerToClientMessage, Cli
     /**
      * 构造函数.
      *
-     * @param from    发送方id.
-     * @param to      接收方id.
-     * @param content 消息内容.
+     * @param messageClientType message client type.
+     * @param from              发送方id.
+     * @param to                接收方id.
+     * @param content           消息内容.
      */
-    public NormalMessage(String from, String to, String content) {
+    public NormalMessage(MessageClientType messageClientType, String from, String to, String content) {
         this();
+        this.clientType = clientType;
         this.from = from;
         this.to = to;
         this.content = content;
+    }
+
+    /**
+     * get message client type.
+     *
+     * @return message client type.
+     */
+    public MessageClientType getClientType() {
+        return this.clientType;
+    }
+
+    /**
+     * set message client type.
+     *
+     * @param clientType message client type.
+     */
+    public void setClientType(MessageClientType clientType) {
+        this.clientType = clientType;
     }
 
     /**
@@ -95,23 +107,5 @@ public class NormalMessage extends Message implements ServerToClientMessage, Cli
      */
     public void setContent(String content) {
         this.content = content;
-    }
-
-    /**
-     * 是否已转发.
-     *
-     * @return 转发：true 未转发：false.
-     */
-    public boolean isForward() {
-        return forward;
-    }
-
-    /**
-     * 设置是否转发.
-     *
-     * @param forward 转发:true 未转发:false.
-     */
-    public void setForward(boolean forward) {
-        this.forward = forward;
     }
 }

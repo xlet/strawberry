@@ -1,5 +1,7 @@
 package cn.w.im.exceptions;
 
+import cn.w.im.domains.client.MessageClientType;
+
 /**
  * Creator: JackieHan.
  * DateTime: 14-3-25 下午7:18.
@@ -9,12 +11,15 @@ public class MessageClientRegisteredException extends ServerInnerException {
 
     private String loginId;
 
+    private MessageClientType messageClientType;
+
     /**
      * constructor.
      */
-    public MessageClientRegisteredException(String loginId) {
-        super("the message client[loginId:" + loginId + "] has registered.");
+    public MessageClientRegisteredException(MessageClientType messageClientType, String loginId) {
+        super("the message client[clientType:" + messageClientType + ",loginId:" + loginId + "] has registered.");
         this.loginId = loginId;
+        this.messageClientType = messageClientType;
     }
 
     /**
@@ -24,5 +29,14 @@ public class MessageClientRegisteredException extends ServerInnerException {
      */
     public String getLoginId() {
         return loginId;
+    }
+
+    /**
+     * get client type.
+     *
+     * @return client type.
+     */
+    public MessageClientType getMessageClientType() {
+        return this.messageClientType;
     }
 }

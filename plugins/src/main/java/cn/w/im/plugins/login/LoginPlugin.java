@@ -53,7 +53,7 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
 
     private void processWithLoginServer(LoginMessage message, PluginContext context) {
         try {
-            LoginServer.current().clientCacheProvider().registerClient(message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
+            LoginServer.current().clientCacheProvider().registerClient(message.getMessageClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
             login(message);
             ConnectToken token = LoginServer.current().allocateProvider().allocate(message.getLoginId(), context.getCurrentHost());
 

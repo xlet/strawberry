@@ -3,6 +3,7 @@ package cn.w.im.testClient;
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.ServerBasic;
+import cn.w.im.domains.client.MessageClientType;
 import cn.w.im.domains.messages.client.LoginResponseMessage;
 import cn.w.im.handlers.JsonMessageDecoder;
 import cn.w.im.handlers.JsonMessageEncoder;
@@ -26,6 +27,8 @@ import java.util.Scanner;
  * Summary: 客户端main Class.
  */
 public class ClientStarter {
+
+    private final static MessageClientType MESSAGE_CLIENT_TYPE = MessageClientType.WinForm;
 
     /**
      * 启动主函数.
@@ -56,7 +59,7 @@ public class ClientStarter {
     private void login(final String id, final String password) {
 
         try {
-            final LoginHandler handler = new LoginHandler(id, password);
+            final LoginHandler handler = new LoginHandler(MESSAGE_CLIENT_TYPE, id, password);
             handler.addListener(loginListener);
 
             Bootstrap bootstrap = new Bootstrap();
@@ -98,7 +101,7 @@ public class ClientStarter {
     private EventLoopGroup connectGroup = new NioEventLoopGroup();
 
     private void connectMessageServer(ConnectToken connectToken) {
-        final ConnectHandler handler = new ConnectHandler(connectToken);
+        final ConnectHandler handler = new ConnectHandler(connectToken, MESSAGE_CLIENT_TYPE);
         ServerBasic serverBasic = connectToken.getAllocatedMessageServer();
 
         try {

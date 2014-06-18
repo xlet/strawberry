@@ -11,20 +11,35 @@ public class MessageClient extends Client {
 
     private String loginId;
 
+    private MessageClientType messageClientType;
+
     /**
      * get login id.
+     *
      * @return login id.
      */
     public String getLoginId() {
         return this.loginId;
     }
 
-     /**
-     * constructor.
-     * @param loginId login id.
+    /**
+     * get client type.
+     *
+     * @return client type.
      */
-    public MessageClient(ChannelHandlerContext context, String loginId) {
+    public MessageClientType getMessageClientType() {
+        return this.messageClientType;
+    }
+
+    /**
+     * constructor.
+     *
+     * @param messageClientType client type.
+     * @param loginId    login id.
+     */
+    public MessageClient(ChannelHandlerContext context, MessageClientType messageClientType, String loginId) {
         super(context);
+        this.messageClientType = messageClientType;
         this.loginId = loginId;
     }
 }

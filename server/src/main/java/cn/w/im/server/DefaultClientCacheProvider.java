@@ -2,14 +2,12 @@ package cn.w.im.server;
 
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
-import cn.w.im.domains.client.Client;
-import cn.w.im.domains.client.MessageClient;
-import cn.w.im.domains.client.MessageClientBasic;
-import cn.w.im.domains.client.ServerClient;
+import cn.w.im.domains.client.*;
 import cn.w.im.exceptions.*;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,7 +29,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
     private Map<String, Map<Integer, Client>> clientMap;
 
     /**
-     * server clients.
+     * all serverClient who linked on this server.
      * key:server node id.
      */
     private Map<String, Client> serverClientMap;
@@ -39,16 +37,16 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
     /**
      * message clients linked on this server.
      * key:login id.
+     * value:map{key:messageClientType,value:client}
      */
-    private Map<String, Client> messageClientMap;
+    private Map<String, Map<MessageClientType, Client>> messageClientOnThisServerMap;
 
     /**
      * message clients linked on other server.
-     * if this map is to large,we can move to data store.
      * key:server node id.
-     * value:login id,MessageClientBasic Map.
+     * value:map{key:login id,value:map{key:messageClientType,value:MessageClientBasic Map}}.
      */
-    private Map<String, Map<String, MessageClientBasic>> serverMessageClientMap;
+    private Map<String, Map<String, Map<MessageClientType, MessageClientBasic>>> messageClientOnOtherServerMap;
 
     /**
      * constructor.
@@ -57,8 +55,8 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
         this.logger = LogFactory.getLog(this.getClass());
         this.clientMap = new ConcurrentHashMap<String, Map<Integer, Client>>();
         this.serverClientMap = new ConcurrentHashMap<String, Client>();
-        this.messageClientMap = new ConcurrentHashMap<String, Client>();
-        this.serverMessageClientMap = new ConcurrentHashMap<String, Map<String, MessageClientBasic>>();
+        this.messageClientOnThisServerMap = new ConcurrentHashMap<String, Map<MessageClientType, Client>>();
+        this.messageClientOnOtherServerMap = new ConcurrentHashMap<String, Map<String, Map<MessageClientType, MessageClientBasic>>>();
     }
 
     @Override
@@ -79,19 +77,29 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
     }
 
     @Override
-    public void registerClient(String loginId, String linkedHost, int linkedPort) throws MessageClientRegisteredException, ClientNotRegisterException {
+    public void registerClient(MessageClientType messageClientType, String loginId, String linkedHost, int linkedPort) throws MessageClientRegisteredException, ClientNotRegisterException {
         logger.debug("register message client:" + loginId + "[" + linkedHost + ":" + linkedPort + "]");
-        if (this.messageClientMap.containsKey(loginId)) {
-            throw new MessageClientRegisteredException(loginId);
+        Map<MessageClientType, Client> clientTypeClientMap = null;
+        if (this.messageClientOnThisServerMap.containsKey(loginId)) {
+            clientTypeClientMap = this.messageClientOnThisServerMap.get(loginId);
+            if (clientTypeClientMap.containsKey(messageClientType)) {
+                throw new MessageClientRegisteredException(messageClientType, loginId);
+            }
         }
         if (this.clientMap.containsKey(linkedHost)) {
             Map<Integer, Client> portClientMap = this.clientMap.get(linkedHost);
             if (portClientMap.containsKey(linkedPort)) {
                 Client registeredClient = portClientMap.get(linkedPort);
-                registeredClient = new MessageClient(registeredClient.getContext(), loginId);
+                registeredClient = new MessageClient(registeredClient.getContext(), messageClientType, loginId);
                 portClientMap.remove(linkedPort);
                 portClientMap.put(linkedPort, registeredClient);
-                this.messageClientMap.put(loginId, registeredClient);
+                if (clientTypeClientMap != null) {
+                    clientTypeClientMap.put(messageClientType, registeredClient);
+                } else {
+                    clientTypeClientMap = new ConcurrentHashMap<MessageClientType, Client>();
+                    clientTypeClientMap.put(messageClientType, registeredClient);
+                    this.messageClientOnThisServerMap.put(loginId, clientTypeClientMap);
+                }
             } else {
                 throw new ClientNotRegisterException(linkedHost, linkedPort);
             }
@@ -106,16 +114,24 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
         if (!this.serverClientMap.containsKey(serverBasic.getNodeId())) {
             throw new ServerNotRegisterException(serverBasic.getNodeId());
         }
-        if (!this.serverMessageClientMap.containsKey(serverBasic.getNodeId())) {
+        if (!this.messageClientOnOtherServerMap.containsKey(serverBasic.getNodeId())) {
             throw new ServerNotRegisterException(serverBasic.getNodeId());
         }
 
-        Map<String, MessageClientBasic> loginIdMessageClientMap = this.serverMessageClientMap.get(serverBasic.getNodeId());
+        Map<String, Map<MessageClientType, MessageClientBasic>> loginIdMessageClientMap = this.messageClientOnOtherServerMap.get(serverBasic.getNodeId());
 
         if (loginIdMessageClientMap.containsKey(messageClientBasic.getLoginId())) {
-            throw new MessageClientRegisteredException(messageClientBasic.getLoginId());
+            Map<MessageClientType, MessageClientBasic> clientTypeMessageClientBasicMap = loginIdMessageClientMap.get(messageClientBasic.getLoginId());
+            if (clientTypeMessageClientBasicMap.containsKey(messageClientBasic.getMessageClientType())) {
+                throw new MessageClientRegisteredException(messageClientBasic.getMessageClientType(), messageClientBasic.getLoginId());
+            } else {
+                clientTypeMessageClientBasicMap.put(messageClientBasic.getMessageClientType(), messageClientBasic);
+            }
+        } else {
+            Map<MessageClientType, MessageClientBasic> clientTypeMessageClientBasicMap = new ConcurrentHashMap<MessageClientType, MessageClientBasic>();
+            clientTypeMessageClientBasicMap.put(messageClientBasic.getMessageClientType(), messageClientBasic);
+            loginIdMessageClientMap.put(messageClientBasic.getLoginId(), clientTypeMessageClientBasicMap);
         }
-        loginIdMessageClientMap.put(messageClientBasic.getLoginId(), messageClientBasic);
     }
 
     @Override
@@ -133,7 +149,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
                 portClientMap.remove(linkedPort);
                 portClientMap.put(registeredClient.getRemotePort(), registeredClient);
                 this.serverClientMap.put(serverBasic.getNodeId(), registeredClient);
-                this.serverMessageClientMap.put(serverBasic.getNodeId(), new ConcurrentHashMap<String, MessageClientBasic>());
+                this.messageClientOnOtherServerMap.put(serverBasic.getNodeId(), new ConcurrentHashMap<String, Map<MessageClientType, MessageClientBasic>>());
             } else {
                 throw new ClientNotRegisterException(linkedHost, linkedPort);
             }
@@ -185,19 +201,46 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
         throw new ClientNotFoundException(serverBasic);
     }
 
-
     @Override
-    public Client getClient(String loginId) throws ClientNotFoundException {
-        if (this.messageClientMap.containsKey(loginId)) {
-            return this.messageClientMap.get(loginId);
+    public Collection<Client> getClients(String loginId) {
+        Collection<Client> clients = new ArrayList<Client>();
+        //get message client who linked on this server.
+        if (this.messageClientOnThisServerMap.containsKey(loginId)) {
+            clients.addAll(this.messageClientOnThisServerMap.get(loginId).values());
         }
-        Iterator<String> serverMessageClientKeyIterator = this.serverMessageClientMap.keySet().iterator();
+        //get message clients who linked on other server.
+        Iterator<String> serverMessageClientKeyIterator = this.messageClientOnOtherServerMap.keySet().iterator();
         while (serverMessageClientKeyIterator.hasNext()) {
             String serverNodeId = serverMessageClientKeyIterator.next();
-            Map<String, MessageClientBasic> loginIdMessageClientMap = this.serverMessageClientMap.get(serverNodeId);
-            if (loginIdMessageClientMap.containsKey(loginId)) {
+            Map<String, Map<MessageClientType, MessageClientBasic>> loginIdMessageClientBasicMap = this.messageClientOnOtherServerMap.get(serverNodeId);
+            if (loginIdMessageClientBasicMap.containsKey(loginId)) {
                 if (this.serverClientMap.containsKey(serverNodeId)) {
-                    return this.serverClientMap.get(serverNodeId);
+                    clients.add(this.serverClientMap.get(serverNodeId));
+                }
+            }
+        }
+        return clients;
+    }
+
+
+    @Override
+    public Client getClient(MessageClientType messageClientType, String loginId) throws ClientNotFoundException {
+        if (this.messageClientOnThisServerMap.containsKey(loginId)) {
+            Map<MessageClientType, Client> clientTypeMessageClientMap = this.messageClientOnThisServerMap.get(loginId);
+            if (clientTypeMessageClientMap.containsKey(messageClientType)) {
+                return clientTypeMessageClientMap.get(messageClientType);
+            }
+        }
+        Iterator<String> serverMessageClientKeyIterator = this.messageClientOnOtherServerMap.keySet().iterator();
+        while (serverMessageClientKeyIterator.hasNext()) {
+            String serverNodeId = serverMessageClientKeyIterator.next();
+            Map<String, Map<MessageClientType, MessageClientBasic>> loginIdMessageClientMap = this.messageClientOnOtherServerMap.get(serverNodeId);
+            if (loginIdMessageClientMap.containsKey(loginId)) {
+                Map<MessageClientType, MessageClientBasic> clientTypeMessageClientBasicMap = loginIdMessageClientMap.get(loginId);
+                if (clientTypeMessageClientBasicMap.containsKey(messageClientType)) {
+                    if (this.serverClientMap.containsKey(serverNodeId)) {
+                        return this.serverClientMap.get(serverNodeId);
+                    }
                 }
             }
         }
@@ -219,7 +262,13 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
 
     @Override
     public Collection<Client> getAllMessageClients() {
-        return this.messageClientMap.values();
+        Collection<Client> messageClients = new ArrayList<Client>();
+        Iterator<String> messageClientIterator = this.messageClientOnOtherServerMap.keySet().iterator();
+        while (messageClientIterator.hasNext()) {
+            String loginId = messageClientIterator.next();
+            messageClients.addAll(this.messageClientOnThisServerMap.get(loginId).values());
+        }
+        return messageClients;
     }
 
     @Override
@@ -243,25 +292,25 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
     }
 
     private void removeMessageClientOnThisServer(String serverNode) {
-        if (this.serverMessageClientMap.containsKey(serverNode)) {
-            this.serverMessageClientMap.remove(serverNode);
+        if (this.messageClientOnOtherServerMap.containsKey(serverNode)) {
+            this.messageClientOnOtherServerMap.remove(serverNode);
         }
     }
 
 
     private void removeMessageClientMap(Client removeClient) {
-        String deleteKey = "";
-        for (String key : this.messageClientMap.keySet()) {
-            Client currentClient = this.messageClientMap.get(key);
-            if (currentClient.equals(removeClient)) {
-                deleteKey = key;
-                break;
+        Iterator<Map<MessageClientType, Client>> messageClientIterator = this.messageClientOnThisServerMap.values().iterator();
+        while (messageClientIterator.hasNext()) {
+            Map<MessageClientType, Client> clientTypeMessageClientMap = messageClientIterator.next();
+            Iterator<Client> clientIterator = clientTypeMessageClientMap.values().iterator();
+            while (clientIterator.hasNext()) {
+                if (removeClient.equals(clientIterator.next())) {
+                    clientTypeMessageClientMap.remove(removeClient);
+                }
+            }
+            if (CollectionUtils.isEmpty(clientTypeMessageClientMap)) {
+                this.messageClientOnThisServerMap.remove(clientTypeMessageClientMap);
             }
         }
-        if (deleteKey != "") {
-            this.messageClientMap.remove(deleteKey);
-        }
     }
-
-
 }

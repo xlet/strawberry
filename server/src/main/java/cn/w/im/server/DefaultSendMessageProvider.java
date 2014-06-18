@@ -81,8 +81,10 @@ public class DefaultSendMessageProvider implements SendMessageProvider {
     @Override
     public void send(String loginId, Message message) {
         try {
-            Client client = clientCacheProvider.getClient(loginId);
-            sendMessage(client, message);
+            Collection<Client> clients = clientCacheProvider.getClients(loginId);
+            for (Client client : clients) {
+                sendMessage(client, message);
+            }
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
         }

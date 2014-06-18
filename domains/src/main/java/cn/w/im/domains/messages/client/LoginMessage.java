@@ -1,6 +1,7 @@
 package cn.w.im.domains.messages.client;
 
 import cn.w.im.domains.MessageType;
+import cn.w.im.domains.client.MessageClientType;
 import cn.w.im.domains.messages.Message;
 
 /**
@@ -9,15 +10,11 @@ import cn.w.im.domains.messages.Message;
  */
 public class LoginMessage extends Message implements ClientToServerMessage {
 
-    /**
-     * 用户Id.
-     */
     private String loginId;
 
-    /**
-     * 用户密码.
-     */
     private String password;
+
+    private MessageClientType clientType;
 
     /**
      * 默认构造函数.
@@ -29,11 +26,13 @@ public class LoginMessage extends Message implements ClientToServerMessage {
     /**
      * 构造函数.
      *
-     * @param loginId  登陆Id.
-     * @param password 密码.
+     * @param clientType message client type.
+     * @param loginId    登陆Id.
+     * @param password   密码.
      */
-    public LoginMessage(final String loginId, final String password) {
+    public LoginMessage(MessageClientType clientType, String loginId, String password) {
         super(MessageType.Login);
+        this.clientType = clientType;
         this.loginId = loginId;
         this.password = password;
     }
@@ -72,5 +71,23 @@ public class LoginMessage extends Message implements ClientToServerMessage {
      */
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    /**
+     * get message client type.
+     *
+     * @return message client type.
+     */
+    public MessageClientType getMessageClientType() {
+        return clientType;
+    }
+
+    /**
+     * set message client type.
+     *
+     * @param clientType message client Type.
+     */
+    public void setMessageClientType(MessageClientType clientType) {
+        this.clientType = clientType;
     }
 }

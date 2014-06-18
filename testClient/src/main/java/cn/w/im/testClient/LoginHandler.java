@@ -1,6 +1,7 @@
 package cn.w.im.testClient;
 
 import cn.w.im.domains.PluginContext;
+import cn.w.im.domains.client.MessageClientType;
 import cn.w.im.domains.messages.client.ConnectMessage;
 import cn.w.im.domains.messages.client.LoginMessage;
 import cn.w.im.domains.messages.client.LoginResponseMessage;
@@ -35,22 +36,30 @@ public class LoginHandler extends ChannelInboundHandlerAdapter {
      */
     private String id, password, token;
 
+    private MessageClientType clientType;
+
     /**
      * 构造函数.
      *
-     * @param id       登陆id.
-     * @param password 登陆密码.
+     * @param clientType message client type.
+     * @param id         登陆id.
+     * @param password   登陆密码.
      */
-    public LoginHandler(String id, String password) {
+    public LoginHandler(MessageClientType clientType, String id, String password) {
         this.id = id;
         this.password = password;
+        this.clientType = clientType;
         log = LogFactory.getLog(this.getClass());
     }
 
     /**
      * 构造函数.
+     *
+     * @param clientType message client type.
+     * @param token      login token.
      */
-    public LoginHandler(String token) {
+    public LoginHandler(MessageClientType clientType, String token) {
+        this.clientType = clientType;
         this.token = token;
     }
 
@@ -72,10 +81,10 @@ public class LoginHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         if (!id.equals("") && !password.equals("")) {
-            LoginMessage loginMessage = new LoginMessage(this.id, this.password);
+            LoginMessage loginMessage = new LoginMessage(this.clientType, this.id, this.password);
             ctx.writeAndFlush(loginMessage);
         } else {
-            ConnectMessage connectMessage = new ConnectMessage(this.id, this.token);
+            ConnectMessage connectMessage = new ConnectMessage(this.clientType, this.id, this.token);
             ctx.writeAndFlush(connectMessage);
         }
     }

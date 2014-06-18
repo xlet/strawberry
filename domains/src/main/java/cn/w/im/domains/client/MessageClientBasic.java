@@ -11,6 +11,8 @@ public class MessageClientBasic {
 
     private int clientPort;
 
+    private MessageClientType messageClientType;
+
     /**
      * 构造函数.
      */
@@ -20,18 +22,31 @@ public class MessageClientBasic {
 
     /**
      * 构造函数.
-     * @param loginId 登陆id.
-     * @param clientHost 客户端host.
-     * @param clientPort 客户端端口号.
+     *
+     * @param messageClientType messageClientType.
+     * @param loginId           登陆id.
+     * @param clientHost        客户端host.
+     * @param clientPort        客户端端口号.
      */
-    public MessageClientBasic(String loginId, String clientHost, int clientPort) {
+    public MessageClientBasic(MessageClientType messageClientType, String loginId, String clientHost, int clientPort) {
+        this.messageClientType = messageClientType;
         this.loginId = loginId;
         this.clientHost = clientHost;
         this.clientPort = clientPort;
     }
 
     /**
+     * get client type.
+     *
+     * @return client type.
+     */
+    public MessageClientType getMessageClientType() {
+        return this.messageClientType;
+    }
+
+    /**
      * 获取登陆id.
+     *
      * @return 登陆id.
      */
     public String getLoginId() {
@@ -40,6 +55,7 @@ public class MessageClientBasic {
 
     /**
      * 设置登陆id.
+     *
      * @param loginId 登陆id.
      */
     public void setLoginId(String loginId) {
@@ -48,6 +64,7 @@ public class MessageClientBasic {
 
     /**
      * 获取客户端host.
+     *
      * @return 客户端host.
      */
     public String getClientHost() {
@@ -56,6 +73,7 @@ public class MessageClientBasic {
 
     /**
      * 设置客户端host.
+     *
      * @param clientHost 客户端host.
      */
     public void setClientHost(String clientHost) {
@@ -64,6 +82,7 @@ public class MessageClientBasic {
 
     /**
      * 获取客户端端口号.
+     *
      * @return 客户端端口号.
      */
     public int getClientPort() {
@@ -72,6 +91,7 @@ public class MessageClientBasic {
 
     /**
      * 设置客户端端口号.
+     *
      * @param clientPort 客户端端口号.
      */
     public void setClientPort(int clientPort) {

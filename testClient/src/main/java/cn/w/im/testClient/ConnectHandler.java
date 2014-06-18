@@ -1,6 +1,7 @@
 package cn.w.im.testClient;
 
 import cn.w.im.domains.ConnectToken;
+import cn.w.im.domains.client.MessageClientType;
 import cn.w.im.domains.messages.client.ConnectMessage;
 import cn.w.im.domains.messages.client.ConnectResponseMessage;
 import cn.w.im.domains.messages.client.LogoutResponseMessage;
@@ -26,12 +27,15 @@ public class ConnectHandler extends ChannelInboundHandlerAdapter {
 
     private ConnectToken connectToken;
 
+    private MessageClientType clientType;
+
     /**
      * 构造函数.
      */
-    public ConnectHandler(ConnectToken connectToken) {
+    public ConnectHandler(ConnectToken connectToken, MessageClientType messageClientType) {
         this.connectToken = connectToken;
         log = LogFactory.getLog(this.getClass());
+        this.clientType = clientType;
     }
 
 
@@ -43,7 +47,7 @@ public class ConnectHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ConnectMessage connectMessage = new ConnectMessage(this.connectToken.getLoginId(), this.connectToken.getToken());
+        ConnectMessage connectMessage = new ConnectMessage(this.clientType, this.connectToken.getLoginId(), this.connectToken.getToken());
         ctx.writeAndFlush(connectMessage);
     }
 
@@ -57,7 +61,7 @@ public class ConnectHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ConnectResponseMessage) {
-            final Console console = new Console(ctx, this.connectToken.getLoginId());
+            final Console console = new Console(ctx, this.connectToken.getLoginId(), this.clientType);
             new Thread(new Runnable() {
                 @Override
                 public void run() {

@@ -48,9 +48,9 @@ public class MessageClientConnectPlugin extends MessagePlugin<ConnectMessage> {
 
     private void processMessageWithMessageServer(ConnectMessage message, PluginContext context) {
         try {
-            MessageServer.current().clientCacheProvider().registerClient(message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
+            MessageServer.current().clientCacheProvider().registerClient(message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
             MessageServer.current().connect(message.getToken(), message.getLoginId(), context.getCurrentHost());
-            MessageClientBasic messageClientBasic = new MessageClientBasic(message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
+            MessageClientBasic messageClientBasic = new MessageClientBasic(message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
             ConnectedMessage connectedMessage = new ConnectedMessage(message.getToken(), messageClientBasic, MessageServer.current().getServerBasic());
 
             MessageServer.current().sendMessageProvider().send(ServerType.MessageServer, connectedMessage);

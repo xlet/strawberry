@@ -4,6 +4,7 @@ import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.client.Client;
 import cn.w.im.domains.client.MessageClientBasic;
+import cn.w.im.domains.client.MessageClientType;
 import cn.w.im.exceptions.*;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -27,13 +28,14 @@ public interface ClientCacheProvider {
     /**
      * register message client.
      *
-     * @param loginId    login id.
-     * @param linkedHost linked host.
-     * @param linkedPort linked port.
+     * @param messageClientType message client type.
+     * @param loginId           login id.
+     * @param linkedHost        linked host.
+     * @param linkedPort        linked port.
      * @throws MessageClientRegisteredException message client has registered exception.
      * @throws ClientNotRegisterException       client dit not register exception.
      */
-    void registerClient(String loginId, String linkedHost, int linkedPort) throws MessageClientRegisteredException, ClientNotRegisterException;
+    void registerClient(MessageClientType messageClientType, String loginId, String linkedHost, int linkedPort) throws MessageClientRegisteredException, ClientNotRegisterException;
 
     /**
      * register server.
@@ -52,7 +54,7 @@ public interface ClientCacheProvider {
      * @param messageClientBasic message client basic.
      * @param serverBasic        linked server basic.
      * @throws MessageClientRegisteredException message client has registered exception.
-     * @throws ServerNotRegisterException server not registered exception.
+     * @throws ServerNotRegisterException       server not registered exception.
      */
     void registerClient(MessageClientBasic messageClientBasic, ServerBasic serverBasic) throws ServerNotRegisterException, MessageClientRegisteredException;
 
@@ -97,17 +99,25 @@ public interface ClientCacheProvider {
     /**
      * get matched client.
      *
+     * @param messageClientType message client type.
      * @param loginId login id.
      * @return Client.
      * @throws ClientNotFoundException client not found exception.
      */
-    Client getClient(String loginId) throws ClientNotFoundException;
+    Client getClient(MessageClientType messageClientType, String loginId) throws ClientNotFoundException;
+
+    /**
+     * get matched client.
+     * @param loginId login id.
+     * @return clients.
+     */
+    Collection<Client> getClients(String loginId);
 
     /**
      * get all matched client.
      *
      * @param serverType server type.
-     * @return Client.
+     * @return clients.
      */
     Collection<Client> getClients(ServerType serverType);
 

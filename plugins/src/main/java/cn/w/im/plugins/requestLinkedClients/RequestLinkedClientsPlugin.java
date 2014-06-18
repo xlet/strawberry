@@ -62,7 +62,7 @@ public class RequestLinkedClientsPlugin extends MessagePlugin<RequestLinkedClien
             List<MessageClientBasic> clientBasics = new ArrayList<MessageClientBasic>();
             for (Client client : clients) {
                 MessageClient messageClient = (MessageClient) client;
-                clientBasics.add(new MessageClientBasic(messageClient.getLoginId(), messageClient.getRemoteHost(), messageClient.getRemotePort()));
+                clientBasics.add(new MessageClientBasic(messageClient.getMessageClientType(), messageClient.getLoginId(), messageClient.getRemoteHost(), messageClient.getRemotePort()));
             }
 
             ResponseLinkedClientsMessage responseMessage = new ResponseLinkedClientsMessage(MessageServer.current().getServerBasic(), clientBasics, message.getRespondKey());

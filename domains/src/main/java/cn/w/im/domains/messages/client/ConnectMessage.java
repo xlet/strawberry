@@ -1,6 +1,7 @@
 package cn.w.im.domains.messages.client;
 
 import cn.w.im.domains.MessageType;
+import cn.w.im.domains.client.MessageClientType;
 import cn.w.im.domains.messages.Message;
 
 /**
@@ -9,6 +10,8 @@ import cn.w.im.domains.messages.Message;
  * Summary: message client linked message server message.
  */
 public class ConnectMessage extends Message implements ClientToServerMessage {
+
+    private MessageClientType clientType;
 
     private String loginId;
 
@@ -24,17 +27,38 @@ public class ConnectMessage extends Message implements ClientToServerMessage {
     /**
      * constructor.
      *
-     * @param loginId login id.
-     * @param token   token String.
+     * @param clientType message client type.
+     * @param loginId    login id.
+     * @param token      token String.
      */
-    public ConnectMessage(String loginId, String token) {
+    public ConnectMessage(MessageClientType clientType, String loginId, String token) {
         this();
+        this.clientType = clientType;
         this.loginId = loginId;
         this.token = token;
     }
 
     /**
+     * get message client type.
+     *
+     * @return message client type.
+     */
+    public MessageClientType getClientType() {
+        return this.clientType;
+    }
+
+    /**
+     * set message client type.
+     *
+     * @param clientType message client type.
+     */
+    public void setClientType(MessageClientType clientType) {
+        this.clientType = clientType;
+    }
+
+    /**
      * get login id.
+     *
      * @return login id.
      */
     public String getLoginId() {
@@ -43,6 +67,7 @@ public class ConnectMessage extends Message implements ClientToServerMessage {
 
     /**
      * set login id.
+     *
      * @param loginId login id.
      */
     public void setLoginId(String loginId) {

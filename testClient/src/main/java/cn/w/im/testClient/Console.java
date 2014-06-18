@@ -1,5 +1,6 @@
 package cn.w.im.testClient;
 
+import cn.w.im.domains.client.MessageClientType;
 import cn.w.im.domains.messages.client.LogoutMessage;
 import cn.w.im.domains.messages.client.NormalMessage;
 import io.netty.channel.ChannelHandlerContext;
@@ -13,15 +14,11 @@ import java.util.Scanner;
  */
 public class Console {
 
-    /**
-     * 连接上下文.
-     */
     private ChannelHandlerContext ctx;
 
-    /**
-     * 自己id.
-     */
     private String selfId;
+
+    private MessageClientType clientType;
 
     /**
      * 构造函数.
@@ -29,9 +26,10 @@ public class Console {
      * @param ctx    连接上下文.
      * @param selfId 自己id.
      */
-    public Console(ChannelHandlerContext ctx, String selfId) {
+    public Console(ChannelHandlerContext ctx, String selfId, MessageClientType clientType) {
         this.ctx = ctx;
         this.selfId = selfId;
+        this.clientType = clientType;
     }
 
     /**
@@ -63,7 +61,7 @@ public class Console {
      * 退出登陆.
      */
     public void logout() {
-        LogoutMessage logoutMessage = new LogoutMessage(this.selfId);
+        LogoutMessage logoutMessage = new LogoutMessage(this.clientType, this.selfId);
         ctx.writeAndFlush(logoutMessage);
     }
 
@@ -78,7 +76,7 @@ public class Console {
         String id = scanner.next();
         System.out.print("请输入要发送的消息:");
         String message = scanner.next();
-        NormalMessage normalMessage = new NormalMessage(this.selfId, id, message);
+        NormalMessage normalMessage = new NormalMessage(this.clientType, this.selfId, id, message);
         ctx.writeAndFlush(normalMessage);
         run();
     }

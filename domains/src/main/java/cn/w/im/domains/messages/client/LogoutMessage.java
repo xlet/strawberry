@@ -1,6 +1,7 @@
 package cn.w.im.domains.messages.client;
 
 import cn.w.im.domains.MessageType;
+import cn.w.im.domains.client.MessageClientType;
 import cn.w.im.domains.messages.Message;
 
 /**
@@ -9,9 +10,7 @@ import cn.w.im.domains.messages.Message;
  */
 public class LogoutMessage extends Message implements ClientToServerMessage {
 
-    /**
-     * 登陆id.
-     */
+    private MessageClientType clientType;
     private String loginId;
 
     /**
@@ -24,11 +23,31 @@ public class LogoutMessage extends Message implements ClientToServerMessage {
     /**
      * 构造函数.
      *
-     * @param loginId 登陆id.
+     * @param clientType message client type.
+     * @param loginId    登陆id.
      */
-    public LogoutMessage(String loginId) {
+    public LogoutMessage(MessageClientType clientType, String loginId) {
         this();
+        this.clientType = clientType;
         this.loginId = loginId;
+    }
+
+    /**
+     * get message client type.
+     *
+     * @return message client type.
+     */
+    public MessageClientType getClientType() {
+        return this.clientType;
+    }
+
+    /**
+     * set message client type.
+     *
+     * @param clientType message client type.
+     */
+    public void setClientType(MessageClientType clientType) {
+        this.clientType = clientType;
     }
 
     /**
