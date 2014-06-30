@@ -11,6 +11,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
@@ -67,11 +68,8 @@ public class UserCenterSupport {
         }
     }
 
-    private String postAsString(String url, Map<String, String> params) throws IOException, UcException {
-        HttpPost httpPost = new HttpPost(url);
-        HttpEntity httpEntity = new UrlEncodedFormEntity(toNvps(sign(url, params)), "utf-8");
-        httpPost.setEntity(httpEntity);
-        CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+    private String execute(HttpUriRequest request) throws IOException, UcException {
+        CloseableHttpResponse httpResponse = httpClient.execute(request);
         int httpStatus = httpResponse.getStatusLine().getStatusCode();
         if (httpStatus == 200) {
             return EntityUtils.toString(httpResponse.getEntity());
@@ -79,16 +77,18 @@ public class UserCenterSupport {
         throw new UcException("request error, code[" + httpStatus + "].");
     }
 
+    private String postAsString(String url, Map<String, String> params) throws IOException, UcException {
+        HttpPost httpPost = new HttpPost(url);
+        HttpEntity httpEntity = new UrlEncodedFormEntity(toNvps(sign(url, params)), "utf-8");
+        httpPost.setEntity(httpEntity);
+        return execute(httpPost);
+    }
+
 
     private String getAsString(String url, Map<String, String> params) throws IOException, UcException {
         url = url + "?" + toQueryString(sign(url, params));
         HttpGet httpGet = new HttpGet(url);
-        CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
-        int httpStatus = httpResponse.getStatusLine().getStatusCode();
-        if (httpStatus == 200) {
-            return EntityUtils.toString(httpResponse.getEntity());
-        }
-        throw new UcException("request error, code[" + httpStatus + "].");
+        return execute(httpGet);
     }
 
     private Map<String, String> sign(String url, Map<String, String> params) {
