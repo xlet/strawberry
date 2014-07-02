@@ -27,7 +27,7 @@ public class SpringContext implements ApplicationContextAware {
 
     public static ApplicationContext context() {
         if (appCtx == null) {
-            appCtx = new ClassPathXmlApplicationContext("classpath*:applicationContext.xml");o
+            appCtx = new ClassPathXmlApplicationContext("classpath*:applicationContext.xml");
         }
         return appCtx;
     }

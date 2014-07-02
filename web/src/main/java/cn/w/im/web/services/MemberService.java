@@ -1,6 +1,6 @@
 package cn.w.im.web.services;
 
-import cn.w.im.utils.sdk.usercenter.UcException;
+import cn.w.im.utils.sdk.usercenter.UserCenterException;
 import cn.w.im.web.vo.LinkmanViewObject;
 import cn.w.im.web.vo.MemberViewObject;
 
@@ -30,5 +30,5 @@ public interface MemberService {
      * @param referrer referrer url.
      * @return member info. see {@link cn.w.im.web.vo.MemberViewObject}
      */
-    MemberViewObject get(String fromId, String referrer) throws UcException;
+    MemberViewObject get(String fromId, String referrer);
 }
