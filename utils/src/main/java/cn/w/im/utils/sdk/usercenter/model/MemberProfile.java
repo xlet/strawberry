@@ -30,6 +30,10 @@ public class MemberProfile {
     private String area;
     private String street;
     private String address;
+    private boolean emailValid;
+    private boolean mobileValid;
+    private boolean realNameValid;
+    private boolean companyValid;
 
     public String getId() {
         return id;
@@ -215,6 +219,38 @@ public class MemberProfile {
         this.address = address;
     }
 
+    public boolean isEmailValid() {
+        return emailValid;
+    }
+
+    public void setEmailValid(boolean emailValid) {
+        this.emailValid = emailValid;
+    }
+
+    public boolean isMobileValid() {
+        return mobileValid;
+    }
+
+    public void setMobileValid(boolean mobileValid) {
+        this.mobileValid = mobileValid;
+    }
+
+    public boolean isRealNameValid() {
+        return realNameValid;
+    }
+
+    public void setRealNameValid(boolean realNameValid) {
+        this.realNameValid = realNameValid;
+    }
+
+    public boolean isCompanyValid() {
+        return companyValid;
+    }
+
+    public void setCompanyValid(boolean companyValid) {
+        this.companyValid = companyValid;
+    }
+
     @Override
     public String toString() {
         return "MemberProfile{" +
@@ -241,6 +277,10 @@ public class MemberProfile {
                 ", area='" + area + '\'' +
                 ", street='" + street + '\'' +
                 ", address='" + address + '\'' +
+                ", emailValid=" + emailValid +
+                ", mobileValid=" + mobileValid +
+                ", realNameValid=" + realNameValid +
+                ", companyValid=" + companyValid +
                 '}';
     }
 }
