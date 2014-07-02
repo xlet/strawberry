@@ -10,10 +10,10 @@ import cn.w.im.domains.messages.server.TokenMessage;
 import cn.w.im.exceptions.*;
 import cn.w.im.plugins.MessagePlugin;
 import cn.w.im.server.LoginServer;
-import cn.w.im.utils.sdk.usercenter.MemberService;
 import cn.w.im.utils.sdk.usercenter.Members;
 import cn.w.im.utils.sdk.usercenter.UserCenterException;
 import cn.w.im.utils.sdk.usercenter.model.Account;
+import cn.w.im.utils.spring.SpringContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -31,7 +31,7 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
 
     private Log logger = LogFactory.getLog(this.getClass());
 
-    private Members members = new MemberService();
+    private Members members = SpringContext.context().getBean("members", Members.class);
 
     /**
      * 构造函数.

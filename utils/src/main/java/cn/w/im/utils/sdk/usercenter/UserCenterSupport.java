@@ -6,17 +6,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.*;
@@ -30,21 +29,13 @@ public class UserCenterSupport {
 
     private Logger logger = Logger.getLogger(getClass());
 
-    private static final int SOCKET_TIMEOUT = 20000;
-    private static final int CONNECT_TIMEOUT = 20000;
-
     private final ObjectMapper mapper = new ObjectMapper();
 
+    @Autowired
     private CloseableHttpClient httpClient;
+    @Autowired
+    protected UcConfig config;
 
-    private void init() {
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build();
-        httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
-    }
-
-    public UserCenterSupport() {
-        init();
-    }
 
     protected <T> T get(String url, Class<T> clazz) throws UserCenterException {
         String resp = "";
@@ -102,7 +93,7 @@ public class UserCenterSupport {
             params = new HashMap<String, String>();
         }
         params.put("url", url);
-        params.put("secret", UcConfig.getValue("api.secret"));
+        params.put("secret", config.getSecret());
         String signature = DigestUtils.md5Hex(toQueryString(params));
         params.put("sign", signature);
         params.remove("url");

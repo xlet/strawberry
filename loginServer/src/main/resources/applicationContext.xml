@@ -36,4 +36,24 @@
     <bean id="loginServerPluginInitializer" class="cn.w.im.plugins.init.LoginServerPluginInitializer"/>
     <bean id="messageBusPluginInitializer" class="cn.w.im.plugins.init.MessageBusPluginInitializer"/>
     <bean id="messageServerPluginInitializer" class="cn.w.im.plugins.init.MessageServerPluginInitializer"/>
+
+
+    <!-- http client -->
+    <bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig" factory-method="custom">
+        <property name="socketTimeout" value="200000"/>
+        <property name="connectTimeout" value="200000"/>
+    </bean>
+    <bean id="requestConfig" factory-bean="requestConfigBuilder" factory-method="build"/>
+    <bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder" factory-method="create">
+        <property name="defaultRequestConfig" ref="requestConfig"/>
+    </bean>
+    <bean id="httpClient" factory-bean="httpClientBuilder" factory-method="build"/>
+
+    <bean id="ucConfig" class="cn.w.im.utils.sdk.usercenter.config.UcConfig">
+        <property name="baseUrl" value="${userCenter.api.url}"/>
+        <property name="secret" value="${userCenter.api.secret}"/>
+    </bean>
+
+    <bean id="members" class="cn.w.im.utils.sdk.usercenter.MemberService"/>
+
 </beans>

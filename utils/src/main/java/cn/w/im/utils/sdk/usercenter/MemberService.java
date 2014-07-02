@@ -1,6 +1,5 @@
 package cn.w.im.utils.sdk.usercenter;
 
-import cn.w.im.utils.sdk.usercenter.config.UcConfig;
 import cn.w.im.utils.sdk.usercenter.model.Account;
 import cn.w.im.utils.sdk.usercenter.model.MemberProfile;
 import cn.w.im.utils.sdk.usercenter.model.Response;
@@ -13,7 +12,7 @@ import java.util.Map;
  * DateTime: 14-6-30 上午9:59
  * Summary:
  */
-public class MemberService extends UserCenterSupport implements Members{
+public class MemberService extends UserCenterSupport implements Members {
 
     /**
      * 通过w号获取会员资料
@@ -23,7 +22,7 @@ public class MemberService extends UserCenterSupport implements Members{
      */
     @Override
     public MemberProfile getByWid(String wid) throws UserCenterException {
-        String url = UcConfig.getValue("baseURL")+"member/"+wid;
+        String url = config.getBaseUrl() + "member/" + wid;
         return get(url, MemberProfile.class);
     }
 
@@ -35,19 +34,10 @@ public class MemberService extends UserCenterSupport implements Members{
      */
     @Override
     public boolean verify(Account account) throws UserCenterException {
-        String url =  UcConfig.getValue("baseURL")+"member/"+account.getWid()+"/verify";
+        String url = config.getBaseUrl() + "member/" + account.getWid() + "/verify";
         Map<String, String> params = new HashMap<String, String>();
         params.put("password", MD5Util.twiceMd5(account.getPassword()));
         Response response = post(url, params, Response.class);
         return response.isSuccess();
     }
-
-
-    public static void main(String[] args) throws UserCenterException {
-        Members members = new MemberService();
-        MemberProfile memberProfile = members.getByWid("1002885");
-        System.out.println(memberProfile.toString());
-        System.out.println(members.verify(new Account("1002885", "Legend1943")));
-    }
-
 }

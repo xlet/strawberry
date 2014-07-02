@@ -1,6 +1,5 @@
 package cn.w.im.web.services;
 
-import cn.w.im.utils.sdk.usercenter.UserCenterException;
 import cn.w.im.web.vo.LinkmanViewObject;
 import cn.w.im.web.vo.MemberViewObject;
 
