@@ -5,19 +5,19 @@ import cn.w.im.utils.sdk.usercenter.model.Response;
 /**
  * Creator: JimmyLin
  * DateTime: 14-6-30 上午11:18
- * Summary:
+ * Summary: 用户中心异常
  */
-public class UcException extends Exception {
+public class UserCenterException extends Exception {
 
-    public UcException() {
+    public UserCenterException() {
     }
 
-    public UcException(String message) {
+    public UserCenterException(String message) {
         super(message);
     }
 
 
-    public UcException(Response response) {
+    public UserCenterException(Response response) {
         super(response.getErrorMessage());
     }
 }

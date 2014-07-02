@@ -31,7 +31,7 @@ public class NormalMessage extends Message implements ServerToClientMessage, Cli
      */
     public NormalMessage(MessageClientType messageClientType, String from, String to, String content) {
         this();
-        this.clientType = clientType;
+        this.clientType = messageClientType;
         this.from = from;
         this.to = to;
         this.content = content;

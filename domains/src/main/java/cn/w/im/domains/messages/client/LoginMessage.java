@@ -78,7 +78,7 @@ public class LoginMessage extends Message implements ClientToServerMessage {
      *
      * @return message client type.
      */
-    public MessageClientType getMessageClientType() {
+    public MessageClientType getClientType() {
         return clientType;
     }
 
@@ -87,7 +87,7 @@ public class LoginMessage extends Message implements ClientToServerMessage {
      *
      * @param clientType message client Type.
      */
-    public void setMessageClientType(MessageClientType clientType) {
+    public void setClientType(MessageClientType clientType) {
         this.clientType = clientType;
     }
 }

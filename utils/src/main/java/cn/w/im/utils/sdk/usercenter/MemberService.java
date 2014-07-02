@@ -22,7 +22,7 @@ public class MemberService extends UserCenterSupport implements Members{
      * @return 会员资料
      */
     @Override
-    public MemberProfile getByWid(String wid) throws UcException {
+    public MemberProfile getByWid(String wid) throws UserCenterException {
         String url = UcConfig.getValue("baseURL")+"member/"+wid;
         return get(url, MemberProfile.class);
     }
@@ -34,7 +34,7 @@ public class MemberService extends UserCenterSupport implements Members{
      * @return 校验成功与否
      */
     @Override
-    public boolean verify(Account account) throws UcException {
+    public boolean verify(Account account) throws UserCenterException {
         String url =  UcConfig.getValue("baseURL")+"member/"+account.getWid()+"/verify";
         Map<String, String> params = new HashMap<String, String>();
         params.put("password", MD5Util.twiceMd5(account.getPassword()));
@@ -43,11 +43,11 @@ public class MemberService extends UserCenterSupport implements Members{
     }
 
 
-    public static void main(String[] args) throws UcException {
+    public static void main(String[] args) throws UserCenterException {
         Members members = new MemberService();
         MemberProfile memberProfile = members.getByWid("1002885");
         System.out.println(memberProfile.toString());
-        System.out.println(members.verify(new Account("1000273", "w123456")));
+        System.out.println(members.verify(new Account("1002885", "Legend1943")));
     }
 
 }

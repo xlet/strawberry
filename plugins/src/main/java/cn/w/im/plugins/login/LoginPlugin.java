@@ -2,13 +2,18 @@ package cn.w.im.plugins.login;
 
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.PluginContext;
-import cn.w.im.domains.messages.client.LoginMessage;
-import cn.w.im.domains.messages.server.TokenMessage;
-import cn.w.im.domains.messages.client.LoginResponseMessage;
-import cn.w.im.exceptions.*;
-import cn.w.im.server.LoginServer;
 import cn.w.im.domains.ServerType;
+import cn.w.im.domains.client.Client;
+import cn.w.im.domains.messages.client.LoginMessage;
+import cn.w.im.domains.messages.client.LoginResponseMessage;
+import cn.w.im.domains.messages.server.TokenMessage;
+import cn.w.im.exceptions.*;
 import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.server.LoginServer;
+import cn.w.im.utils.sdk.usercenter.MemberService;
+import cn.w.im.utils.sdk.usercenter.Members;
+import cn.w.im.utils.sdk.usercenter.UserCenterException;
+import cn.w.im.utils.sdk.usercenter.model.Account;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,6 +30,8 @@ import org.apache.commons.logging.LogFactory;
 public class LoginPlugin extends MessagePlugin<LoginMessage> {
 
     private Log logger = LogFactory.getLog(this.getClass());
+
+    private Members members = new MemberService();
 
     /**
      * 构造函数.
@@ -53,7 +60,7 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
 
     private void processWithLoginServer(LoginMessage message, PluginContext context) {
         try {
-            LoginServer.current().clientCacheProvider().registerClient(message.getMessageClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
+            LoginServer.current().clientCacheProvider().registerClient(message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
             login(message);
             ConnectToken token = LoginServer.current().allocateProvider().allocate(message.getLoginId(), context.getCurrentHost());
 
@@ -77,7 +84,19 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
     private void login(LoginMessage message) throws IdPasswordException, LoggedInException {
         String loginId = message.getLoginId();
         String password = message.getPassword();
-        //TODO:jackie check id and password,not correct throw IdPasswordException
-        //TODO:jackie check id has been logged in. if logged in throw LoggedInException
+        try {
+            //this type of client already exists
+            Client client = LoginServer.current().clientCacheProvider().getClient(message.getClientType(), loginId);
+            throw new LoggedInException(client.getRemoteHost());
+        } catch (ClientNotFoundException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        try {
+            if(!members.verify(new Account(loginId, password))){
+                throw new IdPasswordException(loginId);
+            }
+        } catch (UserCenterException e) {
+            logger.error(e.getMessage());
+        }
     }
 }

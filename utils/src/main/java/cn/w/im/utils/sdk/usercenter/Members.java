@@ -10,7 +10,7 @@ import cn.w.im.utils.sdk.usercenter.model.MemberProfile;
  */
 public interface Members {
 
-    MemberProfile getByWid(String wid) throws UcException;
+    MemberProfile getByWid(String wid) throws UserCenterException;
 
-    boolean verify(Account account) throws UcException;
+    boolean verify(Account account) throws UserCenterException;
 }

@@ -43,7 +43,7 @@ public class UserCenterSupport {
         init();
     }
 
-    protected <T> T get(String url, Class<T> clazz) throws UcException {
+    protected <T> T get(String url, Class<T> clazz) throws UserCenterException {
         String resp = "";
         try {
             resp = getAsString(url, null);
@@ -51,33 +51,33 @@ public class UserCenterSupport {
         } catch (IOException e) {
             try {
                 Response response = mapper.readValue(resp, Response.class);
-                throw new UcException(response);
+                throw new UserCenterException(response);
             } catch (IOException e1) {
-                throw new UcException(e1.getMessage() + ":" + resp);
+                throw new UserCenterException(e1.getMessage() + ":" + resp);
             }
         }
     }
 
-    protected <T> T post(String url, Map<String, String> params, Class<T> clazz) throws UcException {
+    protected <T> T post(String url, Map<String, String> params, Class<T> clazz) throws UserCenterException {
         String resp = "";
         try {
             resp = postAsString(url, params);
             return mapper.readValue(resp, clazz);
         } catch (IOException e) {
-            throw new UcException(e.getMessage() + ":" + resp);
+            throw new UserCenterException(e.getMessage() + ":" + resp);
         }
     }
 
-    private String execute(HttpUriRequest request) throws IOException, UcException {
+    private String execute(HttpUriRequest request) throws IOException, UserCenterException {
         CloseableHttpResponse httpResponse = httpClient.execute(request);
         int httpStatus = httpResponse.getStatusLine().getStatusCode();
         if (httpStatus == 200) {
             return EntityUtils.toString(httpResponse.getEntity());
         }
-        throw new UcException("request error, code[" + httpStatus + "].");
+        throw new UserCenterException("request error, code[" + httpStatus + "].");
     }
 
-    private String postAsString(String url, Map<String, String> params) throws IOException, UcException {
+    private String postAsString(String url, Map<String, String> params) throws IOException, UserCenterException {
         HttpPost httpPost = new HttpPost(url);
         HttpEntity httpEntity = new UrlEncodedFormEntity(toNvps(sign(url, params)), "utf-8");
         httpPost.setEntity(httpEntity);
@@ -85,7 +85,7 @@ public class UserCenterSupport {
     }
 
 
-    private String getAsString(String url, Map<String, String> params) throws IOException, UcException {
+    private String getAsString(String url, Map<String, String> params) throws IOException, UserCenterException {
         url = url + "?" + toQueryString(sign(url, params));
         HttpGet httpGet = new HttpGet(url);
         return execute(httpGet);
