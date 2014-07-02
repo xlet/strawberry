@@ -1,10 +1,10 @@
 package cn.w.im.web.services.impl;
 
 import cn.w.im.utils.sdk.usercenter.Members;
-import cn.w.im.utils.sdk.usercenter.UcException;
 import cn.w.im.utils.sdk.usercenter.UserCenterException;
 import cn.w.im.utils.sdk.usercenter.model.MemberProfile;
 import cn.w.im.web.GlobalConfiguration;
+import cn.w.im.web.exceptions.IllegalMemberException;
 import cn.w.im.web.mongo.dao.TempMemberDao;
 import cn.w.im.web.mongo.MongoTempMember;
 import cn.w.im.web.services.MemberService;
@@ -39,8 +39,18 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public boolean existed(String fromId, String referrer) {
-        //todo : jackie implement!
+    public boolean existed(String name, String referrer) {
+        if (StringUtils.isEmpty(name)){
+            throw new IllegalArgumentException("the name is empty.");
+        }
+        try {
+            MemberViewObject memberViewObject = get(name, referrer);
+            if (memberViewObject!=null){
+                return true;
+            }
+        } catch (IllegalMemberException e){
+            return false;
+        }
         return false;
     }
 
@@ -57,12 +67,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberViewObject get(String name, String referrer) {
 
-        if (StringUtils.isEmpty(name)){
+        if (StringUtils.isEmpty(name)) {
             return new MemberViewObject();
         }
 
         MongoTempMember tempMember = tempMemberDao.getByName(name);
-        if (tempMember!=null){
+        if (tempMember != null) {
             return createByTempMember(tempMember);
         }
 
@@ -72,8 +82,8 @@ public class MemberServiceImpl implements MemberService {
         } catch (UserCenterException e) {
             LOG.error(e);
         }
-        //todo: jackie exception  memberNotFoundException
-        return null;
+
+        throw new IllegalMemberException(name);
     }
 
     private MemberViewObject createByUserCenter(MemberProfile memberProfile) {
