@@ -6,8 +6,10 @@ import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.utils.spring.SpringContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Creator: JackieHan.
@@ -19,7 +21,9 @@ public class MessagePersistentPlugin<TMessage extends Message> extends MessagePl
     /**
      * 日志.
      */
-    private Log logger = LogFactory.getLog(this.getClass());
+    private final Log logger = LogFactory.getLog(this.getClass());
+
+    private Configuration configuration;
 
     /**
      * 构造函数.
@@ -28,6 +32,7 @@ public class MessagePersistentPlugin<TMessage extends Message> extends MessagePl
      */
     public MessagePersistentPlugin(ServerType containerType) {
         super("MessagePersistentPlugin", "persistent message to mongo db.", containerType);
+        configuration = SpringContext.context().getBean(Configuration.class);
     }
 
     @Override
@@ -38,7 +43,7 @@ public class MessagePersistentPlugin<TMessage extends Message> extends MessagePl
     @Override
     public void processMessage(TMessage message, PluginContext context) {
         try {
-            MessagePersistentProvider provider = MessagePersistentProviderFactory.create(message, Configuration.current().getDataStoreType());
+            MessagePersistentProvider provider = MessagePersistentProviderFactory.create(message, configuration.getDataStoreType());
             provider.save(message);
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);

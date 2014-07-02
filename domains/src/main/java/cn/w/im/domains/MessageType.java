@@ -116,7 +116,17 @@ public enum MessageType {
     /**
      * server crashed message.
      */
-    ServerCrashed(0x18);
+    ServerCrashed(0x18),
+
+    /**
+     * web server special connect message.
+     */
+    WebServerConnect(0x19),
+
+    /**
+     * web server special normal message.
+     */
+    WebNormalMessage(0x1A);
 
     /**
      * 构造函数.

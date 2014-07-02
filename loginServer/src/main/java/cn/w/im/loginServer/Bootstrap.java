@@ -4,6 +4,7 @@ package cn.w.im.loginServer;
 import cn.w.im.domains.conf.Configuration;
 import cn.w.im.server.LoginServer;
 import cn.w.im.utils.ConfigHelper;
+import cn.w.im.utils.spring.SpringContext;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -48,7 +49,7 @@ public class Bootstrap {
             }
 
             if (command.endsWith("start")) {
-                daemon.loadConfig();
+                daemon.init();
                 daemon.startServer();
             } else if (command.equals("stop")) {
                 daemon.stopServer();
@@ -63,22 +64,12 @@ public class Bootstrap {
 
     private final EventLoopGroup bossGroup = new NioEventLoopGroup();
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
+    private Configuration configuration;
 
-    /**
-     * load config.
-     */
-    private void loadConfig() throws Exception {
-        logger.debug("loading config.");
 
-        Properties properties = ConfigHelper.getConfig(this.getClass(), "conf/server.conf");
-        Configuration.current().init(properties);
-
-        String hostIp = properties.getProperty("host");
-        int port = Integer.parseInt(properties.getProperty("port"));
-        LoginServer.current().init(hostIp, port);
-
-        logger.debug("read configuration: loginServer[" + hostIp + ":" + port + "]");
-        logger.debug("loaded config.");
+    private void init(){
+        configuration= SpringContext.context().getBean(Configuration.class);
+        LoginServer.current().init(configuration.getHost(),configuration.getPort());
     }
 
     private void startServer() throws Exception {
@@ -93,7 +84,7 @@ public class Bootstrap {
                 .childHandler(new ServerInitializer());
 
         ChannelFuture bindFuture;
-        if (Configuration.current().isDebug()) {
+        if (configuration.isDebug()) {
             bindFuture = serverBootstrap.bind(serverPort).sync();
         } else {
             bindFuture = serverBootstrap.bind(host, serverPort).sync();

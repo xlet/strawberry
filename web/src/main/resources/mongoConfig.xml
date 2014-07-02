@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <description>mongo configuration</description>
+
+    <bean id="mongo" class="cn.w.im.utils.mongo.MongoFactoryBean">
+        <property name="readSecondary" value="false" />
+        <property name="writeConcern" value="SAFE" />
+        <property name="url" value="${mongo.url}" />
+    </bean>
+    <bean id="morphia" class="cn.w.im.utils.mongo.MorphiaFactoryBean">
+        <property name="mapPackages">
+            <array>
+                <value>cn.w.im.domains.mongo</value>
+            </array>
+        </property>
+    </bean>
+    <bean id="dataStore" class="cn.w.im.utils.mongo.DatastoreFactoryBean">
+        <property name="morphia" ref="morphia" />
+        <property name="mongo" ref="mongo" />
+        <property name="dbName" value="im" />
+        <property name="toEnsureIndexes" value="true" />
+        <property name="toEnsureCaps" value="true" />
+    </bean>
+
+</beans>

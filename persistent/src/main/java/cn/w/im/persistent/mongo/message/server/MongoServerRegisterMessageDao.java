@@ -6,12 +6,16 @@ import cn.w.im.persistent.MessageDao;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-9 下午4:54.
  * Summary: 消息服务注册消息MongoDao.
  */
+@Component(value = "mongoServerRegisterMessageDao")
 public class MongoServerRegisterMessageDao extends BasicDAO<MongoServerRegisterMessage, ObjectId> implements MessageDao<ServerRegisterMessage> {
 
     /**
@@ -19,7 +23,8 @@ public class MongoServerRegisterMessageDao extends BasicDAO<MongoServerRegisterM
      *
      * @param ds datastore.
      */
-    public MongoServerRegisterMessageDao(Datastore ds) {
+    @Autowired
+    public MongoServerRegisterMessageDao(@Qualifier("dataStore")Datastore ds) {
         super(ds);
     }
 

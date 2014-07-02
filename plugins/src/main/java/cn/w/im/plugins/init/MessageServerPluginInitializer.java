@@ -5,6 +5,7 @@ import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.connected.ConnectedPlugin;
 import cn.w.im.plugins.connected.ConnectedResponsePlugin;
 import cn.w.im.plugins.connected.MessageClientConnectPlugin;
+import cn.w.im.plugins.connected.WebServerConnectPlugin;
 import cn.w.im.plugins.forward.ForwardReadyPlugin;
 import cn.w.im.plugins.forward.ForwardRequestPlugin;
 import cn.w.im.plugins.serverRegister.MessageServerRegisterResponsePlugin;
@@ -26,6 +27,10 @@ public class MessageServerPluginInitializer implements PluginInitializer {
     @Override
     public List<Plugin> init() {
         List<Plugin> plugins = new ArrayList<Plugin>();
+
+        //web server
+        plugins.add(new WebServerConnectPlugin(ServerType.MessageServer));
+
         //forward
         plugins.add(new ForwardRequestPlugin(ServerType.MessageServer));
         plugins.add(new ForwardReadyPlugin(ServerType.MessageServer));

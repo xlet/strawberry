@@ -1,9 +1,10 @@
-package cn.w.im.persistent.mongo;
+package cn.w.im.utils.mongo;
 
 import com.mongodb.Mongo;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
+import org.springframework.stereotype.Component;
 
 /**
  * Creator: JackieHan.

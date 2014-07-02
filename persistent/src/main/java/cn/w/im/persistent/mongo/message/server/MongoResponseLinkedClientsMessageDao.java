@@ -6,12 +6,16 @@ import cn.w.im.persistent.MessageDao;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 /**
  * Creator: JackieHan.
  * DateTime: 14-3-18 下午2:47.
  * Summary:
  */
+@Component(value = "mongoResponseLinkedClientsMessageDao")
 public class MongoResponseLinkedClientsMessageDao extends BasicDAO<MongoResponseLinkedClientsMessage, ObjectId> implements MessageDao<ResponseLinkedClientsMessage> {
 
     /**
@@ -19,7 +23,8 @@ public class MongoResponseLinkedClientsMessageDao extends BasicDAO<MongoResponse
      *
      * @param ds datastore.
      */
-    public MongoResponseLinkedClientsMessageDao(Datastore ds) {
+    @Autowired
+    public MongoResponseLinkedClientsMessageDao(@Qualifier("dataStore")Datastore ds) {
         super(ds);
     }
 

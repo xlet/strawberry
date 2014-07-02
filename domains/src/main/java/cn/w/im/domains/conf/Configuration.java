@@ -1,7 +1,5 @@
 package cn.w.im.domains.conf;
 
-import java.util.Properties;
-
 /**
  * Creator: JackieHan.
  * DateTime: 14-3-4 下午2:09.
@@ -9,47 +7,44 @@ import java.util.Properties;
  */
 public class Configuration {
 
-    private static Configuration configuration;
+    private String host;
 
-    /**
-     * 获取配置信息的单例.
-     *
-     * @return 配置信息.
-     */
-    public synchronized static Configuration current() {
-        if (configuration == null) {
-            configuration = new Configuration();
-        }
-        return configuration;
-    }
-
-    private Configuration() {
-    }
+    private int port;
 
     private boolean debug = false;
 
     private String dataStoreType = "mongo";
 
-    private MongoConfiguration mongoConfiguration;
-
-    private boolean isInit = false;
+    /**
+     * get host.
+     * @return host.
+     */
+    public String getHost(){
+        return this.host;
+    }
 
     /**
-     * 初始化配置信息.
-     *
-     * @param configProperties 配置信息.
+     * set host.
+     * @param host host.
      */
-    public void init(Properties configProperties) {
-        if (!isInit) {
-            this.mongoConfiguration = new MongoConfiguration(configProperties);
-            if (configProperties.containsKey("debug")) {
-                this.debug = Boolean.parseBoolean(configProperties.getProperty("debug"));
-            }
-            if (configProperties.containsKey("dataStoreType")) {
-                this.dataStoreType = configProperties.getProperty("dataStoreType");
-            }
-            isInit = true;
-        }
+    public void setHost(String host){
+        this.host=host;
+    }
+
+    /**
+     * get port.
+     * @return port.
+     */
+    public int getPort(){
+        return this.port;
+    }
+
+    /**
+     * set port.
+     * @param port port.
+     */
+    public void setPort(int port){
+        this.port = port;
     }
 
     /**
@@ -62,6 +57,14 @@ public class Configuration {
     }
 
     /**
+     * set whether debug mode.
+     * @param debug
+     */
+    public void setDebug(boolean debug){
+        this.debug = debug;
+    }
+
+    /**
      * get data store type.
      *
      * @return data store type.
@@ -71,11 +74,10 @@ public class Configuration {
     }
 
     /**
-     * 获取mongo配置信息.
-     *
-     * @return mongo配置信息.
+     * set data store type.
+     * @param dataStoreType data store type.
      */
-    public MongoConfiguration getMongoConfiguration() {
-        return mongoConfiguration;
+    public void setDataStoreType(String dataStoreType){
+        this.dataStoreType = dataStoreType;
     }
 }

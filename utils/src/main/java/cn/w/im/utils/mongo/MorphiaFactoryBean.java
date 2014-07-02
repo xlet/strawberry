@@ -1,4 +1,4 @@
-package cn.w.im.persistent.mongo;
+package cn.w.im.utils.mongo;
 
 import org.mongodb.morphia.Morphia;
 import org.springframework.beans.factory.config.AbstractFactoryBean;

@@ -38,6 +38,18 @@ public class LoginMessage extends Message implements ClientToServerMessage {
     }
 
     /**
+     * constructor.
+     *
+     * @param clientType message client type.
+     * @param loginId    login id.
+     */
+    public LoginMessage(MessageClientType clientType, String loginId) {
+        super(MessageType.Login);
+        this.clientType = clientType;
+        this.loginId = loginId;
+    }
+
+    /**
      * 获取登陆id.
      *
      * @return loginId.

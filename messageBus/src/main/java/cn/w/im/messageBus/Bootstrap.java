@@ -3,6 +3,7 @@ package cn.w.im.messageBus;
 import cn.w.im.domains.conf.Configuration;
 import cn.w.im.server.MessageBus;
 import cn.w.im.utils.ConfigHelper;
+import cn.w.im.utils.spring.SpringContext;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -47,7 +48,7 @@ public final class Bootstrap {
             }
 
             if (command.endsWith("start")) {
-                daemon.loadConfig();
+                daemon.init();
                 daemon.startServer();
             } else if (command.equals("stop")) {
                 daemon.stopServer();
@@ -62,19 +63,11 @@ public final class Bootstrap {
 
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
+    private Configuration configuration;
 
-    private void loadConfig() throws Exception {
-        logger.debug("loading config.");
-        Properties properties = ConfigHelper.getConfig(this.getClass(), "conf/server.conf");
-        Configuration.current().init(properties);
-
-        String host = properties.getProperty("host");
-        int port = Integer.parseInt(properties.getProperty("port"));
-
-        logger.debug("read configuration: messageServer[" + host + ":" + port + "].");
-        MessageBus.current().init(host, port);
-
-        logger.debug("loaded config.");
+    private void init() {
+        configuration = (Configuration) SpringContext.context().getBean("serverConfig");
+        MessageBus.current().init(configuration.getHost(), configuration.getPort());
     }
 
     private void startServer() throws Exception {
@@ -89,7 +82,7 @@ public final class Bootstrap {
                 .childHandler(new ServerInitializer());
 
         ChannelFuture bindFuture;
-        if (Configuration.current().isDebug()) {
+        if (configuration.isDebug()) {
             bindFuture = bootstrap.bind(MessageBus.current().getPort()).sync();
         } else {
             bindFuture = bootstrap.bind(MessageBus.current().getHost(), MessageBus.current().getPort()).sync();

@@ -1,7 +1,9 @@
 package cn.w.im.forwardServer;
 
+import cn.w.im.domains.conf.ForwardConfiguration;
 import cn.w.im.server.ForwardServer;
 import cn.w.im.utils.ConfigHelper;
+import cn.w.im.utils.spring.SpringContext;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
@@ -9,6 +11,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.Properties;
@@ -51,9 +54,9 @@ public class Bootstrap {
                     int serverPort = Integer.parseInt(args[2]);
                     String busHost = args[3];
                     int busPort = Integer.parseInt(args[4]);
-                    ForwardServer.current().init(serverHost, serverPort, busHost, busPort);
+                    daemon.init(serverHost, serverPort, busHost, busPort);
                 } else {
-                    daemon.loadConfig();
+                    daemon.init();
                 }
                 daemon.startServer();
             } else if (command.equals("stop")) {
@@ -67,28 +70,21 @@ public class Bootstrap {
         }
     }
 
+    private ForwardConfiguration forwardConfiguration;
+
     private final EventLoopGroup messageBusClientGroup = new NioEventLoopGroup();
     private final EventLoopGroup serverClientGroup = new NioEventLoopGroup();
     private boolean connectingServer = false;
     private boolean connectingBus = false;
 
-    /**
-     * 启动服务器.
-     */
-    private void loadConfig() throws Exception {
-        logger.debug("loading config.");
+    public void init(String serverHost, int serverPort, String busHost, int busPort) {
+        ForwardServer.current().init(serverHost, serverPort, busHost, busPort);
+    }
 
-        Properties properties = ConfigHelper.getConfig(this.getClass(), "conf/server.conf");
-
-        String serverHost = properties.getProperty("server.host");
-        int serverPort = Integer.parseInt(properties.getProperty("server.port"));
-        String busHost = properties.getProperty("bus.host");
-        int busPort = Integer.parseInt(properties.getProperty("bus.port"));
-
-        ForwardServer.current().init(busHost, busPort, serverHost, serverPort);
-
-        logger.debug("read configuration: server[" + serverHost + ":" + serverPort + "],messageBus[" + busHost + ":" + busPort + "]");
-        logger.debug("loaded config.");
+    public void init() {
+        this.forwardConfiguration = SpringContext.context().getBean(ForwardConfiguration.class);
+        ForwardServer.current().init(forwardConfiguration.getServerHost(), forwardConfiguration.getServerPort(),
+                forwardConfiguration.getBusHost(), forwardConfiguration.getBusPort());
     }
 
     private void startServer() throws Exception {

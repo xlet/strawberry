@@ -3,6 +3,7 @@ package cn.w.im.messageServer;
 import cn.w.im.domains.conf.Configuration;
 import cn.w.im.server.MessageServer;
 import cn.w.im.utils.ConfigHelper;
+import cn.w.im.utils.spring.SpringContext;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -43,7 +44,7 @@ public class Bootstrap {
             }
 
             if (command.endsWith("start")) {
-                daemon.loadConfig();
+                daemon.init();
                 daemon.startServer();
             } else if (command.equals("stop")) {
                 daemon.stopServer();
@@ -58,22 +59,12 @@ public class Bootstrap {
 
     private final EventLoopGroup bossGroup = new NioEventLoopGroup();
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
+    private Configuration configuration;
 
-
-    private void loadConfig() throws Exception {
-        logger.debug("loading config.");
-
-        Properties properties = ConfigHelper.getConfig(Bootstrap.class, "conf/server.conf");
-        Configuration.current().init(properties);
-
-        String hostIp = properties.getProperty("host");
-        int port = Integer.parseInt(properties.getProperty("port"));
-        MessageServer.current().init(hostIp, port);
-
-        logger.debug("read configuration: messageServer[" + hostIp + ":" + port + "]");
-        logger.debug("loaded config.");
+    private void init(){
+        configuration = SpringContext.context().getBean(Configuration.class);
+        MessageServer.current().init(configuration.getHost(),configuration.getPort());
     }
-
 
     private void startServer() throws Exception {
         logger.debug("server starting.");
@@ -88,7 +79,7 @@ public class Bootstrap {
 
         ChannelFuture future;
 
-        if (Configuration.current().isDebug()) {
+        if (configuration.isDebug()) {
             future = serverBootstrap.bind(serverPort).sync();
         } else {
             future = serverBootstrap.bind(serverHost, serverPort).sync();

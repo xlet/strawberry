@@ -51,10 +51,10 @@
         <module>exceptions</module>
         <module>loginServer</module>
         <module>persistent</module>
-        <module>resources</module>
         <module>messageBus</module>
         <module>server</module>
         <module>forwardServer</module>
+        <module>web</module>
     </modules>
 
     <dependencies>
@@ -247,7 +247,8 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
+            -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>

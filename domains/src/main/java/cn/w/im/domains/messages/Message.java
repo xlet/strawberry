@@ -24,6 +24,8 @@ import java.util.Date;
         @JsonSubTypes.Type(value = LogoutMessage.class, name = "Logout"),
         @JsonSubTypes.Type(value = LogoutResponseMessage.class, name = "LogoutResponse"),
         @JsonSubTypes.Type(value = NormalMessage.class, name = "Normal"),
+        @JsonSubTypes.Type(value = WebServerConnectMessage.class, name = "webServerConnect"),
+        @JsonSubTypes.Type(value = WebNormalMessage.class, name = "webNormal"),
         //forward
         @JsonSubTypes.Type(value = ForwardReadyMessage.class, name = "ForwardReady"),
         @JsonSubTypes.Type(value = ForwardRequestMessage.class, name = "ForwardRequest"),

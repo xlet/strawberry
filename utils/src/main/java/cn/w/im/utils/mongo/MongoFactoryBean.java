@@ -1,11 +1,12 @@
-package cn.w.im.persistent.mongo;
+package cn.w.im.utils.mongo;
 
-import cn.w.im.domains.conf.Configuration;
 import com.mongodb.Mongo;
 import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  */
 public class MongoFactoryBean extends AbstractFactoryBean<Mongo> {
 
+    private final Log logger = LogFactory.getLog(this.getClass());
     /**
      * 是否主从分离（读取从库），默认读写都在主库.
      */
@@ -24,6 +26,8 @@ public class MongoFactoryBean extends AbstractFactoryBean<Mongo> {
      * 设定写策略（出错时是否抛异常），默认采取SAFE模式（需要抛异常）.
      */
     private WriteConcern writeConcern = WriteConcern.SAFE;
+
+    private String url;
 
     /**
      * 设置是否主从分离.
@@ -43,6 +47,11 @@ public class MongoFactoryBean extends AbstractFactoryBean<Mongo> {
         this.writeConcern = writeConcern;
     }
 
+    public void setUrl(String url) {
+        logger.debug("set url is:" + url);
+        this.url = url;
+    }
+
     @Override
     public Class<?> getObjectType() {
         return Mongo.class;
@@ -50,7 +59,8 @@ public class MongoFactoryBean extends AbstractFactoryBean<Mongo> {
 
     @Override
     protected Mongo createInstance() throws Exception {
-        Mongo mongo = initMongo();
+        logger.debug("the url is :" + this.url);
+        Mongo mongo = new MongoClient(new MongoClientURI(url));
 
         if (readSecondary) {
             mongo.setReadPreference(ReadPreference.secondaryPreferred());
@@ -61,14 +71,8 @@ public class MongoFactoryBean extends AbstractFactoryBean<Mongo> {
         return mongo;
     }
 
-    /**
-     * 初始化Mongo.
-     *
-     * @return Mongo对象.
-     * @throws Exception 异常信息.
-     */
-    private Mongo initMongo() throws Exception {
-        String mongoUrl = Configuration.current().getMongoConfiguration().getUrl();
-        return new MongoClient(new MongoClientURI(mongoUrl));
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
     }
 }
