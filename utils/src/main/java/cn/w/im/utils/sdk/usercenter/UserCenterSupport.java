@@ -16,6 +16,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.*;
@@ -26,6 +27,8 @@ import java.util.*;
  * Summary:
  */
 public class UserCenterSupport {
+
+    private Logger logger = Logger.getLogger(getClass());
 
     private static final int SOCKET_TIMEOUT = 20000;
     private static final int CONNECT_TIMEOUT = 20000;
@@ -69,10 +72,13 @@ public class UserCenterSupport {
     }
 
     private String execute(HttpUriRequest request) throws IOException, UserCenterException {
+        logger.debug("request =>"+request.getURI().toString());
         CloseableHttpResponse httpResponse = httpClient.execute(request);
         int httpStatus = httpResponse.getStatusLine().getStatusCode();
         if (httpStatus == 200) {
-            return EntityUtils.toString(httpResponse.getEntity());
+            String resp = EntityUtils.toString(httpResponse.getEntity());
+            logger.debug("response =>\n"+resp);
+            return resp;
         }
         throw new UserCenterException("request error, code[" + httpStatus + "].");
     }

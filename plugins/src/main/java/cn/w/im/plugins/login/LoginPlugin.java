@@ -60,8 +60,9 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
 
     private void processWithLoginServer(LoginMessage message, PluginContext context) {
         try {
-            LoginServer.current().clientCacheProvider().registerClient(message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
             login(message);
+            LoginServer.current().clientCacheProvider().registerClient(message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
+
             ConnectToken token = LoginServer.current().allocateProvider().allocate(message.getLoginId(), context.getCurrentHost());
 
             //通知消息服务登陆token信息.
@@ -72,10 +73,10 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
             LoginServer.current().sendMessageProvider().send(ServerType.LoginServer, tokenMessage);
         } catch (IdPasswordException idPasswordException) {
             LoginResponseMessage idPasswordErrorMessage = new LoginResponseMessage(idPasswordException.getErrorCode(), idPasswordException.getMessage());
-            LoginServer.current().sendMessageProvider().send(message.getLoginId(), idPasswordErrorMessage);
+            LoginServer.current().sendMessageProvider().send(context.getCurrentHost(), context.getCurrentPort(), idPasswordErrorMessage);
         } catch (LoggedInException loggedInException) {
             LoginResponseMessage loggedInErrorMessage = new LoginResponseMessage(loggedInException.getErrorCode(), loggedInException.getMessage(), loggedInException.getLocalizedMessage());
-            LoginServer.current().sendMessageProvider().send(message.getLoginId(), loggedInErrorMessage);
+            LoginServer.current().sendMessageProvider().send(context.getCurrentHost(), context.getCurrentPort(), loggedInErrorMessage);
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
         }

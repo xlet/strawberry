@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -70,6 +71,19 @@ public class MessageTest {
     public void gen_normal_message(){
         NormalMessage message = new NormalMessage(CLIENT_TYPE, "one", "another", "消息内容");
         print(message);
+    }
+
+    @Test
+    public void decode() throws IOException {
+        String json = "{\"@type\":\"Normal\",\"clientType\":\"WinForm\",\"content\":\"who's your daddy\",\"from\":\"1004462060\",\"messageType\":\"Normal\",\"receivedTime\":1131313130.0,\"sendTime\":1404292690015.0,\"to\":\"1\"}\r\n";
+        for(byte b: json.getBytes("utf-8")){
+            System.out.print(String.format("%X",b)+" ");
+        }
+        NormalMessage message = mapper.readValue(json, NormalMessage.class);
+       // System.out.println(message);
+
+        print(message);
+
     }
 
     public void print(Object... o){
