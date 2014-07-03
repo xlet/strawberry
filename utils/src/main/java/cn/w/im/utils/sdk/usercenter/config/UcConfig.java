@@ -1,5 +1,7 @@
 package cn.w.im.utils.sdk.usercenter.config;
 
+import org.apache.http.impl.client.CloseableHttpClient;
+
 /**
  * Creator: JimmyLin
  * DateTime: 14-6-30 上午9:44
@@ -9,6 +11,8 @@ public class UcConfig {
 
     private String baseUrl;
     private String secret;
+
+    private CloseableHttpClient httpClient;
 
     /**
      * get user center api base url.
@@ -35,5 +39,13 @@ public class UcConfig {
 
     public void setSecret(String secret) {
         this.secret = secret;
+    }
+
+    public CloseableHttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    public void setHttpClient(CloseableHttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 }

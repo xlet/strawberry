@@ -90,7 +90,7 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
             Client client = LoginServer.current().clientCacheProvider().getClient(message.getClientType(), loginId);
             throw new LoggedInException(client.getRemoteHost());
         } catch (ClientNotFoundException ex) {
-            logger.error(ex.getMessage(), ex);
+            logger.error(ex.getMessage());
         }
         try {
             if(!members.verify(new Account(loginId, password))){

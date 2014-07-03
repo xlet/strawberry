@@ -11,11 +11,9 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.*;
@@ -31,9 +29,6 @@ public class UserCenterSupport {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @Autowired
-    private CloseableHttpClient httpClient;
-    @Autowired
     protected UcConfig config;
 
 
@@ -64,7 +59,7 @@ public class UserCenterSupport {
 
     private String execute(HttpUriRequest request) throws IOException, UserCenterException {
         logger.debug("request =>"+request.getURI().toString());
-        CloseableHttpResponse httpResponse = httpClient.execute(request);
+        CloseableHttpResponse httpResponse = config.getHttpClient().execute(request);
         int httpStatus = httpResponse.getStatusLine().getStatusCode();
         if (httpStatus == 200) {
             String resp = EntityUtils.toString(httpResponse.getEntity());
@@ -122,4 +117,11 @@ public class UserCenterSupport {
         return sb.toString();
     }
 
+    public UcConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(UcConfig config) {
+        this.config = config;
+    }
 }

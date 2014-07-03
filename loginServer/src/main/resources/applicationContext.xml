@@ -52,8 +52,11 @@
     <bean id="ucConfig" class="cn.w.im.utils.sdk.usercenter.config.UcConfig">
         <property name="baseUrl" value="${userCenter.api.url}"/>
         <property name="secret" value="${userCenter.api.secret}"/>
+        <property name="httpClient" ref="httpClient"/>
     </bean>
 
-    <bean id="members" class="cn.w.im.utils.sdk.usercenter.MemberService"/>
+    <bean id="members" class="cn.w.im.utils.sdk.usercenter.MemberService">
+        <property name="config" ref="ucConfig"/>
+    </bean>
 
 </beans>
