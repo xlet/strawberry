@@ -3,7 +3,6 @@ package cn.w.im.plugins.login;
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.ServerType;
-import cn.w.im.domains.client.Client;
 import cn.w.im.domains.messages.client.LoginMessage;
 import cn.w.im.domains.messages.client.LoginResponseMessage;
 import cn.w.im.domains.messages.server.TokenMessage;
@@ -60,11 +59,9 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
 
     private void processWithLoginServer(LoginMessage message, PluginContext context) {
         try {
-            login(message);
-            LoginServer.current().clientCacheProvider().registerClient(message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
+            login(message, context);
 
             ConnectToken token = LoginServer.current().allocateProvider().allocate(message.getLoginId(), context.getCurrentHost());
-
             //通知消息服务登陆token信息.
             TokenMessage tokenMessage = new TokenMessage(token, LoginServer.current().getServerBasic());
             LoginServer.current().sendMessageProvider().send(token.getAllocatedMessageServer(), tokenMessage);
@@ -77,30 +74,35 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
         } catch (LoggedInException loggedInException) {
             LoginResponseMessage loggedInErrorMessage = new LoginResponseMessage(loggedInException.getErrorCode(), loggedInException.getMessage(), loggedInException.getLocalizedMessage());
             LoginServer.current().sendMessageProvider().send(context.getCurrentHost(), context.getCurrentPort(), loggedInErrorMessage);
-        } catch (ServerInnerException ex) {
-            logger.error(ex.getMessage(), ex);
         }
     }
 
-    private void login(LoginMessage message) throws IdPasswordException, LoggedInException {
+    private void login(LoginMessage message, PluginContext context) throws IdPasswordException, LoggedInException {
         String loginId = message.getLoginId();
         String password = message.getPassword();
-        try {
-            //this type of client already exists
-            Client client = LoginServer.current().clientCacheProvider().getClient(message.getClientType(), loginId);
-            if (LoginServer.current().allocateProvider().isConnected(message.getClientType(), loginId, client.getRemoteHost())) {
-                logger.debug(loginId+" has login "+message);
-                throw new LoggedInException(client.getRemoteHost());
-            }
-        } catch (ClientNotFoundException ex) {
-            logger.error(ex.getMessage());
+
+        //if the specified client has connected to message server
+        if (LoginServer.current().allocateProvider().isConnected(message.getClientType(), loginId, context.getCurrentHost())) {
+            logger.debug(loginId + " has login ");
+            throw new LoggedInException(context.getCurrentHost());
         }
+
         try {
-            if (!members.verify(new Account(loginId, password))) {
+            boolean loginSuccess = members.verify(new Account(loginId, password));
+            if (loginSuccess) {
+                // try to register
+                LoginServer.current().clientCacheProvider().registerClient(message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
+            } else {
                 throw new IdPasswordException(loginId);
             }
+
         } catch (UserCenterException e) {
             logger.error(e.getMessage());
+        } catch (ClientNotRegisterException e) {
+            logger.debug(e.getMessage());
+        } catch (MessageClientRegisteredException e) {
+            logger.debug(e.getMessage());
         }
     }
+
 }
