@@ -336,7 +336,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
             MessageClient messageClient = (MessageClient) removeClient;
             if (this.messageClientOnThisServerMap.containsKey(messageClient.getLoginId())) {
                 Map<MessageClientType, Client> clientMap = this.messageClientOnThisServerMap.get(messageClient.getLoginId());
-                if (clientMap.containsKey(messageClient)) {
+                if (clientMap.containsKey(messageClient.getMessageClientType())) {
                     clientMap.remove(messageClient.getMessageClientType());
                     logger.debug(messageClient.toString() + " removed!!!!!!!!!");
                 } else {
