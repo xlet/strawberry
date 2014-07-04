@@ -81,10 +81,15 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
         String loginId = message.getLoginId();
         String password = message.getPassword();
 
-        //if the specified client has connected to message server
-        if (LoginServer.current().allocateProvider().isConnected(message.getClientType(), loginId, context.getCurrentHost())) {
-            logger.debug(loginId + " has login ");
-            throw new LoggedInException(context.getCurrentHost());
+        try {
+            LoginServer.current().clientCacheProvider().getClient(message.getClientType(), message.getLoginId());
+            //if the specified client has connected to message server
+            if (LoginServer.current().allocateProvider().isConnected(message.getClientType(), loginId, context.getCurrentHost())) {
+                logger.debug(loginId + " has login ");
+                throw new LoggedInException(context.getCurrentHost());
+            }
+        } catch (ClientNotFoundException e) {
+            logger.error(e.getMessage());
         }
 
         try {
