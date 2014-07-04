@@ -30,4 +30,9 @@ public class ServerClient extends Client {
     public ServerBasic getServerBasic() {
         return this.serverBasic;
     }
+
+    @Override
+    public String toString() {
+        return super.toString()+" server basic ="+serverBasic.toString();
+    }
 }

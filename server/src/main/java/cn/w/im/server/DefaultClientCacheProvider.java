@@ -48,6 +48,32 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
      */
     private Map<String, Map<String, Map<MessageClientType, MessageClientBasic>>> messageClientOnOtherServerMap;
 
+
+    private void dump() {
+        logger.debug("dumping clientMap start---");
+        for (Map.Entry<String, Map<Integer, Client>> portEntry : clientMap.entrySet()) {
+            printMap("hostip" + portEntry.getKey(), portEntry.getValue());
+        }
+        logger.debug("dumping clientMap end---");
+
+        logger.debug("dumping messageClientOnThisServerMap start---");
+        for (Map.Entry<String, Map<MessageClientType, Client>> entry : messageClientOnThisServerMap.entrySet()) {
+
+            printMap("loginId" + entry.getKey(), entry.getValue());
+
+        }
+        logger.debug("dumping messageClientOnThisServerMap end---");
+
+    }
+
+    private <K, V> void printMap(String keyName, Map<K, V> map) {
+        logger.debug("keyName=" + keyName);
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            logger.debug(entry.getKey() + "=" + entry.getValue().toString());
+        }
+    }
+
+
     /**
      * constructor.
      */
@@ -74,6 +100,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
             portClients.put(client.getRemotePort(), client);
             this.clientMap.put(client.getRemoteHost(), portClients);
         }
+        dump();
     }
 
     @Override
@@ -106,6 +133,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
         } else {
             throw new ClientNotRegisterException(linkedHost, linkedPort);
         }
+        dump();
     }
 
     @Override
@@ -132,6 +160,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
             clientTypeMessageClientBasicMap.put(messageClientBasic.getMessageClientType(), messageClientBasic);
             loginIdMessageClientMap.put(messageClientBasic.getLoginId(), clientTypeMessageClientBasicMap);
         }
+        dump();
     }
 
     @Override
@@ -156,17 +185,21 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
         } else {
             throw new ClientNotRegisterException(linkedHost, linkedPort);
         }
+        dump();
     }
 
     @Override
     public void removeClient(ChannelHandlerContext context) throws ServerNotRegisterException, ClientNotRegisterException {
+        dump();
         Client client = new Client(context);
         removeClient(client.getRemoteHost(), client.getRemotePort());
+        dump();
     }
 
     @Override
     public void removeClient(String host, int port) throws ServerNotRegisterException, ClientNotRegisterException {
         logger.debug("remove registered client[" + host + ":" + port + "]");
+        dump();
         if (this.clientMap.containsKey(host)) {
             Map<Integer, Client> portClientMap = this.clientMap.get(host);
             if (portClientMap.containsKey(port)) {
@@ -180,6 +213,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
         } else {
             throw new ClientNotRegisterException(host, port);
         }
+        dump();
     }
 
     @Override

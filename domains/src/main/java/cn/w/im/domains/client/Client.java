@@ -64,4 +64,18 @@ public class Client {
     public String getKey() {
         return this.getRemoteHost() + ":" + this.getRemotePort();
     }
+
+    /**
+     * close
+     */
+    public void close(){
+        if(this.context.channel().isOpen()&&this.context.channel().isActive()){
+            this.context.close();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return getKey();
+    }
 }

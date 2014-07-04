@@ -75,6 +75,13 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
             LoginResponseMessage loggedInErrorMessage = new LoginResponseMessage(loggedInException.getErrorCode(), loggedInException.getMessage(), loggedInException.getLocalizedMessage());
             LoginServer.current().sendMessageProvider().send(context.getCurrentHost(), context.getCurrentPort(), loggedInErrorMessage);
         }
+
+        /*try {
+            LoginServer.current().clientCacheProvider().getClient(message.getClientType(), message.getLoginId()).close();
+        } catch (ClientNotFoundException e) {
+            e.printStackTrace();
+        }*/
+
     }
 
     private void login(LoginMessage message, PluginContext context) throws IdPasswordException, LoggedInException {

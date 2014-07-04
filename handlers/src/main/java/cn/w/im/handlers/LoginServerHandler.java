@@ -2,9 +2,9 @@ package cn.w.im.handlers;
 
 import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.messages.Message;
-import cn.w.im.server.LoginServer;
 import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.init.PluginInitializerFactory;
+import cn.w.im.server.LoginServer;
 import cn.w.im.utils.netty.IpAddressProvider;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -37,6 +37,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.debug("client linked in");
         LoginServer.current().clientCacheProvider().registerClient(ctx);
+
         super.channelActive(ctx);
     }
 
@@ -65,5 +66,6 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
         int port = IpAddressProvider.getRemotePort(ctx);
         logger.error("client[" + ip + ":" + port + "] error !", cause);
         //TODO: not cached exception process.
+        ctx.close();
     }
 }

@@ -42,4 +42,13 @@ public class MessageClient extends Client {
         this.messageClientType = messageClientType;
         this.loginId = loginId;
     }
+
+    @Override
+    public String toString() {
+        return "MessageClient{" +
+                "loginId='" + loginId + '\'' +
+                ", messageClientType=" + messageClientType +
+                ", key="+super.toString()+
+                '}';
+    }
 }
