@@ -89,6 +89,7 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
             //this type of client already exists
             Client client = LoginServer.current().clientCacheProvider().getClient(message.getClientType(), loginId);
             if (LoginServer.current().allocateProvider().isConnected(message.getClientType(), loginId, client.getRemoteHost())) {
+                logger.debug(loginId+" has login "+message);
                 throw new LoggedInException(client.getRemoteHost());
             }
         } catch (ClientNotFoundException ex) {

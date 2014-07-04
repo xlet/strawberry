@@ -2,6 +2,8 @@ package cn.w.im.server;
 
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.ServerBasic;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Summary: message server allocate info.
  */
 public class MessageServerAllocation {
+
+    private Log logger = LogFactory.getLog(this.getClass());
 
     private ServerBasic messageServer;
 
@@ -86,6 +90,7 @@ public class MessageServerAllocation {
      */
     public synchronized void allocate(ConnectToken token) {
         this.allocateCount += 1;
+
         if (!tokenConnectingTokenMap.containsKey(token.getToken())) {
             this.tokenConnectingTokenMap.put(token.getToken(), token);
         }
@@ -106,6 +111,7 @@ public class MessageServerAllocation {
      * @param token connected token.
      */
     public synchronized void connected(String token) {
+        logger.debug("adding to connecting list, token = " + token);
         this.linkedClientCount += 1;
         ConnectToken connectToken = this.tokenConnectingTokenMap.get(token);
         this.tokenConnectingTokenMap.remove(token);

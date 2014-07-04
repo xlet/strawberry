@@ -115,12 +115,13 @@ public class DefaultMessageServerAllocateProvider implements MessageServerAlloca
         Iterator<MessageServerAllocation> allocationIterator = this.messageServerAllocations.values().iterator();
         while (allocationIterator.hasNext()) {
             MessageServerAllocation currentMessageServerAllocation = allocationIterator.next();
+            logger.debug("check nodeId="+currentMessageServerAllocation.getMessageServer().getNodeId());
             ConnectToken connectToken = currentMessageServerAllocation.getLoginToken(loginId, host);
             if (connectToken != null) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 }
 
