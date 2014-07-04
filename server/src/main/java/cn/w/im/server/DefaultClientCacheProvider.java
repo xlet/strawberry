@@ -333,18 +333,19 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
 
 
     private void removeMessageClientMap(Client removeClient) {
-        Iterator<Map<MessageClientType, Client>> messageClientIterator = this.messageClientOnThisServerMap.values().iterator();
-        while (messageClientIterator.hasNext()) {
-            Map<MessageClientType, Client> clientTypeMessageClientMap = messageClientIterator.next();
-            Iterator<Client> clientIterator = clientTypeMessageClientMap.values().iterator();
-            while (clientIterator.hasNext()) {
-                if (removeClient.equals(clientIterator.next())) {
-                    clientTypeMessageClientMap.remove(removeClient);
+        if (removeClient instanceof MessageClient) {
+            MessageClient messageClient = (MessageClient) removeClient;
+            if(this.messageClientOnThisServerMap.containsKey(messageClient.getLoginId())){
+                Map<MessageClientType, Client> clientMap = this.messageClientOnThisServerMap.get(messageClient.getLoginId());
+                if(clientMap.containsKey(messageClient)){
+                    clientMap.remove(messageClient.getMessageClientType());
+                }
+
+                if(CollectionUtils.isEmpty(clientMap)){
+                    this.messageClientOnThisServerMap.remove(messageClient.getLoginId());
                 }
             }
-            if (CollectionUtils.isEmpty(clientTypeMessageClientMap)) {
-                this.messageClientOnThisServerMap.remove(clientTypeMessageClientMap);
-            }
+
         }
     }
 }
