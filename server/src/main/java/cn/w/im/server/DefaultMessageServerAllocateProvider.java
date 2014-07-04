@@ -3,6 +3,7 @@ package cn.w.im.server;
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClientBasic;
+import cn.w.im.domains.client.MessageClientType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -107,6 +108,19 @@ public class DefaultMessageServerAllocateProvider implements MessageServerAlloca
         String nodeId = messageServer.getNodeId();
         MessageServerAllocation allocation = this.messageServerAllocations.get(nodeId);
         allocation.disconnected(loginId, loginHost);
+    }
+
+    @Override
+    public boolean isConnected(MessageClientType clientType, String loginId, String host) {
+        Iterator<MessageServerAllocation> allocationIterator = this.messageServerAllocations.values().iterator();
+        while (allocationIterator.hasNext()) {
+            MessageServerAllocation currentMessageServerAllocation = allocationIterator.next();
+            ConnectToken connectToken = currentMessageServerAllocation.getLoginToken(loginId, host);
+            if (connectToken != null) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

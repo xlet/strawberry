@@ -31,6 +31,7 @@ public class MessageServerAllocation {
      */
     private ConcurrentHashMap<String, List<ConnectToken>> loginIdConnectingTokenMap;
 
+
     /**
      * constructor.
      *

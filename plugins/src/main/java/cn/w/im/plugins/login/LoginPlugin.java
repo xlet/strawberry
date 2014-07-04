@@ -88,12 +88,14 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
         try {
             //this type of client already exists
             Client client = LoginServer.current().clientCacheProvider().getClient(message.getClientType(), loginId);
-            throw new LoggedInException(client.getRemoteHost());
+            if (LoginServer.current().allocateProvider().isConnected(message.getClientType(), loginId, client.getRemoteHost())) {
+                throw new LoggedInException(client.getRemoteHost());
+            }
         } catch (ClientNotFoundException ex) {
             logger.error(ex.getMessage());
         }
         try {
-            if(!members.verify(new Account(loginId, password))){
+            if (!members.verify(new Account(loginId, password))) {
                 throw new IdPasswordException(loginId);
             }
         } catch (UserCenterException e) {

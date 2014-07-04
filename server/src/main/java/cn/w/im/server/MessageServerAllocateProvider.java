@@ -3,6 +3,7 @@ package cn.w.im.server;
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClientBasic;
+import cn.w.im.domains.client.MessageClientType;
 
 /**
  * Creator: JackieHan.
@@ -10,6 +11,8 @@ import cn.w.im.domains.client.MessageClientBasic;
  * Summary: message server allocated provider defined.
  */
 public interface MessageServerAllocateProvider {
+
+    //TODO MessageClientType
 
     /**
      * add ready message server to cache.
@@ -53,4 +56,14 @@ public interface MessageServerAllocateProvider {
      * @param messageServer the disconnected message server.
      */
     void disconnected(String loginId, String loginHost, ServerBasic messageServer);
+
+    /**
+     * check if the client was connected
+     *
+     * @param clientType
+     * @param loginId
+     * @param host
+     * @return
+     */
+    boolean isConnected(MessageClientType clientType, String loginId, String host);
 }

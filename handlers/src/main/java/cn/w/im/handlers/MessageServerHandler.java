@@ -33,7 +33,7 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        //TODO:jackie 却绝链接
+        //TODO:jackie 拒绝链接
         MessageServer.current().clientCacheProvider().registerClient(ctx);
     }
 

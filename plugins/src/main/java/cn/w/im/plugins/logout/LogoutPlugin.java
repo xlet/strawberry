@@ -1,8 +1,8 @@
 package cn.w.im.plugins.logout;
 
 import cn.w.im.domains.PluginContext;
-import cn.w.im.domains.messages.client.LogoutMessage;
 import cn.w.im.domains.ServerType;
+import cn.w.im.domains.messages.client.LogoutMessage;
 import cn.w.im.plugins.MessagePlugin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,6 +35,6 @@ public class LogoutPlugin extends MessagePlugin<LogoutMessage> {
 
     @Override
     public void processMessage(LogoutMessage message, PluginContext context) {
-        //todo jackie
+
     }
 }
