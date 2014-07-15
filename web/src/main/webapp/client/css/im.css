@@ -1,0 +1,103 @@
+﻿/*IM*/
+
+.im-toolbar{position:fixed!important;position:absolute;left:50%;bottom:0!important;_top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-100));
+width:198px;margin-left:290px;_top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-365));}
+.im-toolbar .toolbar-hd{height:28px;padding:0 8px;border:solid #ddd;border-width:1px 1px 0;background:#f0f0f0;}
+.im-toolbar .toolbar-hd .status{display:none;float:left;margin-top:2px;line-height:22px;background:url(images/im.png) no-repeat 0 3px;}
+.im-toolbar .toolbar-hd .status i{display:inline-block;width:20px;height:22px;margin-right:5px;vertical-align:middle;background:url(images/status.gif) no-repeat 0 0;}
+.im-toolbar .toolbar-hd .status i.on{background:url(images/onstatus.gif) no-repeat 0 0;}
+.im-toolbar .toolbar-hd .title{float:left;margin-top:2px;padding-left:20px;line-height:22px;background:url(images/im.png) no-repeat 0 -22px;font-weight:bold;}
+.im-toolbar .toolbar-hd .operate{float:right;margin-top:5px;}
+.im-toolbar .toolbar-hd .operate .shrink{display:inline-block;width:12px;height:12px;background:url(images/im.png) no-repeat 0 -50px;cursor:pointer;}
+.im-toolbar .toolbar-hd .operate .shrink:hover{background-position:0 -66px;}
+.im-toolbar .toolbar-bd{height:336px;overflow:auto;border:solid #ddd;border-width:0 1px 1px;background:#fff;}
+.im-toolbar .recent-contact li{height:30px;padding:6px;cursor:pointer;}
+.im-toolbar .recent-contact li:hover{background:#f5f5f5;}
+.im-toolbar .recent-contact .photo{float:left;width:30px;height:30px;}
+.im-toolbar .recent-contact .photo .num {display: inline-block;height: 14px;padding: 0 4px;border-radius: 7px;background: #fe6600;position: absolute;top: -3px;right: 15px;font-size: 10px;line-height: 13px;-webkit-text-size-adjust: none;color: #fff;font-weight: 700;
+font-style: normal;}
+.im-toolbar .recent-contact .name{float:left;margin:5px 0 0 8px;}
+.im-toolbar .recent-contact .news {float:right;width:15px;height:16px;margin-top:8px;background:url(images/news.gif) no-repeat;}
+.im-toolbar .recent-contact .status{float:right;width:15px;height:16px;margin-top:8px;background:url(images/im.png) no-repeat 0 -85px;}
+.im-toolbar .recent-contact .offline .status{background-position:-45px -85px;}
+.im-fold{height:29px;overflow:hidden;_top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-30));}
+.im-fold .toolbar-hd .status{cursor: pointer; display:block; width: 200px;}
+.im-fold .toolbar-hd .title,.im-fold .toolbar-hd .operate{display:none;}
+.im-chat{position:absolute;border-top:3px solid #f60;border-left: 1px solid #ddd;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;background:#fff;z-index: 5000;box-shadow: 3px 3px 3px #ddd;}
+.im-chat .chat-hd{cursor: move; height:30px;padding:0 8px 0 45px;border-bottom:1px solid #ddd;background:#f1f1f1 url(images/im.png) repeat-x 0 -170px;z-index: 19;position: relative;}
+.im-chat .chat-hd .photo{position:absolute;top:-9px;left:5px;font-size:0;padding:2px;border:1px solid #ddd;background:#fff;}
+.im-chat .chat-hd .photo img{width:30px;height:30px;display: block;}
+.im-chat .chat-hd .name{float:left;margin-top:3px;color:#333;}
+.im-chat .chat-hd .operate{float:right;margin-top:7px;}
+.im-chat .chat-hd .operate span{display:inline-block;width:12px;height:14px;margin-left:8px;background:url(images/im.png) no-repeat 0 -50px;cursor:pointer;}
+.im-chat .chat-hd .operate .enlarge{background-position:-21px -50px;}
+.im-chat .chat-hd .operate .close{background-position:-42px -50px;}
+.im-chat .chat-hd .operate .shrink:hover{background-position:0 -66px;}
+.im-chat .chat-hd .operate .enlarge:hover{background-position:-21px -66px;}
+.im-chat .chat-hd .operate .close:hover{background-position:-42px -66px;}
+.im-chat .chat-bd{border:solid #ddd;border-width:0 0 1px;}
+.im-chat .chat-window{ float:left;width:100%;}
+.im-chat .chat-window-inner{margin-right:190px;border-right:1px solid #ddd;}
+.im-chat .chat-sys-msg-hidden { background:#fdf5bf; width:100%;height:27px;  color:#f60;display: none;}
+.im-chat .chat-sys-msg { background:#fdf5bf; width:100%;height:27px;  color:#f60;}
+.im-chat .chat-sys-msg span {float: left; display:inline-block; padding-left:23px; height:16px; line-height:16px; margin-top:6px; margin-left:5px; background:url(images/im.png) no-repeat 0 -215px;}
+.im-chat .chat-sys-msg a { float:right; display:inline-block; width:12px; height:12px; margin-top:7px; margin-right:5px; background:url(images/im.png) no-repeat 0 -241px;}
+.im-chat .chat-sys-msg a:hover { background:url(images/im.png) no-repeat 0 -261px;}
+.im-chat .chat-list{overflow:auto;}
+.im-chat .chat-list .username{padding:10px 10px 0;color:#15c;}
+.im-chat .chat-list .username .date{margin-left:10px;}
+.im-chat .chat-list .chat-self .chat-others{color:#f60;}
+.im-chat .chat-list .chat-system .username {color:#f00;}
+.im-chat .chat-list .chat{padding:3px 10px 5px;word-wrap:break-word;color:#000;}
+.im-chat .chat-write{border-top:1px solid #ddd;}
+.im-chat .chat-write .chat-textarea textarea{width:100%;height:60px;border:0;padding:0;margin:0; overflow-y:scroll; resize: none;}
+.im-chat .chat-write .chat-submit{padding:5px;border-top:1px solid #ddd;background:#f9f9f9;text-align:right;}
+.im-chat .chat-write .chat-submit button{cursor: pointer;display:inline-block;width:63px;height:27px;border:0 none;background:url(images/im.png) no-repeat 0 -108px;}
+.im-chat .chat-write .chat-submit button:hover{background-position:0 -139px;}
+.im-chat .chat-desc{float:left;margin-left:-180px;width:170px;}
+.im-chat .chat-desc .logo{padding-top:10px;text-align:center;}
+.im-chat .chat-desc ul{margin-top:8px;line-height:22px;}
+
+.im-chat, .im-toolbar {
+    color: #666666;
+    font: 12px/1.5 tahoma,Arial,宋体;
+}
+
+.im-chat {
+    padding: 0;
+    margin: 0;
+}
+
+.im-chat ul, .im-chat ol, .im-toolbar ul, .im-toolbar ol {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+
+.im-chat .sendbox_bar {background: none repeat scroll 0 0 #F3F3F3;height: 25px;line-height: 25px;}
+.im-chat .sendbox_bar .sendbox_ac {float: left; padding-left: 10px; padding-top:5px;}
+.im-chat .sendbox_bar .sendbox_ac .sendicon {background:url(images/im.png) no-repeat; display:block; width:16px; height:16px; overflow:hidden; text-indent:-999px;}
+.im-chat .sendbox_bar .sendbox_ac .send_face { background-position:0 -334px}
+.im-chat .sendbox_bar .sendbox_ac .send_face:hover { background-position:0 -361px}
+.im-chat .sendbox_bar .sendbox_show {float: right;padding-right: 9px;}
+.im-chat .sendbox_bar .sendbox_show .sendbox_his {color: #808080; padding-left:22px; background:url(images/im.png) no-repeat 0 -286px;}
+.im-chat .sendbox_bar .sendbox_show .sendbox_his:hover { text-decoration:underline; background:url(images/im.png) no-repeat 0 -308px;}
+.im-chat .w_layer {border-radius: 3px;color: #333333;position: absolute;z-index: 9999;}
+.im-chat .w_layer .w_faces {padding: 10px 5px; background:#fff}
+.im-chat .w_layer .faces_list {margin: 0 0 0 6px;}
+.im-chat .w_layer .faces_list li {border: 1px solid #E8E8E8;cursor: pointer;float: left;height: 22px;margin: -1px 0 0 -1px;overflow: hidden;padding: 4px 2px;text-align: center;width: 26px}
+.im-chat .w_layer .bg {background:#fff; background: url("images/layer_bg.png") repeat scroll 0 0 rgba(0, 0, 0, 0); border-radius: 3px; padding: 3px}
+.im-chat .w_layer .arrow_hui {background: url("images/layer_arrow.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0); display: block;overflow: hidden;position: absolute}
+.im-chat .w_layer .arrow_b {background-position: 0 -8px; bottom: -6px;height: 9px;left: 12px; width: 14px; top: auto;}
+
+.clearfix {
+}
+
+.clearfix:after {
+    clear: both;
+    content: "​";
+    display: block;
+    height:0px;
+}
+
+/*Im end*/
