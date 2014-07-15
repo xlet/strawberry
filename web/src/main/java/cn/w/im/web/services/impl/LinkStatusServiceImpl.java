@@ -32,18 +32,19 @@ public class LinkStatusServiceImpl implements LinkStatusService {
             throw new IllegalMemberException(toId);
         }
 
-        String token = tokenService.create(realFromId,toId,referrer);
+        String token = tokenService.create(realFromId, toId, referrer);
         GetTokenResponse getTokenResponse = new GetTokenResponse();
         getTokenResponse.setSuccess(true);
         getTokenResponse.setToken(token);
         getTokenResponse.setHasCreateTempId(false);
-        if (StringUtils.isEmpty(realFromId)){
+        if (StringUtils.isEmpty(realFromId)) {
             LinkmanViewObject tempMember = memberService.createTemp(referrer);
             getTokenResponse.setHasCreateTempId(true);
             getTokenResponse.setTempId(tempMember.getId());
             getTokenResponse.setTempName(tempMember.getName());
             realFromId = tempMember.getId();
         }
+        memberService.online(realFromId, referrer);
         return getTokenResponse;
     }
 }

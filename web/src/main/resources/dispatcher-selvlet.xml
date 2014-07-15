@@ -21,6 +21,7 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
+    <mvc:default-servlet-handler />
     <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
         <property name="mediaTypes">
             <value>
@@ -29,4 +30,15 @@
             </value>
         </property>
     </bean>
+
+    <bean id="reqInfoInterceptor" class="cn.w.im.web.interceptor.ReqInfoInterceptor" />
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**/**/**"/>
+            <mvc:exclude-mapping path="/static/**"/>
+            <mvc:exclude-mapping path="/favicon.ico"/>
+            <ref bean="reqInfoInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>

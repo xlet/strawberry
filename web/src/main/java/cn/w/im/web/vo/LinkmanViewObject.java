@@ -5,7 +5,7 @@ package cn.w.im.web.vo;
  */
 public class LinkmanViewObject {
     private String id,name,thumb;
-    private Status status;
+    private int status;
 
     /**
      * get id.
@@ -59,7 +59,7 @@ public class LinkmanViewObject {
      * get status.
      * @return status see{@link cn.w.im.web.vo.Status}
      */
-    public Status getStatus() {
+    public int getStatus() {
         return status;
     }
 
@@ -67,7 +67,7 @@ public class LinkmanViewObject {
      * set status.
      * @param status status.
      */
-    public void setStatus(Status status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 }

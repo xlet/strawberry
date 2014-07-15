@@ -1,5 +1,8 @@
 package cn.w.im.web.services.impl;
 
+import cn.w.im.domains.common.OnlineMemberStatus;
+import cn.w.im.domains.common.Status;
+import cn.w.im.persistent.OnLineMemberStatusDao;
 import cn.w.im.utils.sdk.usercenter.Members;
 import cn.w.im.utils.sdk.usercenter.UserCenterException;
 import cn.w.im.utils.sdk.usercenter.model.MemberProfile;
@@ -10,12 +13,14 @@ import cn.w.im.web.mongo.MongoTempMember;
 import cn.w.im.web.services.MemberService;
 import cn.w.im.web.vo.LinkmanViewObject;
 import cn.w.im.web.vo.MemberViewObject;
-import cn.w.im.web.vo.Status;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author jackie.
@@ -23,9 +28,16 @@ import org.springframework.util.StringUtils;
 @Service
 public class MemberServiceImpl implements MemberService {
 
-    private final static int START_TEMP_MEMBER_ID = 121639818;
+    private static final int START_TEMP_MEMBER_ID = 121639818;
 
-    private final static Log LOG = LogFactory.getLog(MemberServiceImpl.class);
+    private static final Log LOG = LogFactory.getLog(MemberServiceImpl.class);
+
+    /**
+     * member cache collection.
+     * <p/>
+     * key:name+referrer.
+     */
+    private Map<String, CacheMemberViewObject> memberCacheMap = new ConcurrentHashMap<String, CacheMemberViewObject>();
 
     @Autowired
     private GlobalConfiguration globalConfiguration;
@@ -33,26 +45,33 @@ public class MemberServiceImpl implements MemberService {
     @Autowired
     private TempMemberDao tempMemberDao;
 
-    private Members userCenterMembers = new cn.w.im.utils.sdk.usercenter.MemberService();
+    @Autowired
+    private OnLineMemberStatusDao onLineMemberStatusDao;
 
-    public MemberServiceImpl() {
-    }
+    @Autowired
+    private Members userCenterMembers;
 
     @Override
     public boolean existed(String name, String referrer) {
-        if (StringUtils.isEmpty(name)){
+        if (StringUtils.isEmpty(name)) {
             throw new IllegalArgumentException("the name is empty.");
         }
+
+        if (this.cacheExisted(name, referrer)) {
+            return true;
+        }
+
         try {
             MemberViewObject memberViewObject = get(name, referrer);
-            if (memberViewObject!=null){
+            if (memberViewObject != null) {
                 return true;
             }
-        } catch (IllegalMemberException e){
+        } catch (IllegalMemberException e) {
             return false;
         }
         return false;
     }
+
 
     @Override
     public LinkmanViewObject createTemp(String referrer) {
@@ -60,35 +79,73 @@ public class MemberServiceImpl implements MemberService {
         LinkmanViewObject linkmanViewObject = new LinkmanViewObject();
         linkmanViewObject.setName(tempMember.getNickname());
         linkmanViewObject.setId(tempMember.getName());
-        linkmanViewObject.setStatus(Status.Online);
+        linkmanViewObject.setStatus(Status.Online.getValue());
+
+        if (!this.cacheExisted(tempMember.getName(), referrer)) {
+            this.cacheAdd(tempMember, referrer);
+        }
         return linkmanViewObject;
     }
 
     @Override
-    public MemberViewObject get(String name, String referrer) {
-
-        if (StringUtils.isEmpty(name)) {
+    public MemberViewObject get(String memberId, String referrer) {
+        if (StringUtils.isEmpty(memberId)) {
             return new MemberViewObject();
         }
 
-        MongoTempMember tempMember = tempMemberDao.getByName(name);
+        if (this.cacheExisted(memberId, referrer)) {
+            MemberViewObject memberViewObject = this.getCachedMember(memberId, referrer);
+            LOG.debug("cached member:" + memberId + referrer + " status value:" + memberViewObject.getStatus());
+            return memberViewObject;
+        }
+
+        MemberViewObject memberViewObject = null;
+
+        MongoTempMember tempMember = tempMemberDao.getByName(memberId);
         if (tempMember != null) {
-            return createByTempMember(tempMember);
+            memberViewObject = createByTempMember(tempMember, referrer);
         }
 
         try {
-            MemberProfile memberProfile = userCenterMembers.getByWid(name);
-            return createByUserCenter(memberProfile);
+            MemberProfile memberProfile = userCenterMembers.getByWid(memberId);
+            memberViewObject = createByUserCenter(memberProfile, referrer);
         } catch (UserCenterException e) {
             LOG.error(e);
         }
 
-        throw new IllegalMemberException(name);
+        if (memberViewObject != null) {
+            if (!this.cacheExisted(memberViewObject.getId(), referrer)) {
+                this.cacheAdd(memberViewObject, referrer);
+            }
+            return memberViewObject;
+        }
+
+        throw new IllegalMemberException(memberId);
     }
 
-    private MemberViewObject createByUserCenter(MemberProfile memberProfile) {
+    @Override
+    public void online(String loginId, String referrer) {
+        MemberViewObject memberViewObject = this.get(loginId, referrer);
+        memberViewObject.setStatus(Status.Online.getValue());
+        LOG.debug("set member:" + loginId + referrer + " online. status value:" + memberViewObject.getStatus());
+    }
+
+    @Override
+    public Status getStatus(String memberId, String referrer) {
+        if (this.cacheExisted(memberId, referrer)) {
+            return Status.valueOf(this.getCachedMember(memberId, referrer).getStatus());
+        }
+
+        OnlineMemberStatus memberStatus = this.onLineMemberStatusDao.get(memberId);
+        return memberStatus.getStatus();
+    }
+
+    private MemberViewObject createByUserCenter(MemberProfile memberProfile, String referrer) {
         MemberViewObject memberViewObject = new MemberViewObject();
         memberViewObject.setThumb(memberProfile.getPhotoUrl());
+        if (StringUtils.isEmpty(memberProfile.getPhotoUrl())) {
+            memberViewObject.setThumb(globalConfiguration.getDefaultThumb());
+        }
         memberViewObject.setNickName(memberProfile.getNickname());
         memberViewObject.setId(memberProfile.getWid());
         memberViewObject.setMerchant(memberProfile.isMerchant());
@@ -101,16 +158,19 @@ public class MemberServiceImpl implements MemberService {
         memberViewObject.setContractor("");
         memberViewObject.setShopName("");
         memberViewObject.setTemp(false);
+
+        memberViewObject.setStatus(this.getStatus(memberProfile.getId(), referrer).getValue());
         return memberViewObject;
     }
 
-    private MemberViewObject createByTempMember(MongoTempMember tempMember) {
+    private MemberViewObject createByTempMember(MongoTempMember tempMember, String referrer) {
         MemberViewObject memberViewObject = new MemberViewObject();
         memberViewObject.setTemp(true);
         memberViewObject.setMerchant(false);
         memberViewObject.setId(tempMember.getName());
         memberViewObject.setNickName(tempMember.getNickname());
         memberViewObject.setThumb(globalConfiguration.getDefaultThumb());
+        memberViewObject.setStatus(this.getStatus(tempMember.getName(), referrer).getValue());
         return memberViewObject;
     }
 
@@ -135,5 +195,34 @@ public class MemberServiceImpl implements MemberService {
             int memberId = Integer.parseInt(name.substring(1));
             return memberId + 1;
         }
+    }
+
+    private boolean cacheExisted(String name, String referrer) {
+        String cacheKey = name + referrer;
+        if (memberCacheMap.containsKey(cacheKey)) {
+            CacheMemberViewObject cacheMember = this.memberCacheMap.get(cacheKey);
+            if (!cacheMember.isExpired()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private MemberViewObject getCachedMember(String name, String referrer) {
+        String cacheKey = name + referrer;
+        return this.memberCacheMap.get(cacheKey);
+    }
+
+    private void cacheAdd(MongoTempMember tempMember, String referrer) {
+        MemberViewObject memberViewObject = createByTempMember(tempMember, referrer);
+        this.cacheAdd(memberViewObject, referrer);
+    }
+
+    private void cacheAdd(MemberViewObject memberViewObject, String referrer) {
+        String cacheKey = memberViewObject.getId() + referrer;
+        if (this.memberCacheMap.containsKey(cacheKey)) {
+            this.memberCacheMap.remove(cacheKey);
+        }
+        this.memberCacheMap.put(cacheKey, new CacheMemberViewObject(memberViewObject));
     }
 }

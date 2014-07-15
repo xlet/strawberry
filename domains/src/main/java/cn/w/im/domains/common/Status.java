@@ -1,7 +1,7 @@
-package cn.w.im.web.vo;
+package cn.w.im.domains.common;
 
 /**
- * Created by jackie on 14-6-27.
+ * status.
  */
 public enum Status {
 

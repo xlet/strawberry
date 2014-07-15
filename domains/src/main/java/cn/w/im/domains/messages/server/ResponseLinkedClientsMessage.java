@@ -3,6 +3,7 @@ package cn.w.im.domains.messages.server;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClientBasic;
+import cn.w.im.domains.messages.RespondMessage;
 import cn.w.im.domains.messages.ResponseMessage;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * DateTime: 14-1-17 下午3:04.
  * Summary: 请求已连接客户端消息响应消息.
  */
-public class ResponseLinkedClientsMessage extends ResponseMessage implements RespondMessage {
+public class ResponseLinkedClientsMessage extends ResponseMessage implements RespondMessage, ServerToServerMessage {
 
     private ServerBasic messageServer;
 

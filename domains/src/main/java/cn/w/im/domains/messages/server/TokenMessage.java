@@ -4,6 +4,7 @@ import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.Message;
+import cn.w.im.domains.messages.MustRespondMessage;
 
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
  * DateTime: 14-1-16 下午4:17.
  * Summary: token消息. 用于通知消息服务token信息.
  */
-public class TokenMessage extends Message implements MustRespondMessage {
+public class TokenMessage extends Message implements MustRespondMessage, ServerToServerMessage {
 
     private ConnectToken token;
 

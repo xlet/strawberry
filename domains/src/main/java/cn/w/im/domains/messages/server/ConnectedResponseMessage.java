@@ -2,6 +2,7 @@ package cn.w.im.domains.messages.server;
 
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
+import cn.w.im.domains.messages.RespondMessage;
 import cn.w.im.domains.messages.ResponseMessage;
 
 /**
@@ -9,7 +10,7 @@ import cn.w.im.domains.messages.ResponseMessage;
  * DateTime: 14-3-24 下午8:47.
  * Summary: send this message when server received ConnectedMessage.
  */
-public class ConnectedResponseMessage extends ResponseMessage implements RespondMessage {
+public class ConnectedResponseMessage extends ResponseMessage implements RespondMessage, ServerToServerMessage {
 
     private String token;
 

@@ -1,4 +1,4 @@
-package cn.w.im.domains.messages.server;
+package cn.w.im.domains.messages;
 
 
 /**
@@ -6,7 +6,7 @@ package cn.w.im.domains.messages.server;
  * DateTime: 14-3-25 上午11:10.
  * Summary:  message is a response message.
  */
-public interface RespondMessage extends ServerToServerMessage {
+public interface RespondMessage {
 
     /**
      * get respond key.

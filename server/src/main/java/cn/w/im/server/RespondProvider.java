@@ -1,7 +1,7 @@
 package cn.w.im.server;
 
 import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.messages.server.RespondMessage;
+import cn.w.im.domains.messages.RespondMessage;
 import cn.w.im.exceptions.NotRegisterRespondMessageException;
 import cn.w.im.exceptions.NotRegisterRespondServerException;
 import cn.w.im.exceptions.RegisteredRespondMessageException;

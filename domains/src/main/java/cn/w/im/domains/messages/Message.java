@@ -7,8 +7,6 @@ import cn.w.im.domains.messages.server.*;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import java.util.Date;
-
 /**
  * Creator: JackieHan.
  * DateTime: 13-12-17 下午4:35.
@@ -24,8 +22,6 @@ import java.util.Date;
         @JsonSubTypes.Type(value = LogoutMessage.class, name = "Logout"),
         @JsonSubTypes.Type(value = LogoutResponseMessage.class, name = "LogoutResponse"),
         @JsonSubTypes.Type(value = NormalMessage.class, name = "Normal"),
-        @JsonSubTypes.Type(value = WebServerConnectMessage.class, name = "webServerConnect"),
-        @JsonSubTypes.Type(value = WebNormalMessage.class, name = "webNormal"),
         //forward
         @JsonSubTypes.Type(value = ForwardReadyMessage.class, name = "ForwardReady"),
         @JsonSubTypes.Type(value = ForwardRequestMessage.class, name = "ForwardRequest"),
@@ -65,7 +61,7 @@ public abstract class Message {
      */
     public Message(MessageType messageType) {
         this.messageType = messageType;
-        this.sendTime = new Date().getTime();
+        this.sendTime = System.currentTimeMillis();
     }
 
     /**

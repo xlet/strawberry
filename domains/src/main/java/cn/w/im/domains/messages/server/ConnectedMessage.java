@@ -4,6 +4,7 @@ import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.messages.Message;
+import cn.w.im.domains.messages.MustRespondMessage;
 
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
  * DateTime: 14-3-24 下午8:29.
  * Summary: notify message client connected.
  */
-public class ConnectedMessage extends Message implements MustRespondMessage {
+public class ConnectedMessage extends Message implements MustRespondMessage, ServerToServerMessage {
 
     private String token;
 

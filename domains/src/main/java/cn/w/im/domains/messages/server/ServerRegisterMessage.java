@@ -3,6 +3,7 @@ package cn.w.im.domains.messages.server;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.messages.Message;
+import cn.w.im.domains.messages.MustRespondMessage;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.UUID;
@@ -12,7 +13,7 @@ import java.util.UUID;
  * DateTime: 14-1-9 上午11:35.
  * Summary: 服务注册消息.
  */
-public class ServerRegisterMessage extends Message implements MustRespondMessage {
+public class ServerRegisterMessage extends Message implements MustRespondMessage, ServerToServerMessage {
 
     private ServerBasic serverBasic;
 

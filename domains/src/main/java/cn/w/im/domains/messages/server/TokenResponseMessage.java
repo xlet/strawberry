@@ -3,6 +3,7 @@ package cn.w.im.domains.messages.server;
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
+import cn.w.im.domains.messages.RespondMessage;
 import cn.w.im.domains.messages.ResponseMessage;
 
 /**
@@ -12,7 +13,7 @@ import cn.w.im.domains.messages.ResponseMessage;
  * <p/>
  * message server response tokenResponse message that means the message server ready to connect.
  */
-public class TokenResponseMessage extends ResponseMessage implements RespondMessage {
+public class TokenResponseMessage extends ResponseMessage implements RespondMessage, ServerToServerMessage {
 
     private ConnectToken token;
 

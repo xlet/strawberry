@@ -4,9 +4,10 @@ import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.client.Client;
 import cn.w.im.domains.client.ServerClient;
+import cn.w.im.domains.messages.client.NormalMessage;
 import cn.w.im.domains.messages.server.ForwardMessage;
 import cn.w.im.domains.messages.Message;
-import cn.w.im.domains.messages.server.MustRespondMessage;
+import cn.w.im.domains.messages.MustRespondMessage;
 import cn.w.im.exceptions.RegisteredRespondMessageException;
 import cn.w.im.exceptions.RegisteredRespondServerException;
 import cn.w.im.exceptions.ServerInnerException;
@@ -113,6 +114,10 @@ public class DefaultSendMessageProvider implements SendMessageProvider {
         } else {
             logger.debug("send to client[" + client.getRemoteHost() + ":" + client.getRemotePort() + "]");
             client.getContext().writeAndFlush(message);
+        }
+
+        if (message instanceof NormalMessage) {
+            ((NormalMessage) message).setForward(true);
         }
     }
 }

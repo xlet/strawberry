@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 public class BaseController {
     /**
      * get cookie.
-     * @param request servlet request.
+     *
+     * @param request    servlet request.
      * @param cookieName cookie name.
      * @return cookie {@link javax.servlet.http.Cookie}
      */
@@ -27,6 +28,7 @@ public class BaseController {
 
     /**
      * get client ip.
+     *
      * @param request servlet request.
      * @return client ip.
      */
@@ -46,29 +48,33 @@ public class BaseController {
 
     /**
      * get user agent.
+     *
      * @param request servlet request.
      * @return user agent.
      */
-    protected String getAgent(HttpServletRequest request){
+    protected String getAgent(HttpServletRequest request) {
         String userAgent = request.getHeader("User-Agent");
-        return  userAgent;
+        return userAgent;
     }
 
     /**
      * get Referrer.
+     *
      * @param request servlet request.
      * @return Referrer.
      */
-    protected String getReferrer(HttpServletRequest request){
-        return request.getHeader("Referer");
+    protected String getReferrer(HttpServletRequest request) {
+        //return request.getHeader("Referer");
+        return "w.cn";
     }
 
     /**
      * get host.
+     *
      * @param request servlet request.
      * @return host.
      */
-    protected String getHost(HttpServletRequest request){
+    protected String getHost(HttpServletRequest request) {
         return request.getHeader("Host");
     }
 }

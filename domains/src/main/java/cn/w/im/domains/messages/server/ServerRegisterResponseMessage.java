@@ -2,6 +2,7 @@ package cn.w.im.domains.messages.server;
 
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
+import cn.w.im.domains.messages.RespondMessage;
 import cn.w.im.domains.messages.ResponseMessage;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.UUID;
  * DateTime: 14-1-10 下午2:31.
  * Summary: 注册回复消息.
  */
-public class ServerRegisterResponseMessage extends ResponseMessage implements RespondMessage {
+public class ServerRegisterResponseMessage extends ResponseMessage implements RespondMessage, ServerToServerMessage {
 
     private List<ServerBasic> startedServers;
 

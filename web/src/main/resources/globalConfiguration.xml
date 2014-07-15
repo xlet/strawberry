@@ -4,6 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean class="cn.w.im.web.GlobalConfiguration">
-        <property name="defaultThumb" value="http://www.w.cn/static/images/member/photo.png" />
+        <property name="defaultThumb" value="${global.defaultThumb}" />
     </bean>
 </beans>

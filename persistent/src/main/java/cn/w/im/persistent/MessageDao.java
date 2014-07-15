@@ -2,6 +2,8 @@ package cn.w.im.persistent;
 
 import cn.w.im.domains.messages.Message;
 
+import java.util.List;
+
 /**
  * Creator: JackieHan.
  * DateTime: 14-3-29 下午7:17.

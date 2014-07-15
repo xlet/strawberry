@@ -79,7 +79,8 @@ public class ForwardMessage extends Message implements ServerToServerMessage {
 
     /**
      * set from server basic.
-      * @param fromServer from server basic.
+     *
+     * @param fromServer from server basic.
      */
     public void setFromServer(ServerBasic fromServer) {
         this.fromServer = fromServer;

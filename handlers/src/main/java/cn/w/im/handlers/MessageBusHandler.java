@@ -42,13 +42,10 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;
-        message.setReceivedTime(new Date().getTime());
 
         PluginContext context = new PluginContext(message, ctx);
         for (Plugin plugin : plugins) {
-            logger.debug("processing " + plugin.description());
             plugin.process(context);
-            logger.debug("processed " + plugin.description());
         }
     }
 

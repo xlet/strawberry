@@ -5,7 +5,7 @@ package cn.w.im.web.vo;
  * member view object.
  */
 public class MemberViewObject {
-    private Status status;
+    private int status;
     private boolean temp;
     private boolean isMerchant;
     private String id;
@@ -21,17 +21,17 @@ public class MemberViewObject {
 
     /**
      * get status.
-     * @return {@link Status}.
+     * @return status.
      */
-    public Status getStatus() {
+    public int getStatus() {
         return status;
     }
 
     /**
      * set status.
-     * @param status member status. {@link Status}.
+     * @param status member status. {@link Status}.value.
      */
-    public void setStatus(Status status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

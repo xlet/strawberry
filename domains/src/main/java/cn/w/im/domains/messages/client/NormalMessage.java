@@ -3,6 +3,7 @@ package cn.w.im.domains.messages.client;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.client.MessageClientType;
 import cn.w.im.domains.messages.Message;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Creator: JackieHan.
@@ -12,6 +13,7 @@ import cn.w.im.domains.messages.Message;
 public class NormalMessage extends Message implements ServerToClientMessage, ClientToServerMessage {
 
     private String from, to, content;
+    private boolean forward;
     private MessageClientType clientType;
 
     /**
@@ -107,5 +109,14 @@ public class NormalMessage extends Message implements ServerToClientMessage, Cli
      */
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @JsonIgnore
+    public boolean isForward(){
+        return this.forward;
+    }
+
+    public void setForward(boolean forward){
+        this.forward = forward;
     }
 }

@@ -36,11 +36,14 @@ public class MessageServer extends AbstractServer {
      */
     private Map<String, ConnectToken> tokens;
 
+    private MessageProvider messageProvider;
+
     /**
      * 构造函数.
      */
     private MessageServer() {
         super(ServerType.MessageServer);
+        this.messageProvider = new DefaultMessageProviderImpl();
         this.tokens = new ConcurrentHashMap<String, ConnectToken>();
     }
 
@@ -91,5 +94,9 @@ public class MessageServer extends AbstractServer {
         if (this.tokens.containsKey(token)) {
             this.tokens.remove(token);
         }
+    }
+
+    public MessageProvider messageProvider() {
+        return this.messageProvider;
     }
 }

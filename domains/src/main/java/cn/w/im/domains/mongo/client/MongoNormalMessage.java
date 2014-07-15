@@ -25,11 +25,12 @@ public class MongoNormalMessage extends NormalMessage implements MongoDomain {
      * 构造函数  设置序列化时间为当前时间.
      */
     public MongoNormalMessage() {
-        this.persistentDate = new Date().getTime();
+        this.persistentDate = System.currentTimeMillis();
     }
 
     /**
      * 构造函数.
+     *
      * @param normalMessage normalMessage实例.
      */
     public MongoNormalMessage(NormalMessage normalMessage) {

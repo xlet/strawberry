@@ -15,6 +15,8 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,6 +25,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MessageServerClient {
+
+    private static final Log LOG = LogFactory.getLog(MessageServerClient.class);
+
 
     private WebMessageHandler webMessageHandler = new WebMessageHandler();
     private boolean started = false;
@@ -34,14 +39,17 @@ public class MessageServerClient {
     }
 
     private void start() {
+        LOG.debug("start connect message server.");
         Runnable webMessageServer = new Runnable() {
             @Override
             public void run() {
                 connect();
             }
         };
-        webMessageServer.run();
+        Thread messageServerClientThread = new Thread(webMessageServer);
+        messageServerClientThread.start();
         started = true;
+        LOG.debug("connected message server.");
     }
 
     private void connect() {
@@ -64,17 +72,24 @@ public class MessageServerClient {
                             );
                         }
                     });
-            bootstrap.connect("10.0.41.104", 17031).sync().channel().closeFuture().sync();
+            bootstrap.connect("10.0.41.104", 16041).sync().channel().closeFuture().sync();
+
         } catch (Exception ex) {
+            LOG.error("connect error!", ex);
             messageGroup.shutdownGracefully();
         }
     }
 
-    public ChannelHandlerContext getCtx() {
+    private ChannelHandlerContext getCtx() {
         ChannelHandlerContext ctx = this.webMessageHandler.getCtx();
         if (ctx == null) {
             throw new RuntimeException("the web message service is down!");
         }
         return ctx;
+    }
+
+
+    public void sendMessage(NormalMessage message) {
+        this.getCtx().writeAndFlush(message);
     }
 }

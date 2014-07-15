@@ -3,6 +3,7 @@ package cn.w.im.domains.messages.server;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.Message;
+import cn.w.im.domains.messages.MustRespondMessage;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.UUID;
@@ -12,7 +13,7 @@ import java.util.UUID;
  * DateTime: 14-1-17 下午3:00.
  * Summary: 请求消息服务现有已连接的客户端信息.
  */
-public class RequestLinkedClientsMessage extends Message implements MustRespondMessage {
+public class RequestLinkedClientsMessage extends Message implements MustRespondMessage, ServerToServerMessage {
 
     private ServerBasic requestServer;
 

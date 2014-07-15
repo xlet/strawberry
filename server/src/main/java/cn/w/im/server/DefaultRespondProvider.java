@@ -1,7 +1,8 @@
 package cn.w.im.server;
 
 import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.messages.server.RespondMessage;
+import cn.w.im.domains.messages.RespondMessage;
+import cn.w.im.domains.messages.server.ServerToServerMessage;
 import cn.w.im.exceptions.NotRegisterRespondMessageException;
 import cn.w.im.exceptions.NotRegisterRespondServerException;
 import cn.w.im.exceptions.RegisteredRespondMessageException;
@@ -56,13 +57,15 @@ public class DefaultRespondProvider implements RespondProvider {
         if (!this.responseMap.containsKey(messageFlag)) {
             throw new NotRegisterRespondMessageException(messageFlag);
         }
-        ServerBasic respondingServer = responseMessage.getFromServer();
-        Map<String, Boolean> serverMap = this.responseMap.get(messageFlag);
-        if (serverMap.containsKey(respondingServer.getNodeId())) {
-            serverMap.remove(respondingServer.getNodeId());
-            serverMap.put(respondingServer.getNodeId(), true);
-        } else {
-            throw new NotRegisterRespondServerException(respondingServer.getNodeId());
+        if (responseMessage instanceof ServerToServerMessage) {
+            ServerBasic respondingServer = ((ServerToServerMessage) responseMessage).getFromServer();
+            Map<String, Boolean> serverMap = this.responseMap.get(messageFlag);
+            if (serverMap.containsKey(respondingServer.getNodeId())) {
+                serverMap.remove(respondingServer.getNodeId());
+                serverMap.put(respondingServer.getNodeId(), true);
+            } else {
+                throw new NotRegisterRespondServerException(respondingServer.getNodeId());
+            }
         }
     }
 

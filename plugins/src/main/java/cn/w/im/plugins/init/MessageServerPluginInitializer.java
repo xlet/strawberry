@@ -5,15 +5,16 @@ import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.connected.ConnectedPlugin;
 import cn.w.im.plugins.connected.ConnectedResponsePlugin;
 import cn.w.im.plugins.connected.MessageClientConnectPlugin;
-import cn.w.im.plugins.connected.WebServerConnectPlugin;
 import cn.w.im.plugins.forward.ForwardReadyPlugin;
 import cn.w.im.plugins.forward.ForwardRequestPlugin;
+import cn.w.im.plugins.nearlyLinkman.NearlyLinkmanPlugin;
 import cn.w.im.plugins.serverRegister.MessageServerRegisterResponsePlugin;
 import cn.w.im.plugins.persistentMessage.MessagePersistentPlugin;
 import cn.w.im.plugins.innerForwardMessage.InnerForwardMessagePlugin;
 import cn.w.im.plugins.requestLinkedClients.RequestLinkedClientsPlugin;
 import cn.w.im.plugins.requestLinkedClients.ResponseLinkedClientsPlugin;
 import cn.w.im.plugins.login.TokenPlugin;
+import cn.w.im.plugins.status.StatusPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,8 @@ public class MessageServerPluginInitializer implements PluginInitializer {
     public List<Plugin> init() {
         List<Plugin> plugins = new ArrayList<Plugin>();
 
-        //web server
-        plugins.add(new WebServerConnectPlugin(ServerType.MessageServer));
+        //nearly linkman
+        plugins.add(new NearlyLinkmanPlugin(ServerType.MessageServer));
 
         //forward
         plugins.add(new ForwardRequestPlugin(ServerType.MessageServer));
@@ -47,6 +48,9 @@ public class MessageServerPluginInitializer implements PluginInitializer {
         plugins.add(new ConnectedPlugin(ServerType.MessageServer));
         plugins.add(new ConnectedResponsePlugin(ServerType.MessageServer));
         plugins.add(new MessageClientConnectPlugin(ServerType.MessageServer));
+
+        //status
+        plugins.add(new StatusPlugin(ServerType.MessageServer));
 
         //inner forward
         plugins.add(new InnerForwardMessagePlugin(ServerType.MessageServer));

@@ -2,12 +2,14 @@ package cn.w.im.web.mongo;
 
 import cn.w.im.domains.mongo.MongoDomain;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 /**
  * @author jackie.
  *         temp member.
  */
+@Entity("tempMember")
 public class MongoTempMember implements MongoDomain {
 
     @Id
