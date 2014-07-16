@@ -1,13 +1,13 @@
-package cn.w.im.domains.mongo.common;
+package cn.w.im.domains.mongo.basic;
 
-import cn.w.im.domains.common.NearlyLinkman;
+import cn.w.im.domains.basic.NearlyLinkman;
 import cn.w.im.domains.mongo.MongoDomain;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 /**
- * mongo domain of {@link cn.w.im.domains.common.NearlyLinkman}.
+ * mongo domain of {@link cn.w.im.domains.basic.NearlyLinkman}.
  */
 @Entity("nearlyLinkman")
 public class MongoNearlyLinkman extends NearlyLinkman implements MongoDomain {

@@ -1,43 +1,12 @@
-package cn.w.im.web.mongo;
-
-import cn.w.im.domains.mongo.MongoDomain;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
+package cn.w.im.domains.basic;
 
 /**
- * @author jackie.
- *         temp member.
+ * temp member.
  */
-@Entity("tempMember")
-public class MongoTempMember implements MongoDomain {
-
-    @Id
-    private ObjectId id;
-    private long persistentDate;
+public class TempMember {
     private String name;
     private String nickname;
     private String source;
-
-    @Override
-    public ObjectId getId() {
-        return this.id;
-    }
-
-    @Override
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
-
-    @Override
-    public long getPersistentDate() {
-        return this.persistentDate;
-    }
-
-    @Override
-    public void setPersistentDate(long persistentDate) {
-        this.persistentDate = persistentDate;
-    }
 
     /**
      * get name.

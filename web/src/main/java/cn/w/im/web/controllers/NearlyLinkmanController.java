@@ -36,7 +36,6 @@ public class NearlyLinkmanController extends BaseController {
                       @RequestParam(value = "pageIndex", defaultValue = "1") int pageIndex,
                       @RequestParam(value = "callback", defaultValue = "") String callback) throws JsonProcessingException {
         String referrer = this.getReferrer(request);
-        //todo:jackie get nearly linkman.
         List<LinkmanViewObject> linkmanViewObjects = nearlyLinkmanService.get(fromId, referrer, pageSize, pageIndex);
         GetNearlyLinkmanResponse response = new GetNearlyLinkmanResponse();
         response.setSuccess(true);

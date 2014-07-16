@@ -1,6 +1,6 @@
 package cn.w.im.web.services;
 
-import cn.w.im.domains.common.Status;
+import cn.w.im.domains.basic.Status;
 import cn.w.im.web.vo.LinkmanViewObject;
 import cn.w.im.web.vo.MemberViewObject;
 

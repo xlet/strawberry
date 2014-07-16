@@ -1,7 +1,7 @@
 package cn.w.im.web.services.impl;
 
 import cn.w.im.domains.messages.client.NormalMessage;
-import cn.w.im.persistent.mongo.message.client.MongoNormalMessageDao;
+import cn.w.im.persistent.NormalMessageDao;
 import cn.w.im.web.imserver.MessageServerClient;
 import cn.w.im.web.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class MessageServiceImpl implements MessageService {
     private MessageServerClient messageServerClient;
 
     @Autowired
-    private MongoNormalMessageDao mongoNormalMessageDao;
+    private NormalMessageDao normalMessageDao;
 
 
     @Override
@@ -31,11 +31,13 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<NormalMessage> getNotReceivedMessage(String loginId, String toId) {
-        return mongoNormalMessageDao.getNotReceivedMessage(toId, loginId);
+        List<NormalMessage> offlineMessages = normalMessageDao.getOfflineMessages(toId, loginId);
+        normalMessageDao.setMessageForwarded(toId, loginId);
+        return offlineMessages;
     }
 
     @Override
     public List<NormalMessage> getNotReceivedMessage(String loginId) {
-        return mongoNormalMessageDao.getNotReceivedMessage(loginId);
+        return normalMessageDao.getOfflineMessages(loginId);
     }
 }

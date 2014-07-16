@@ -1,7 +1,7 @@
-package cn.w.im.persistent.mongo.common;
+package cn.w.im.persistent.mongo.basic;
 
-import cn.w.im.domains.common.NearlyLinkman;
-import cn.w.im.domains.mongo.common.MongoNearlyLinkman;
+import cn.w.im.domains.basic.NearlyLinkman;
+import cn.w.im.domains.mongo.basic.MongoNearlyLinkman;
 import cn.w.im.persistent.NearlyLinkmanDao;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;

@@ -4,6 +4,7 @@ import cn.w.im.domains.*;
 import cn.w.im.domains.messages.client.ConnectResponseMessage;
 import cn.w.im.domains.messages.server.ConnectedResponseMessage;
 import cn.w.im.exceptions.*;
+import cn.w.im.persistent.NearlyLinkmanDao;
 import cn.w.im.plugins.MessagePlugin;
 import cn.w.im.server.MessageServer;
 import org.apache.commons.logging.Log;

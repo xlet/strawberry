@@ -17,6 +17,7 @@ public abstract class AbstractServer {
     private ClientCacheProvider clientCacheProvider;
     private SendMessageProvider sendMessageProvider;
     private RespondProvider respondProvider;
+    private MemberCacheProvider linkmanCacheProvider;
     private boolean init = false;
 
     /**

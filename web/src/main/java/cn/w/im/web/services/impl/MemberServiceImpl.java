@@ -1,15 +1,16 @@
 package cn.w.im.web.services.impl;
 
-import cn.w.im.domains.common.OnlineMemberStatus;
-import cn.w.im.domains.common.Status;
+import cn.w.im.domains.basic.OnlineMemberStatus;
+import cn.w.im.domains.basic.Status;
+import cn.w.im.domains.basic.TempMember;
 import cn.w.im.persistent.OnLineMemberStatusDao;
+import cn.w.im.persistent.TempMemberDao;
 import cn.w.im.utils.sdk.usercenter.Members;
 import cn.w.im.utils.sdk.usercenter.UserCenterException;
 import cn.w.im.utils.sdk.usercenter.model.MemberProfile;
 import cn.w.im.web.GlobalConfiguration;
 import cn.w.im.web.exceptions.IllegalMemberException;
-import cn.w.im.web.mongo.dao.TempMemberDao;
-import cn.w.im.web.mongo.MongoTempMember;
+import cn.w.im.domains.mongo.basic.MongoTempMember;
 import cn.w.im.web.services.MemberService;
 import cn.w.im.web.vo.LinkmanViewObject;
 import cn.w.im.web.vo.MemberViewObject;
@@ -75,7 +76,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public LinkmanViewObject createTemp(String referrer) {
-        MongoTempMember tempMember = createAndSave(referrer);
+        TempMember tempMember = createAndSave(referrer);
         LinkmanViewObject linkmanViewObject = new LinkmanViewObject();
         linkmanViewObject.setName(tempMember.getNickname());
         linkmanViewObject.setId(tempMember.getName());
@@ -101,7 +102,7 @@ public class MemberServiceImpl implements MemberService {
 
         MemberViewObject memberViewObject = null;
 
-        MongoTempMember tempMember = tempMemberDao.getByName(memberId);
+        TempMember tempMember = tempMemberDao.getByName(memberId);
         if (tempMember != null) {
             memberViewObject = createByTempMember(tempMember, referrer);
         }
@@ -163,7 +164,7 @@ public class MemberServiceImpl implements MemberService {
         return memberViewObject;
     }
 
-    private MemberViewObject createByTempMember(MongoTempMember tempMember, String referrer) {
+    private MemberViewObject createByTempMember(TempMember tempMember, String referrer) {
         MemberViewObject memberViewObject = new MemberViewObject();
         memberViewObject.setTemp(true);
         memberViewObject.setMerchant(false);
@@ -174,8 +175,8 @@ public class MemberServiceImpl implements MemberService {
         return memberViewObject;
     }
 
-    private MongoTempMember createAndSave(String referrer) {
-        MongoTempMember tempMember = tempMemberDao.getLast();
+    private TempMember createAndSave(String referrer) {
+        TempMember tempMember = tempMemberDao.getLast();
         if (tempMember == null) {
             tempMember = new MongoTempMember();
         }
@@ -213,7 +214,7 @@ public class MemberServiceImpl implements MemberService {
         return this.memberCacheMap.get(cacheKey);
     }
 
-    private void cacheAdd(MongoTempMember tempMember, String referrer) {
+    private void cacheAdd(TempMember tempMember, String referrer) {
         MemberViewObject memberViewObject = createByTempMember(tempMember, referrer);
         this.cacheAdd(memberViewObject, referrer);
     }

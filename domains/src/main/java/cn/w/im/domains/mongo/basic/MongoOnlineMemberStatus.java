@@ -1,13 +1,13 @@
-package cn.w.im.domains.mongo.common;
+package cn.w.im.domains.mongo.basic;
 
-import cn.w.im.domains.common.OnlineMemberStatus;
+import cn.w.im.domains.basic.OnlineMemberStatus;
 import cn.w.im.domains.mongo.MongoDomain;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 /**
- * {@link cn.w.im.domains.common.OnlineMemberStatus}'s mongo persistent defined.
+ * {@link cn.w.im.domains.basic.OnlineMemberStatus}'s mongo persistent defined.
  */
 @Entity("onlineMemberStatus")
 public class MongoOnlineMemberStatus extends OnlineMemberStatus implements MongoDomain {

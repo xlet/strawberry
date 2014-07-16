@@ -1,4 +1,4 @@
-package cn.w.im.domains.common;
+package cn.w.im.domains.basic;
 
 /**
  * online member status.

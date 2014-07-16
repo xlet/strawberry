@@ -10,11 +10,17 @@ import java.util.List;
 public interface MessageProvider {
 
     /**
-     * get not received messages.
+     * get member's offline message list.
      *
-     * @param from the message send from.
-     * @param to   the message send to.
-     * @return all not received messages.
+     * @param memberId member id.
+     * @return message list.
      */
-    List<NormalMessage> getNotReceivedMessage(String from, String to);
+    List<NormalMessage> getOfflineMessages(String memberId);
+
+    /**
+     * set message which send to given member id forwarded.
+     * @param memberId member id.
+     * @return update count.
+     */
+    int setMessageForwarded(String memberId);
 }

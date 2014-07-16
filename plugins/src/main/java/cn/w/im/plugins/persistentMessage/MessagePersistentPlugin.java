@@ -5,6 +5,8 @@ import cn.w.im.domains.conf.Configuration;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ServerInnerException;
+import cn.w.im.persistent.MessageDao;
+import cn.w.im.persistent.PersistentRepositoryFactory;
 import cn.w.im.plugins.MessagePlugin;
 import cn.w.im.utils.spring.SpringContext;
 import org.apache.commons.logging.Log;
@@ -23,8 +25,6 @@ public class MessagePersistentPlugin<TMessage extends Message> extends MessagePl
      */
     private final Log logger = LogFactory.getLog(this.getClass());
 
-    private Configuration configuration;
-
     /**
      * 构造函数.
      *
@@ -32,7 +32,6 @@ public class MessagePersistentPlugin<TMessage extends Message> extends MessagePl
      */
     public MessagePersistentPlugin(ServerType containerType) {
         super("MessagePersistentPlugin", "persistent message to mongo db.", containerType);
-        configuration = SpringContext.context().getBean(Configuration.class);
     }
 
     @Override
@@ -43,8 +42,8 @@ public class MessagePersistentPlugin<TMessage extends Message> extends MessagePl
     @Override
     public void processMessage(TMessage message, PluginContext context) {
         try {
-            MessagePersistentProvider provider = MessagePersistentProviderFactory.create(message, configuration.getDataStoreType());
-            provider.save(message);
+            MessageDao messageDao = PersistentRepositoryFactory.getMessageDao(message);
+            messageDao.save(message);
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
         }

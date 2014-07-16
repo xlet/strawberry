@@ -1,9 +1,9 @@
 package cn.w.im.persistent;
 
-import cn.w.im.domains.common.OnlineMemberStatus;
+import cn.w.im.domains.basic.OnlineMemberStatus;
 
 /**
- * {@link cn.w.im.domains.common.OnlineMemberStatus} dao.
+ * {@link cn.w.im.domains.basic.OnlineMemberStatus} dao.
  */
 public interface OnLineMemberStatusDao {
 

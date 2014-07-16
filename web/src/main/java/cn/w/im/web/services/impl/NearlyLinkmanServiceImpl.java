@@ -1,6 +1,6 @@
 package cn.w.im.web.services.impl;
 
-import cn.w.im.domains.common.NearlyLinkman;
+import cn.w.im.domains.basic.NearlyLinkman;
 import cn.w.im.persistent.NearlyLinkmanDao;
 import cn.w.im.web.services.MemberService;
 import cn.w.im.web.services.NearlyLinkmanService;

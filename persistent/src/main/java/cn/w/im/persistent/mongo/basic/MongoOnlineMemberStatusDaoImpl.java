@@ -1,8 +1,8 @@
-package cn.w.im.persistent.mongo.common;
+package cn.w.im.persistent.mongo.basic;
 
-import cn.w.im.domains.common.OnlineMemberStatus;
-import cn.w.im.domains.common.Status;
-import cn.w.im.domains.mongo.common.MongoOnlineMemberStatus;
+import cn.w.im.domains.basic.OnlineMemberStatus;
+import cn.w.im.domains.basic.Status;
+import cn.w.im.domains.mongo.basic.MongoOnlineMemberStatus;
 import cn.w.im.persistent.OnLineMemberStatusDao;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;

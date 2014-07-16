@@ -38,6 +38,10 @@ public class MessageServer extends AbstractServer {
 
     private MessageProvider messageProvider;
 
+    private LinkmanProvider linkmanProvider;
+
+    private StatusProvider statusProvider;
+
     /**
      * 构造函数.
      */
@@ -45,6 +49,8 @@ public class MessageServer extends AbstractServer {
         super(ServerType.MessageServer);
         this.messageProvider = new DefaultMessageProviderImpl();
         this.tokens = new ConcurrentHashMap<String, ConnectToken>();
+        this.linkmanProvider = new DefaultLinkmanProviderImpl();
+        this.statusProvider = new DefaultStatusProvider();
     }
 
     /**

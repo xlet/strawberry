@@ -30,7 +30,8 @@ public class MessageTest {
 
     @Test
     public void gen_login_message() {
-        LoginMessage loginMessage = new LoginMessage(CLIENT_TYPE,"username","password");
+
+        LoginMessage loginMessage = new LoginMessage(CLIENT_TYPE, "username", "password");
         String token = UUID.randomUUID().toString().replace("-", "");
         ServerBasic serverBasic = new ServerBasic();
         serverBasic.setHost("10.0.41.104");
@@ -39,7 +40,7 @@ public class MessageTest {
         serverBasic.setStart(true);
         serverBasic.setStartDateTime(System.currentTimeMillis());
         serverBasic.setServerType(ServerType.LoginServer);
-        ConnectToken connectToken = new ConnectToken("10.0.40.18","username",token,serverBasic);
+        ConnectToken connectToken = new ConnectToken("10.0.40.18", "username", token, serverBasic);
         LoginResponseMessage loginSuccessResponseMessage = new LoginResponseMessage(connectToken);
         LoginResponseMessage loginFailResponseMessage = new LoginResponseMessage(ErrorCodeDefine.IDPASSWORDERRORCODE, "IDPASSWORDERRORCODE");
 
@@ -59,7 +60,7 @@ public class MessageTest {
 
 
     @Test
-    public void gen_logout_message(){
+    public void gen_logout_message() {
         LogoutMessage logoutMessage = new LogoutMessage(CLIENT_TYPE, "username");
         print(logoutMessage);
         LogoutResponseMessage logoutResponseMessage = new LogoutResponseMessage(true);
@@ -68,7 +69,8 @@ public class MessageTest {
     }
 
     @Test
-    public void gen_normal_message(){
+    public void gen_normal_message() {
+        System.out.println(NormalMessage.class.getSimpleName());
         NormalMessage message = new NormalMessage(CLIENT_TYPE, "one", "another", "消息内容");
         print(message);
     }
@@ -76,23 +78,23 @@ public class MessageTest {
     @Test
     public void decode() throws IOException {
         String json = "{\"@type\":\"Normal\",\"clientType\":\"WinForm\",\"content\":\"who's your daddy\",\"from\":\"1004462060\",\"messageType\":\"Normal\",\"receivedTime\":1131313130.0,\"sendTime\":1404292690015.0,\"to\":\"1\"}\r\n";
-        for(byte b: json.getBytes("utf-8")){
-            System.out.print(String.format("%X",b)+" ");
+        for (byte b : json.getBytes("utf-8")) {
+            System.out.print(String.format("%X", b) + " ");
         }
         NormalMessage message = mapper.readValue(json, NormalMessage.class);
-       // System.out.println(message);
+        // System.out.println(message);
 
         print(message);
 
     }
 
-    public void print(Object... o){
-        for(Object object : o){
+    public void print(Object... o) {
+        for (Object object : o) {
             print(object);
         }
     }
 
-    public void print(Object o){
+    public void print(Object o) {
         try {
             System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(o));
         } catch (JsonProcessingException e) {

@@ -1,6 +1,6 @@
 package cn.w.im.web.controllers;
 
-import cn.w.im.domains.common.Status;
+import cn.w.im.domains.basic.Status;
 import cn.w.im.web.services.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
