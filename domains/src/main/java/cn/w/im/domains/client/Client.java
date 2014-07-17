@@ -70,7 +70,7 @@ public class Client {
      */
     public void close(){
         if(this.context.channel().isOpen()&&this.context.channel().isActive()){
-            this.context.close();
+            this.context.channel().close();
         }
     }
 
