@@ -32,7 +32,7 @@ public class ConnectHandler extends ChannelInboundHandlerAdapter {
     /**
      * 构造函数.
      */
-    public ConnectHandler(ConnectToken connectToken, MessageClientType messageClientType) {
+    public ConnectHandler(ConnectToken connectToken, MessageClientType clientType) {
         this.connectToken = connectToken;
         log = LogFactory.getLog(this.getClass());
         this.clientType = clientType;

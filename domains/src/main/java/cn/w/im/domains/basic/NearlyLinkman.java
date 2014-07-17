@@ -17,6 +17,10 @@ public class NearlyLinkman {
         this.lastLinkTime = System.currentTimeMillis();
     }
 
+    public String toggle(String other) {
+        return other.equals(memberId1) ? memberId2 : memberId1;
+    }
+
     public String getMemberId1() {
         return memberId1;
     }

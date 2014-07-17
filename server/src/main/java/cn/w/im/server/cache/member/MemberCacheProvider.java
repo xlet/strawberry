@@ -25,11 +25,13 @@ public class MemberCacheProvider {
         return false;
     }
 
-    private CachedMember getCachedMember(String memberId) {
+
+
+    public CachedMember getCachedMember(String memberId) {
         return this.cachedMemberMap.get(memberId);
     }
 
-    private void cacheAdd(Member member, MessageClientType clientType) {
+    public void cacheAdd(Member member, MessageClientType clientType) {
         if (this.cachedMemberMap.containsKey(member.getId())) {
             this.cachedMemberMap.remove(member.getId());
         }

@@ -105,4 +105,12 @@ public class MessageServer extends AbstractServer {
     public MessageProvider messageProvider() {
         return this.messageProvider;
     }
+
+    public StatusProvider statusProvider(){
+        return this.statusProvider;
+    }
+
+    public LinkmanProvider linkmanProvider(){
+        return this.linkmanProvider;
+    }
 }

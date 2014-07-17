@@ -72,7 +72,7 @@ public class MessageServerClient {
                             );
                         }
                     });
-            bootstrap.connect("10.0.41.104", 16041).sync().channel().closeFuture().sync();
+            bootstrap.connect("10.0.41.104", 16031).sync().channel().closeFuture().sync();
 
         } catch (Exception ex) {
             LOG.error("connect error!", ex);

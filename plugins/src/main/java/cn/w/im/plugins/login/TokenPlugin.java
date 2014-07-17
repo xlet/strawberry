@@ -1,14 +1,16 @@
 package cn.w.im.plugins.login;
 
-import cn.w.im.domains.*;
+import cn.w.im.domains.ConnectToken;
+import cn.w.im.domains.MessageType;
+import cn.w.im.domains.PluginContext;
+import cn.w.im.domains.ServerType;
 import cn.w.im.domains.messages.server.TokenMessage;
 import cn.w.im.domains.messages.server.TokenResponseMessage;
-import cn.w.im.server.LoginServer;
-import cn.w.im.server.MessageServer;
-import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.server.LoginServer;
+import cn.w.im.server.MessageServer;
 
 /**
  * Creator: JackieHan.

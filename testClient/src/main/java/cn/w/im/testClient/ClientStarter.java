@@ -41,18 +41,24 @@ public class ClientStarter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Scanner sc = new Scanner(System.in);
-                    System.out.println("请输入用户名:");
-                    String id = sc.nextLine();
-                    String password = new InputMasking().getPassword("请输入密码:");
-                    new ClientStarter().login(id, password);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                input();
             }
         }).start();
     }
+
+
+    private static void input() {
+        try {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("请输入用户名:");
+            String id = sc.nextLine();
+            String password = new InputMasking().getPassword("请输入密码:");
+            new ClientStarter().login(id, password);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
 
     EventLoopGroup loginGroup = new NioEventLoopGroup();
 
@@ -79,7 +85,7 @@ public class ClientStarter {
                             );
                         }
                     });
-            bootstrap.connect("10.0.40.20", 17021).sync().channel().closeFuture().sync();
+            bootstrap.connect("10.0.41.102", 17031).sync().channel().closeFuture().sync();
         } catch (Exception ex) {
             loginGroup.shutdownGracefully();
             ex.printStackTrace();
@@ -90,10 +96,16 @@ public class ClientStarter {
         @Override
         public void operationComplete(PluginContext context) {
             if (context.getMessage() instanceof LoginResponseMessage) {
+                LoginResponseMessage loginResponseMessage = (LoginResponseMessage) context.getMessage();
                 loginGroup.shutdownGracefully();
-                System.out.println("登陆成功!");
-                ConnectToken connectToken = ((LoginResponseMessage) context.getMessage()).getToken();
-                connectMessageServer(connectToken);
+                if (loginResponseMessage.isSuccess()) {
+                    System.out.println("登陆成功!");
+                    ConnectToken connectToken = ((LoginResponseMessage) context.getMessage()).getToken();
+                    connectMessageServer(connectToken);
+                } else {
+                    System.out.print("登录失败！");
+                    input();
+                }
             }
         }
     };

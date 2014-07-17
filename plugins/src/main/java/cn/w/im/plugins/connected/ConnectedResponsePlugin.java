@@ -1,14 +1,22 @@
 package cn.w.im.plugins.connected;
 
-import cn.w.im.domains.*;
+import cn.w.im.domains.ConnectToken;
+import cn.w.im.domains.MessageType;
+import cn.w.im.domains.PluginContext;
+import cn.w.im.domains.ServerType;
+import cn.w.im.domains.basic.Member;
 import cn.w.im.domains.messages.client.ConnectResponseMessage;
+import cn.w.im.domains.messages.client.NormalMessage;
 import cn.w.im.domains.messages.server.ConnectedResponseMessage;
-import cn.w.im.exceptions.*;
-import cn.w.im.persistent.NearlyLinkmanDao;
+import cn.w.im.exceptions.ClientNotFoundException;
+import cn.w.im.exceptions.NotSupportedServerTypeException;
+import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.plugins.MessagePlugin;
 import cn.w.im.server.MessageServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.util.List;
 
 /**
  * Creator: JackieHan.
@@ -51,9 +59,20 @@ public class ConnectedResponsePlugin extends MessagePlugin<ConnectedResponseMess
             if (message.isSuccess()) {
                 MessageServer.current().respondProvider().receivedRespondedMessage(message);
                 if (MessageServer.current().respondProvider().allResponded(message.getRespondKey())) {
-                    MessageServer.current().connected(message.getToken());
+                    MessageServer messageServer = MessageServer.current();
+                    messageServer.connected(message.getToken());
+                    //获取最近联系人列表
+                    List<Member> recentChatWith = messageServer.linkmanProvider().getNearlyLinkmen(connectToken.getLoginId());
+                    //联系人状态
+                    messageServer.statusProvider().render(recentChatWith);
                     ConnectResponseMessage responseMessage = new ConnectResponseMessage();
-                    MessageServer.current().sendMessageProvider().send(connectToken.getLoginId(), responseMessage);
+                    responseMessage.setNearlyLinkmen(recentChatWith);
+                    //当前用户信息
+                    responseMessage.setSelf(messageServer.linkmanProvider().getMember(connectToken.getLoginId()));
+                    //离线消息列表
+                    List<NormalMessage> offlineMessages = messageServer.messageProvider().getOfflineMessages(connectToken.getLoginId());
+                    responseMessage.setOfflineMessages(offlineMessages);
+                    messageServer.sendMessageProvider().send(connectToken.getLoginId(), responseMessage);
                 }
             } else {
                 logger.error("server[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());

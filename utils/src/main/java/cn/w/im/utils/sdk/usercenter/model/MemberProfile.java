@@ -35,6 +35,7 @@ public class MemberProfile {
     private boolean realNameValid;
     private boolean companyValid;
 
+
     public String getId() {
         return id;
     }

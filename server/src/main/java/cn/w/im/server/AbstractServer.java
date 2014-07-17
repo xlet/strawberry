@@ -2,6 +2,7 @@ package cn.w.im.server;
 
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
+import cn.w.im.server.cache.member.MemberCacheProvider;
 
 import java.util.Date;
 

@@ -6,12 +6,18 @@ import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.client.MessageClientType;
 import cn.w.im.domains.messages.client.*;
+import cn.w.im.server.DefaultTokenProvider;
+import cn.w.im.server.TokenProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.PooledByteBufAllocator;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 /**
@@ -27,6 +33,7 @@ public class MessageTest {
 
     private static final MessageClientType CLIENT_TYPE = MessageClientType.WinForm;
 
+    private TokenProvider tokenProvider = new DefaultTokenProvider();
 
     @Test
     public void gen_login_message() {
@@ -60,7 +67,7 @@ public class MessageTest {
 
 
     @Test
-    public void gen_logout_message() {
+    public void gen_logout_message(){
         LogoutMessage logoutMessage = new LogoutMessage(CLIENT_TYPE, "username");
         print(logoutMessage);
         LogoutResponseMessage logoutResponseMessage = new LogoutResponseMessage(true);
@@ -69,36 +76,70 @@ public class MessageTest {
     }
 
     @Test
-    public void gen_normal_message() {
-        System.out.println(NormalMessage.class.getSimpleName());
+    public void gen_normal_message(){
         NormalMessage message = new NormalMessage(CLIENT_TYPE, "one", "another", "消息内容");
         print(message);
     }
 
     @Test
+    public void gen_connect_message() {
+        ConnectMessage connectMessage = new ConnectMessage(CLIENT_TYPE, "1002885", tokenProvider.create());
+
+        ConnectResponseMessage responseMessage = new ConnectResponseMessage();
+
+        print(connectMessage, responseMessage);
+    }
+
+    @Test
     public void decode() throws IOException {
         String json = "{\"@type\":\"Normal\",\"clientType\":\"WinForm\",\"content\":\"who's your daddy\",\"from\":\"1004462060\",\"messageType\":\"Normal\",\"receivedTime\":1131313130.0,\"sendTime\":1404292690015.0,\"to\":\"1\"}\r\n";
-        for (byte b : json.getBytes("utf-8")) {
-            System.out.print(String.format("%X", b) + " ");
+        for(byte b: json.getBytes("utf-8")){
+            System.out.print(String.format("%X",b)+" ");
         }
         NormalMessage message = mapper.readValue(json, NormalMessage.class);
-        // System.out.println(message);
+       // System.out.println(message);
 
         print(message);
 
     }
 
-    public void print(Object... o) {
-        for (Object object : o) {
+    public void print(Object... o){
+        for(Object object : o){
             print(object);
         }
     }
 
-    public void print(Object o) {
+    public void print(Object o){
         try {
             System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(o));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void main() throws UnsupportedEncodingException {
+        System.out.println("1100000108".getBytes("UTF-8").length);
+        byte[] head = "1100000108".getBytes("UTF-8");
+        for(byte b: head){
+            System.out.print(String.format("%X", b) + " ");
+        }
+        byte[] head2 = new byte[10];
+        head2[0] = 11;
+        head2[9] = 108;
+        System.out.println();
+        for(byte b: head2){
+            System.out.print(String.format("%X", b) + " ");
+        }
+        byte[] header = new byte[4];
+        String json = "{ \"a\" : \"b\"}";
+        byte[] body = json.getBytes("utf-8");
+        int lengh = body.length;
+
+
+        ByteBufAllocator allocator = new PooledByteBufAllocator();
+        ByteBuf byteBuf = allocator.directBuffer();
+
+    }
+
 }

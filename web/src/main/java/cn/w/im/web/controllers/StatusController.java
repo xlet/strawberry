@@ -25,9 +25,9 @@ public class StatusController extends BaseController {
         String referrer = this.getReferrer(request);
         Status memberStatus = memberService.getStatus(wid, referrer);
         if (memberStatus.equals(Status.Online)) {
-            return "/client/status/" + version + "/" + param + "/online.gif";
+            return "redirect:/client/status/" + version + "/" + param + "/online.gif";
         }else{
-            return "/client/status/" + version + "/" + param + "/offline.gif";
+            return "redirect:/client/status/" + version + "/" + param + "/offline.gif";
         }
     }
 }
