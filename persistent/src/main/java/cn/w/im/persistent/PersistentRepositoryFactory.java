@@ -49,6 +49,7 @@ public class PersistentRepositoryFactory {
             if (dao == null) {
                 throw new NullPointerException(mongoDaoName + " is not configured.");
             }
+            return dao;
         }
         throw new NotSupportedDataStoreException(dataStoreType);
     }
