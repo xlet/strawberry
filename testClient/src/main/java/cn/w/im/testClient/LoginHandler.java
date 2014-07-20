@@ -2,11 +2,7 @@ package cn.w.im.testClient;
 
 import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.client.MessageClientType;
-import cn.w.im.domains.messages.client.ConnectMessage;
-import cn.w.im.domains.messages.client.LoginMessage;
-import cn.w.im.domains.messages.client.LoginResponseMessage;
-import cn.w.im.domains.messages.client.LogoutResponseMessage;
-import cn.w.im.domains.messages.client.NormalMessage;
+import cn.w.im.domains.messages.client.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.commons.logging.Log;
@@ -37,6 +33,7 @@ public class LoginHandler extends ChannelInboundHandlerAdapter {
     private String id, password, token;
 
     private MessageClientType clientType;
+
 
     /**
      * 构造函数.

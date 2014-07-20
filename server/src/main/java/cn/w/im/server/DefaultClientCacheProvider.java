@@ -186,18 +186,15 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
 
     @Override
     public void removeClient(ChannelHandlerContext context) throws ServerNotRegisterException, ClientNotRegisterException {
-        logger.debug("before=====================");
         dump();
         Client client = new Client(context);
         removeClient(client.getRemoteHost(), client.getRemotePort());
-        logger.debug("after=====================");
         dump();
     }
 
     @Override
     public void removeClient(String host, int port) throws ServerNotRegisterException, ClientNotRegisterException {
         logger.debug("remove registered client[" + host + ":" + port + "]");
-        logger.debug("before=====================");
         if (this.clientMap.containsKey(host)) {
             Map<Integer, Client> portClientMap = this.clientMap.get(host);
             if (portClientMap.containsKey(port)) {
@@ -211,7 +208,6 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
         } else {
             throw new ClientNotRegisterException(host, port);
         }
-        logger.debug("after=====================");
     }
 
     @Override

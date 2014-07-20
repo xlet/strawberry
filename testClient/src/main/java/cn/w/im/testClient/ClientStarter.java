@@ -85,7 +85,7 @@ public class ClientStarter {
                             );
                         }
                     });
-            bootstrap.connect("10.0.41.102", 17031).sync().channel().closeFuture().sync();
+            bootstrap.connect("10.0.41.102", 17041).sync().channel().closeFuture().sync();
         } catch (Exception ex) {
             loginGroup.shutdownGracefully();
             ex.printStackTrace();

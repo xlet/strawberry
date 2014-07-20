@@ -37,9 +37,10 @@ public class TestController {
     }
 
 
-    @RequestMapping(value = "/{wid}")
-    public String toChat(@PathVariable(value = "wid")String wid, Model model){
-        model.addAttribute("wid", wid);
+    @RequestMapping(value = "/{from:\\d{7,14}}/{to:\\d{7,14}}")
+    public String toChat(@PathVariable(value = "from")String from,@PathVariable(value = "to")String to, Model model){
+        model.addAttribute("from", from);
+        model.addAttribute("to", to);
         return "chat";
     }
 

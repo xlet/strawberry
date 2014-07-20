@@ -1,7 +1,7 @@
 package cn.w.im.server;
 
 import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.messages.*;
+import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.messages.forward.ForwardReadyMessage;
 import cn.w.im.domains.messages.forward.ForwardRequestMessage;
 import cn.w.im.domains.messages.forward.ForwardResponseMessage;
@@ -230,8 +230,10 @@ public class ForwardServer {
      * @param ctx     current ChannelHandlerContext.
      */
     public void forwardMessage(Message message, ChannelHandlerContext ctx) {
+        //get remote ip:port
         String currentKey = getKey(ctx);
         for (String key : this.contextMap.keySet()) {
+            // send to all channel except itself
             if (!key.equals(currentKey)) {
                 this.contextMap.get(key).writeAndFlush(message);
             }

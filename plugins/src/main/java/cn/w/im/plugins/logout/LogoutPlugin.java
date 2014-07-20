@@ -1,5 +1,6 @@
 package cn.w.im.plugins.logout;
 
+import cn.w.im.domains.MessageType;
 import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.messages.client.LogoutMessage;
@@ -34,7 +35,8 @@ public class LogoutPlugin extends MessagePlugin<LogoutMessage> {
 
     @Override
     public boolean isMatch(PluginContext context) {
-        return context.getMessage() instanceof LogoutMessage;
+        MessageType messageType = context.getMessage().getMessageType();
+        return messageType.equals(MessageType.Logout);
     }
 
     @Override

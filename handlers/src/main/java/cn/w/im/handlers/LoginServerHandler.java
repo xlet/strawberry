@@ -12,7 +12,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,5 +65,6 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
         logger.error("client[" + ip + ":" + port + "] error !", cause);
         //TODO: not cached exception process.
         ctx.close();
+
     }
 }

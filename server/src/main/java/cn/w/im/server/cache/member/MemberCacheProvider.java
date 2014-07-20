@@ -4,16 +4,28 @@ import cn.w.im.domains.basic.Member;
 import cn.w.im.domains.client.MessageClientType;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 /**
  * member cache provider.
  */
 public class MemberCacheProvider {
 
-    private Map<String, CachedMember> cachedMemberMap = new ConcurrentHashMap<String, CachedMember>();
+    private final Map<String, CachedMember> cachedMemberMap = new ConcurrentHashMap<String, CachedMember>();
 
     private static final long EXPIRED_TIME = 60 * 20 * 1000;
+
+    private ScheduledFuture scheduledFuture;
+
+    private final ScheduledExecutorService executor;
+
+    private long interval = 1;
+
+
+    public MemberCacheProvider() {
+        this.executor = new ScheduledThreadPoolExecutor(1);
+        this.scheduledFuture = this.executor.scheduleAtFixedRate(new CacheExpireDetectTask(this), interval, interval, TimeUnit.SECONDS);
+    }
 
     public boolean cacheExisted(String memberId) {
         if (cachedMemberMap.containsKey(memberId)) {
@@ -37,4 +49,37 @@ public class MemberCacheProvider {
         }
         this.cachedMemberMap.put(member.getId(), new CachedMember(member, clientType, EXPIRED_TIME));
     }
+
+    private static class CacheExpireDetectTask implements Runnable{
+
+        private MemberCacheProvider cacheProvider;
+
+        private CacheExpireDetectTask(MemberCacheProvider cacheProvider) {
+            this.cacheProvider = cacheProvider;
+        }
+
+        @Override
+        public void run() {
+            for(Map.Entry<String, CachedMember> entry: cacheProvider.getCachedMemberMap().entrySet()){
+                if(entry.getValue() instanceof CachedMember){
+                    if(entry.getValue().isExpired()){
+                        cacheProvider.getCachedMemberMap().remove(entry.getKey());
+                    }
+                }
+
+            }
+        }
+    }
+
+    public Map<String, CachedMember> getCachedMemberMap() {
+        return cachedMemberMap;
+    }
+
+    public void stopDetect(){
+        if(this.scheduledFuture!=null){
+            this.scheduledFuture.cancel(true);
+        }
+    }
+
+
 }
