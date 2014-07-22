@@ -1,8 +1,6 @@
 package cn.w.im.forwardServer;
 
-import cn.w.im.handlers.ForwardServerHandler;
-import cn.w.im.handlers.JsonMessageDecoder;
-import cn.w.im.handlers.JsonMessageEncoder;
+import cn.w.im.handlers.*;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -27,6 +25,8 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
                 new StringDecoder(CharsetUtil.UTF_8),
                 new JsonMessageEncoder(),
                 new JsonMessageDecoder(),
+                //heartbeat
+                new HeartbeatReqHandler(true, 30),
                 new ForwardServerHandler());
     }
 }

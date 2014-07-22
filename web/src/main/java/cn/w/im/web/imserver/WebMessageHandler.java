@@ -1,6 +1,7 @@
 package cn.w.im.web.imserver;
 
 import cn.w.im.domains.client.MessageClientType;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.commons.logging.Log;
@@ -9,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * @author jackie.
  */
+@ChannelHandler.Sharable
 public class WebMessageHandler extends ChannelInboundHandlerAdapter {
 
     private final static MessageClientType MESSAGE_CLIENT_TYPE = MessageClientType.Web;

@@ -49,8 +49,9 @@ public class LogoutPlugin extends MessagePlugin<LogoutMessage> {
 
             LogoutResponseMessage logoutResponseMessage = new LogoutResponseMessage(true);
             //notify other message servers
-            messageServer.sendMessageProvider().send(ServerType.MessageServer, logoutResponseMessage);
+            messageServer.sendMessageProvider().send(ServerType.MessageServer, message);
             //response to client
+            //TODO if client has been removed, send call will not work
             messageServer.sendMessageProvider().send(message.getLoginId(), logoutResponseMessage);
             //unregister the client
             messageServer.clientCacheProvider().removeClient(context.getCurrentHost(), context.getCurrentPort());

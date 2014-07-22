@@ -54,13 +54,14 @@ public class ConnectedResponsePlugin extends MessagePlugin<ConnectedResponseMess
     }
 
     private void processMessageWithMessageServer(ConnectedResponseMessage message, PluginContext context) {
-        ConnectToken connectToken = MessageServer.current().getToken(message.getToken());
+        //ConnectToken connectToken = MessageServer.current().getToken(message.getToken());
+        ConnectToken connectToken = new ConnectToken("","13622882929","", null);
         try {
             if (message.isSuccess()) {
                 MessageServer.current().respondProvider().receivedRespondedMessage(message);
                 if (MessageServer.current().respondProvider().allResponded(message.getRespondKey())) {
                     MessageServer messageServer = MessageServer.current();
-                    messageServer.connected(message.getToken());
+                    //messageServer.connected(message.getToken());
                     //获取最近联系人列表
                     List<Member> recentChatWith = messageServer.linkmanProvider().getNearlyLinkmen(connectToken.getLoginId());
                     //联系人状态
@@ -73,6 +74,8 @@ public class ConnectedResponsePlugin extends MessagePlugin<ConnectedResponseMess
                     List<NormalMessage> offlineMessages = messageServer.messageProvider().getOfflineMessages(connectToken.getLoginId());
                     responseMessage.setOfflineMessages(offlineMessages);
                     messageServer.sendMessageProvider().send(connectToken.getLoginId(), responseMessage);
+                    //将离线消息状态标记为已送达
+                    messageServer.messageProvider().setMessageForwarded(connectToken.getLoginId());
                 }
             } else {
                 logger.error("server[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());

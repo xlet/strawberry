@@ -126,7 +126,17 @@ public enum MessageType {
     /**
      * web server special normal message's response message.
      */
-    WebNormalResponse(0x1A);
+    WebNormalResponse(0x1A),
+
+    /**heartbeat request*/
+    Heartbeat(0x1B),
+
+    /**response for heartbeat request*/
+    HeartbeatResponse(0x1C),
+
+    GetProfileRequest(0x1D),
+
+    GetProfileResponse(0x1E);
 
     /**
      * 构造函数.

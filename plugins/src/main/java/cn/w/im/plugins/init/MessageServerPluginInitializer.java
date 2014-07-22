@@ -8,6 +8,7 @@ import cn.w.im.plugins.connected.MessageClientConnectPlugin;
 import cn.w.im.plugins.forward.ForwardReadyPlugin;
 import cn.w.im.plugins.forward.ForwardRequestPlugin;
 import cn.w.im.plugins.logout.LogoutPlugin;
+import cn.w.im.plugins.member.MemberProfilePlugin;
 import cn.w.im.plugins.nearlyLinkman.NearlyLinkmanPlugin;
 import cn.w.im.plugins.serverRegister.MessageServerRegisterResponsePlugin;
 import cn.w.im.plugins.persistentMessage.MessagePersistentPlugin;
@@ -61,6 +62,9 @@ public class MessageServerPluginInitializer implements PluginInitializer {
 
         //logout
         plugins.add(new LogoutPlugin(ServerType.MessageServer));
+
+        //profile
+        plugins.add(new MemberProfilePlugin(ServerType.MessageServer));
 
         return plugins;
     }

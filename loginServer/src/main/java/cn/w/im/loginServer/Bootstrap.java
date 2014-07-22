@@ -3,7 +3,6 @@ package cn.w.im.loginServer;
 
 import cn.w.im.domains.conf.Configuration;
 import cn.w.im.server.LoginServer;
-import cn.w.im.utils.ConfigHelper;
 import cn.w.im.utils.spring.SpringContext;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -13,8 +12,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.Properties;
 
 
 /**

@@ -4,8 +4,11 @@ import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.ErrorCodeDefine;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
+import cn.w.im.domains.basic.Member;
 import cn.w.im.domains.client.MessageClientType;
 import cn.w.im.domains.messages.client.*;
+import cn.w.im.domains.messages.heartbeat.Heartbeat;
+import cn.w.im.domains.messages.heartbeat.HeartbeatResponse;
 import cn.w.im.server.DefaultTokenProvider;
 import cn.w.im.server.TokenProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,6 +22,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -41,7 +46,7 @@ public class MessageTest {
     @Test
     public void gen_login_message() throws JsonProcessingException, UnsupportedEncodingException {
 
-        LoginMessage loginMessage = new LoginMessage(CLIENT_TYPE, "11223344", "w123456");
+        LoginMessage loginMessage = new LoginMessage(CLIENT_TYPE, "13622882929", "w123456");
         String token = UUID.randomUUID().toString().replace("-", "");
         ServerBasic serverBasic = new ServerBasic();
         serverBasic.setHost("10.0.41.104");
@@ -53,26 +58,30 @@ public class MessageTest {
         ConnectToken connectToken = new ConnectToken("10.0.40.18", "username", token, serverBasic);
         LoginResponseMessage loginSuccessResponseMessage = new LoginResponseMessage(connectToken);
         LoginResponseMessage loginFailResponseMessage = new LoginResponseMessage(ErrorCodeDefine.IDPASSWORDERRORCODE, "IDPASSWORDERRORCODE");
-
-
-        ConnectMessage connectMessage = new ConnectMessage(CLIENT_TYPE, "11223344", "115ad10102d848c386eac19ad4e6db96");
-        String json = mapper.writeValueAsString(connectMessage);
-        byte[] bytes = json.getBytes("utf-8");
-        System.out.println("====" + String.format("%X", bytes.length));
-        for (byte b : bytes) {
-            System.out.print(String.format("%X", b) + " ");
-        }
-
-        ConnectResponseMessage connectResponseMessage = new ConnectResponseMessage();
-        // connectResponseMessage.setSelf();
-        ConnectResponseMessage connectFailResponse = new ConnectResponseMessage(ErrorCodeDefine.TOKENERROR, "TOKENERROR");
-
         print(loginMessage);
         print(loginSuccessResponseMessage);
         print(loginFailResponseMessage);
-        print(connectMessage);
+    }
 
+    @Test
+    public void gen_connect_message(){
+        String token = "7efa806c8b0f4083bfe0bf50b6c800a8";
+        ConnectMessage connectMessage = new ConnectMessage(CLIENT_TYPE, "13622882929", token);
+        print(connectMessage);
+        ConnectResponseMessage connectResponseMessage = new ConnectResponseMessage();
+        // connectResponseMessage.setSelf();
+        ConnectResponseMessage connectFailResponse = new ConnectResponseMessage(ErrorCodeDefine.TOKENERROR, "TOKENERROR");
         print(connectResponseMessage, connectFailResponse);
+    }
+
+    @Test
+    public void gen_heartbeat_message(){
+        Heartbeat heartbeat = new Heartbeat(true);
+        heartbeat.setSeq(1);
+        HeartbeatResponse response = new HeartbeatResponse();
+        response.setSeq(heartbeat.getSeq());
+
+        print(heartbeat, response);
     }
 
 
@@ -85,20 +94,38 @@ public class MessageTest {
         print(logoutResponseMessage, logoutFailResponseMessage);
     }
 
+
+
     @Test
     public void gen_normal_message() {
         NormalMessage message = new NormalMessage(CLIENT_TYPE, "one", "another", "消息内容");
         print(message);
     }
 
+
     @Test
-    public void gen_connect_message() {
-        ConnectMessage connectMessage = new ConnectMessage(CLIENT_TYPE, "1002885", tokenProvider.create());
+    public void gen_get_profile_message(){
+        GetProfileRequestMessage request = new GetProfileRequestMessage("11223344","13622882929");
+        print(request);
 
-        ConnectResponseMessage responseMessage = new ConnectResponseMessage();
-
-        print(connectMessage, responseMessage);
+        GetProfileResponseMessage response = new GetProfileResponseMessage();
+        List<Member> members  = new ArrayList<Member>();
+        Member member = new Member();
+        member.setThumb("http://static.w.cn/images/member/photo.png");
+        member.setNickName("溜溜");
+        member.setMobileValid(true);
+        member.setMobile("13859985404");
+        member.setRealNameValid(false);
+        member.setEmail("315095859@qq.com");
+        member.setAddress("广州市黄埔区鱼珠物流基地外贸中心A区");
+        member.setId("13622882929");
+        members.add(member);
+        member.setId("11223344");
+        members.add(member);
+        response.setMembers(members);
+        print(response);
     }
+
 
     @Test
     public void decode() throws IOException {
@@ -114,6 +141,9 @@ public class MessageTest {
 
         ConnectResponseMessage connectResponseMessage = mapper.readValue(connectJson, ConnectResponseMessage.class);
         print(connectResponseMessage);
+
+        String hex = "7B224074797065223A22436F6E6E656374222C22636C69656E7454797065223A2257696E466F726D222C226C6F67696E4964223A223133363232383832393239222C226D65737361676554797065223A22436F6E6E656374222C22726563656976656454696D65223A302E302C2273656E6454696D65223A313430363031343837323338392E302C22746F6B656E223A223938346138653963366663373438636462333337303731636130386338313534227D0A";
+        System.out.print(hex.length()/2);
 
     }
 

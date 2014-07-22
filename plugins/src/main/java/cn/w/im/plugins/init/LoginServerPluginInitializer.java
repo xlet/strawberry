@@ -45,6 +45,9 @@ public class LoginServerPluginInitializer implements PluginInitializer {
         //persistent plugins
         plugins.add(new MessagePersistentPlugin(ServerType.LoginServer));
 
+        //logout
+
+
         return plugins;
     }
 }

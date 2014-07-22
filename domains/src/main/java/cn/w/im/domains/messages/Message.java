@@ -2,7 +2,11 @@ package cn.w.im.domains.messages;
 
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.messages.client.*;
-import cn.w.im.domains.messages.forward.*;
+import cn.w.im.domains.messages.forward.ForwardReadyMessage;
+import cn.w.im.domains.messages.forward.ForwardRequestMessage;
+import cn.w.im.domains.messages.forward.ForwardResponseMessage;
+import cn.w.im.domains.messages.heartbeat.Heartbeat;
+import cn.w.im.domains.messages.heartbeat.HeartbeatResponse;
 import cn.w.im.domains.messages.server.*;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -36,7 +40,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = ServerRegisterMessage.class, name = "ServerRegister"),
         @JsonSubTypes.Type(value = ServerRegisterResponseMessage.class, name = "ServerRegisterResponse"),
         @JsonSubTypes.Type(value = TokenMessage.class, name = "Token"),
-        @JsonSubTypes.Type(value = TokenResponseMessage.class, name = "TokenResponse")
+        @JsonSubTypes.Type(value = TokenResponseMessage.class, name = "TokenResponse"),
+        //heartbeat
+        @JsonSubTypes.Type(value = Heartbeat.class, name="Heartbeat"),
+        @JsonSubTypes.Type(value = HeartbeatResponse.class, name="HeartbeatResponse"),
+        //profile
+        @JsonSubTypes.Type(value = GetProfileRequestMessage.class,name = "GetProfileRequest"),
+        @JsonSubTypes.Type(value = GetProfileResponseMessage.class,name = "GetProfileResponse")
 })
 public abstract class Message {
     /**

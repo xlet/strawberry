@@ -30,6 +30,9 @@ public class DefaultLinkmanProviderImpl implements LinkmanProvider {
         if (linkmen != null && linkmen.size() > 0) {
             for (NearlyLinkman linkman : linkmen) {
                 String wid = linkman.toggle(memberId);
+                if(wid == null || "".equals(wid)){
+                    continue;
+                }
                 recent.add(getMember(wid));
             }
         }
@@ -38,6 +41,7 @@ public class DefaultLinkmanProviderImpl implements LinkmanProvider {
 
     @Override
     public Member getMember(String memberId) {
+
         if (memberCacheProvider.cacheExisted(memberId)) {
             return memberCacheProvider.getCachedMember(memberId);
         } else {
@@ -51,6 +55,21 @@ public class DefaultLinkmanProviderImpl implements LinkmanProvider {
             }
         }
         return null;
+    }
+
+    @Override
+    public List<Member> getMembers(List<String> ids) {
+        List<Member> members = new ArrayList<Member>();
+        for (String id : ids) {
+            if(id == null || "".equals(id)){
+                continue;
+            }
+            Member member = memberCacheProvider.getCachedMember(id);
+            if (member != null) {
+                members.add(member);
+            }
+        }
+        return members;
     }
 
 
@@ -83,5 +102,6 @@ public class DefaultLinkmanProviderImpl implements LinkmanProvider {
         }
         return memberService;
     }
+
 
 }

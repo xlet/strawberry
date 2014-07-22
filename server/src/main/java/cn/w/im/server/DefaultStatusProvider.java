@@ -19,7 +19,9 @@ public class DefaultStatusProvider implements StatusProvider {
         if (members != null && members.size() > 0) {
             for (Member member : members) {
                 OnlineMemberStatus memberStatus = memberStatusDao.get(member.getId());
-                member.setStatus(memberStatus.getStatus().getValue());
+                if (memberStatus != null) {
+                    member.setStatus(memberStatus.getStatus().getValue());
+                }
             }
         }
     }

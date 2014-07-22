@@ -1,5 +1,6 @@
 package cn.w.im.messageBus;
 
+import cn.w.im.handlers.HeartbeatRespHandler;
 import cn.w.im.handlers.JsonMessageDecoder;
 import cn.w.im.handlers.JsonMessageEncoder;
 import cn.w.im.handlers.MessageBusHandler;
@@ -26,6 +27,8 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
                 new StringDecoder(CharsetUtil.UTF_8),
                 new JsonMessageEncoder(),
                 new JsonMessageDecoder(),
+                //heartbeat
+                new HeartbeatRespHandler(),
                 new MessageBusHandler());
     }
 }

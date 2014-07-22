@@ -2,19 +2,19 @@ package cn.w.im.forwardServer;
 
 import cn.w.im.domains.conf.ForwardConfiguration;
 import cn.w.im.server.ForwardServer;
-import cn.w.im.utils.ConfigHelper;
 import cn.w.im.utils.spring.SpringContext;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
-import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 
 /**
@@ -77,6 +77,8 @@ public class Bootstrap {
     private boolean connectingServer = false;
     private boolean connectingBus = false;
 
+    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(2,new DefaultThreadFactory("ReconnectThread"));
+
     public void init(String serverHost, int serverPort, String busHost, int busPort) {
         ForwardServer.current().init(serverHost, serverPort, busHost, busPort);
     }
@@ -121,15 +123,27 @@ public class Bootstrap {
 
     private void connectServer() throws InterruptedException {
         logger.debug("connect message bus server starting.");
+        try {
+            io.netty.bootstrap.Bootstrap bootstrap = new io.netty.bootstrap.Bootstrap();
+            bootstrap.group(this.serverClientGroup)
+                    .channel(NioSocketChannel.class)
+                    .handler(new ServerInitializer());
 
-        io.netty.bootstrap.Bootstrap bootstrap = new io.netty.bootstrap.Bootstrap();
-        bootstrap.group(this.serverClientGroup)
-                .channel(NioSocketChannel.class)
-                .handler(new ServerInitializer());
-
-        ChannelFuture connectFuture = bootstrap.connect(ForwardServer.current().getServerHost(), ForwardServer.current().getServerPort()).sync();
-        connectFuture.addListener(connectionServerFutureListener);
-        connectFuture.channel().closeFuture().sync();
+            ChannelFuture connectFuture = bootstrap.connect(ForwardServer.current().getServerHost(), ForwardServer.current().getServerPort()).sync();
+            connectFuture.addListener(connectionServerFutureListener);
+            connectFuture.channel().closeFuture().sync();
+        } finally {
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        connectServer();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 
     private ChannelFutureListener connectionServerFutureListener = new ChannelFutureListener() {
@@ -143,15 +157,27 @@ public class Bootstrap {
 
     private void connectMessageBus() throws InterruptedException {
         logger.debug("connect message bus server starting.");
+        try {
+            io.netty.bootstrap.Bootstrap bootstrap = new io.netty.bootstrap.Bootstrap();
+            bootstrap.group(messageBusClientGroup)
+                    .channel(NioSocketChannel.class)
+                    .handler(new ServerInitializer());
 
-        io.netty.bootstrap.Bootstrap bootstrap = new io.netty.bootstrap.Bootstrap();
-        bootstrap.group(messageBusClientGroup)
-                .channel(NioSocketChannel.class)
-                .handler(new ServerInitializer());
-
-        ChannelFuture connectFuture = bootstrap.connect(ForwardServer.current().getBusHost(), ForwardServer.current().getBusPort()).sync();
-        connectFuture.addListener(connectionFutureListener);
-        connectFuture.channel().closeFuture().sync();
+            ChannelFuture connectFuture = bootstrap.connect(ForwardServer.current().getBusHost(), ForwardServer.current().getBusPort()).sync();
+            connectFuture.addListener(connectionFutureListener);
+            connectFuture.channel().closeFuture().sync();
+        } finally {
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        connectMessageBus();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 
     private ChannelFutureListener connectionFutureListener = new ChannelFutureListener() {
@@ -195,4 +221,6 @@ public class Bootstrap {
             }
         }
     }
+
+
 }

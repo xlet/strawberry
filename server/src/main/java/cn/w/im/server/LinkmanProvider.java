@@ -25,4 +25,6 @@ public interface LinkmanProvider {
      * @return member info.
      */
     Member getMember(String memberId);
+
+    List<Member> getMembers(List<String> ids);
 }

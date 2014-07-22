@@ -1,5 +1,6 @@
 package cn.w.im.loginServer;
 
+import cn.w.im.handlers.HeartbeatRespHandler;
 import cn.w.im.handlers.JsonMessageDecoder;
 import cn.w.im.handlers.JsonMessageEncoder;
 import cn.w.im.handlers.LoginServerHandler;
@@ -9,7 +10,10 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.CharsetUtil;
+
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -27,6 +31,9 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
                 new StringDecoder(CharsetUtil.UTF_8),
                 new JsonMessageEncoder(),
                 new JsonMessageDecoder(),
+                //once read time out detected, channel will be disposed
+                new ReadTimeoutHandler(30, TimeUnit.SECONDS),
+                new HeartbeatRespHandler(),
                 new LoginServerHandler());
     }
 }
