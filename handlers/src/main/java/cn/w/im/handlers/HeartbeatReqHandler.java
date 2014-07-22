@@ -56,6 +56,7 @@ public class HeartbeatReqHandler extends SimpleChannelInboundHandler<HeartbeatRe
         this.channel = new NettyChannel(ctx);
 
         this.heartbeatFuture = this.executor.scheduleAtFixedRate(new HeartbeatTask(this), 0, interval, TimeUnit.SECONDS);
+        super.channelActive(ctx);
     }
 
 
@@ -63,6 +64,7 @@ public class HeartbeatReqHandler extends SimpleChannelInboundHandler<HeartbeatRe
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         stopHeartbeat();
         destory();
+        super.channelInactive(ctx);
     }
 
     public boolean isReply() {

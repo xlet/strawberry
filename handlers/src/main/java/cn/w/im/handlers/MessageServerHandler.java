@@ -1,17 +1,16 @@
 package cn.w.im.handlers;
 
 import cn.w.im.domains.PluginContext;
-import cn.w.im.server.MessageServer;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.init.PluginInitializerFactory;
+import cn.w.im.server.MessageServer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.net.InetSocketAddress;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,6 +34,7 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //TODO:jackie 拒绝链接
         MessageServer.current().clientCacheProvider().registerClient(ctx);
+        super.channelActive(ctx);
     }
 
     @Override
@@ -51,6 +51,7 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //TODO:jackie 退出处理
         MessageServer.current().clientCacheProvider().removeClient(ctx);
+        super.channelInactive(ctx);
     }
 
     @Override

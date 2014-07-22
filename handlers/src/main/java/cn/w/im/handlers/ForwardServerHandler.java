@@ -29,6 +29,7 @@ public class ForwardServerHandler extends ChannelInboundHandlerAdapter {
         } catch (ListeningThreadStartErrorException ex) {
             logger.error(ex.getMessage(), ex);
         }
+        super.channelActive(ctx);
     }
 
     private synchronized void waitConnected() throws Exception {
@@ -65,6 +66,8 @@ public class ForwardServerHandler extends ChannelInboundHandlerAdapter {
             } else if (msg instanceof Message) {
                 Message message = (Message) msg;
                 ForwardServer.current().forwardMessage(message, ctx);
+            }else{
+                ctx.fireChannelRead(msg);
             }
         } catch (Exception ex) {
             logger.error("forward server crashed.");

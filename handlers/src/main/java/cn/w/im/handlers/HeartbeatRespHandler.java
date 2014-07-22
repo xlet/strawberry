@@ -23,6 +23,7 @@ public class HeartbeatRespHandler extends SimpleChannelInboundHandler<Heartbeat>
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("channel active!");
+        System.out.println("channelActive");
+        super.channelActive(ctx);
     }
 }
