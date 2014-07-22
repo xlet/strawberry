@@ -32,7 +32,7 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
                 new JsonMessageEncoder(),
                 new JsonMessageDecoder(),
                 //once read time out detected, channel will be disposed
-                new ReadTimeoutHandler(30, TimeUnit.SECONDS),
+                new ReadTimeoutHandler(35, TimeUnit.SECONDS),
                 new HeartbeatRespHandler(),
                 new LoginServerHandler());
     }
