@@ -23,7 +23,7 @@ public class JsonMessageDecoder extends MessageToMessageDecoder<String> {
     protected void decode(ChannelHandlerContext channelHandlerContext, String message, List<Object> objects) throws Exception {
         Message messageObj = mapper.readValue(message, Message.class);
         messageObj.setReceivedTime(System.currentTimeMillis());
-        logger.debug("receive message:");
+        logger.debug("receive message <= "+channelHandlerContext.channel().remoteAddress().toString()+":");
         logger.debug(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(messageObj));
         objects.add(messageObj);
     }

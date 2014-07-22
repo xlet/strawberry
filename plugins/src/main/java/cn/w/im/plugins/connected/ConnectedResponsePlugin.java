@@ -54,14 +54,13 @@ public class ConnectedResponsePlugin extends MessagePlugin<ConnectedResponseMess
     }
 
     private void processMessageWithMessageServer(ConnectedResponseMessage message, PluginContext context) {
-        //ConnectToken connectToken = MessageServer.current().getToken(message.getToken());
-        ConnectToken connectToken = new ConnectToken("","13622882929","", null);
+        ConnectToken connectToken = MessageServer.current().getToken(message.getToken());
         try {
             if (message.isSuccess()) {
                 MessageServer.current().respondProvider().receivedRespondedMessage(message);
                 if (MessageServer.current().respondProvider().allResponded(message.getRespondKey())) {
                     MessageServer messageServer = MessageServer.current();
-                    //messageServer.connected(message.getToken());
+                    messageServer.connected(message.getToken());
                     //获取最近联系人列表
                     List<Member> recentChatWith = messageServer.linkmanProvider().getNearlyLinkmen(connectToken.getLoginId());
                     //联系人状态

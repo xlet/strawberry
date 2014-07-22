@@ -23,7 +23,7 @@ public class JsonMessageEncoder extends MessageToMessageEncoder<Message> {
     protected void encode(ChannelHandlerContext channelHandlerContext, Message message, List<Object> objects) throws Exception {
         String messageStr = mapper.writeValueAsString(message);
         String prettyMessageStr = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(message);
-        logger.debug("send message:");
+        logger.debug("send message => "+channelHandlerContext.channel().remoteAddress().toString()+":");
         logger.debug(prettyMessageStr);
         objects.add(messageStr);
     }

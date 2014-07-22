@@ -34,6 +34,7 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //TODO:jackie 拒绝链接
         MessageServer.current().clientCacheProvider().registerClient(ctx);
+        //TODO:if host has registered
         super.channelActive(ctx);
     }
 
