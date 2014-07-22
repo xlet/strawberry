@@ -39,8 +39,8 @@
 
     <!-- http client -->
     <bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig" factory-method="custom">
-        <property name="socketTimeout" value="200000"/>
-        <property name="connectTimeout" value="200000"/>
+        <property name="socketTimeout" value="20000"/>
+        <property name="connectTimeout" value="50000"/>
     </bean>
     <bean id="requestConfig" factory-bean="requestConfigBuilder" factory-method="build"/>
     <bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder" factory-method="create">
