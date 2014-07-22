@@ -65,7 +65,7 @@ public class MessageTest {
 
     @Test
     public void gen_connect_message(){
-        String token = "7efa806c8b0f4083bfe0bf50b6c800a8";
+        String token = "099e328eddc04f3ba0afe9895f5457ef";
         ConnectMessage connectMessage = new ConnectMessage(CLIENT_TYPE, "13622882929", token);
         print(connectMessage);
         ConnectResponseMessage connectResponseMessage = new ConnectResponseMessage();

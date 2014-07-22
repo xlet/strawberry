@@ -25,8 +25,8 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
                 new StringDecoder(CharsetUtil.UTF_8),
                 new JsonMessageEncoder(),
                 new JsonMessageDecoder(),
-                new ForwardServerHandler(),
                 //heartbeat
-                new HeartbeatReqHandler(true, 30));
+                new HeartbeatReqHandler(true, 30),
+                new ForwardServerHandler());
     }
 }

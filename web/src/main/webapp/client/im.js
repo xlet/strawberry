@@ -1,4 +1,4 @@
-﻿var serverUrl = "http://localhost:8080";
+﻿var serverUrl = "http://10.0.40.18:8080";
 var ie = !-[1, ];
 var ie6 = !-[1, ] && !window.XMLHttpRequest;
 var imPanelRelativeTop = 0;

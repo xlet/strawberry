@@ -4,7 +4,7 @@ import cn.w.im.domains.messages.heartbeat.Heartbeat;
 import cn.w.im.domains.messages.heartbeat.HeartbeatResponse;
 import cn.w.im.utils.netty.channel.NettyChannel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.apache.log4j.Logger;
 
@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * DateTime: 14-7-21 上午10:21
  * Summary:
  */
-public class HeartbeatReqHandler extends SimpleChannelInboundHandler<HeartbeatResponse> {
+public class HeartbeatReqHandler extends ChannelInboundHandlerAdapter {
     private final Logger logger = Logger.getLogger(this.getClass());
 
     private volatile ScheduledFuture<?> heartbeatFuture;
@@ -35,9 +35,14 @@ public class HeartbeatReqHandler extends SimpleChannelInboundHandler<HeartbeatRe
     private AtomicInteger errorCount = new AtomicInteger(0);
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, HeartbeatResponse response) throws Exception {
-        channel.setResult(response);
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+       if(msg instanceof HeartbeatResponse){
+           channel.setResult((HeartbeatResponse) msg);
+       }else{
+           ctx.fireChannelRead(msg);
+       }
     }
+
 
     public HeartbeatReqHandler(int intervalSeconds) {
         this(false, intervalSeconds);

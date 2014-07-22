@@ -43,7 +43,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;
-
+        logger.debug("read="+message.getMessageType());
         PluginContext context = new PluginContext(message, ctx);
         for (Plugin plugin : plugins) {
             plugin.process(context);
