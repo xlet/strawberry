@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -137,6 +138,7 @@ public class Bootstrap {
                 @Override
                 public void run() {
                     try {
+                        TimeUnit.SECONDS.sleep(5);
                         connectServer();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -171,6 +173,7 @@ public class Bootstrap {
                 @Override
                 public void run() {
                     try {
+                        TimeUnit.SECONDS.sleep(5);
                         connectMessageBus();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
