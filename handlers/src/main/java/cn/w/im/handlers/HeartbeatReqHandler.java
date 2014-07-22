@@ -4,11 +4,14 @@ import cn.w.im.domains.messages.heartbeat.Heartbeat;
 import cn.w.im.domains.messages.heartbeat.HeartbeatResponse;
 import cn.w.im.utils.netty.channel.NettyChannel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.apache.log4j.Logger;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -16,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * DateTime: 14-7-21 上午10:21
  * Summary:
  */
-public class HeartbeatReqHandler extends ChannelInboundHandlerAdapter {
+public class HeartbeatReqHandler extends SimpleChannelInboundHandler<HeartbeatResponse> {
     private final Logger logger = Logger.getLogger(this.getClass());
 
     private volatile ScheduledFuture<?> heartbeatFuture;
@@ -31,6 +34,11 @@ public class HeartbeatReqHandler extends ChannelInboundHandlerAdapter {
 
     private AtomicInteger errorCount = new AtomicInteger(0);
 
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, HeartbeatResponse response) throws Exception {
+        channel.setResult(response);
+    }
+
     public HeartbeatReqHandler(int intervalSeconds) {
         this(false, intervalSeconds);
     }
@@ -43,20 +51,13 @@ public class HeartbeatReqHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof HeartbeatResponse) {
-            HeartbeatResponse response = (HeartbeatResponse) msg;
-            channel.setResult(response);
-        }
-    }
-
-    @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.debug("starting heartbeat...");
         this.channel = new NettyChannel(ctx);
 
         this.heartbeatFuture = this.executor.scheduleAtFixedRate(new HeartbeatTask(this), 0, interval, TimeUnit.SECONDS);
     }
+
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
