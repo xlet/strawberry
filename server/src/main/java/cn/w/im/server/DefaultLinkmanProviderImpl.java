@@ -64,7 +64,7 @@ public class DefaultLinkmanProviderImpl implements LinkmanProvider {
             if(id == null || "".equals(id)){
                 continue;
             }
-            Member member = memberCacheProvider.getCachedMember(id);
+            Member member = getMember(id);
             if (member != null) {
                 members.add(member);
             }

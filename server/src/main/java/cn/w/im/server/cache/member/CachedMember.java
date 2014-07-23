@@ -28,6 +28,7 @@ public class CachedMember extends Member {
 
     private MessageClientType memberClient;
     private long expiredTime;
+    private long since = System.currentTimeMillis();
 
     public MessageClientType getMemberClient() {
         return memberClient;
@@ -46,7 +47,7 @@ public class CachedMember extends Member {
     }
 
     public boolean isExpired() {
-        if (this.expiredTime < System.currentTimeMillis()) {
+        if ((System.currentTimeMillis() - since >= expiredTime)) {
             return true;
         }
         return false;
