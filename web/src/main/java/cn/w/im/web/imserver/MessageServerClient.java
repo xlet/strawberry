@@ -128,7 +128,7 @@ public class MessageServerClient extends Thread{
                                 new StringDecoder(CharsetUtil.UTF_8),
                                 new JsonMessageEncoder(),
                                 new JsonMessageDecoder(),
-                                //new HeartbeatReqHandler(true, 30),
+                                new HeartbeatReqHandler(true, 30),
                                 webMessageHandler
                         );
                     }

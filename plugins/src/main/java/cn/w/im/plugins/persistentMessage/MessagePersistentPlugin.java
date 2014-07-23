@@ -1,17 +1,15 @@
 package cn.w.im.plugins.persistentMessage;
 
 import cn.w.im.domains.PluginContext;
-import cn.w.im.domains.conf.Configuration;
-import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.ServerType;
+import cn.w.im.domains.messages.Message;
+import cn.w.im.domains.messages.client.GetProfileRequestMessage;
 import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.persistent.MessageDao;
 import cn.w.im.persistent.PersistentRepositoryFactory;
 import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.utils.spring.SpringContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Creator: JackieHan.
@@ -36,14 +34,17 @@ public class MessagePersistentPlugin<TMessage extends Message> extends MessagePl
 
     @Override
     public boolean isMatch(PluginContext context) {
+        //TODO does all messages need to be saved?
         return true;
     }
 
     @Override
     public void processMessage(TMessage message, PluginContext context) {
         try {
-            MessageDao messageDao = PersistentRepositoryFactory.getMessageDao(message);
-            messageDao.save(message);
+            if (!(message instanceof GetProfileRequestMessage)) {
+                MessageDao messageDao = PersistentRepositoryFactory.getMessageDao(message);
+                messageDao.save(message);
+            }
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
         }

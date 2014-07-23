@@ -65,7 +65,7 @@ public class MessageTest {
 
     @Test
     public void gen_connect_message(){
-        String token = "099e328eddc04f3ba0afe9895f5457ef";
+        String token = "fcf3e04db292408eb834d9c21eb432ce";
         ConnectMessage connectMessage = new ConnectMessage(CLIENT_TYPE, "13622882929", token);
         print(connectMessage);
         ConnectResponseMessage connectResponseMessage = new ConnectResponseMessage();
@@ -145,6 +145,7 @@ public class MessageTest {
         String hex = "7B224074797065223A22436F6E6E656374222C22636C69656E7454797065223A2257696E466F726D222C226C6F67696E4964223A223133363232383832393239222C226D65737361676554797065223A22436F6E6E656374222C22726563656976656454696D65223A302E302C2273656E6454696D65223A313430363031343837323338392E302C22746F6B656E223A223938346138653963366663373438636462333337303731636130386338313534227D0A";
         System.out.print(hex.length()/2);
 
+
     }
 
     public void print(Object... o) {
@@ -191,7 +192,7 @@ public class MessageTest {
         byte[] content = json.getBytes("utf-8");
         byteBuf.writeInt(content.length);
         byteBuf.writeBytes(content);
-        return ByteBufUtil.hexDump(byteBuf);
+        return ByteBufUtil.hexDump(byteBuf).toUpperCase();
     }
 
 }

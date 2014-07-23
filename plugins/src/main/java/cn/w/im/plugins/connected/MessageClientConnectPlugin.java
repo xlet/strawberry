@@ -48,6 +48,7 @@ public class MessageClientConnectPlugin extends MessagePlugin<ConnectMessage> {
 
     private void processMessageWithMessageServer(ConnectMessage message, PluginContext context) {
         try {
+            //register client, put into variety of maps...
             MessageServer.current().clientCacheProvider().registerClient(message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
             MessageServer.current().connect(message.getToken(), message.getLoginId(), context.getCurrentHost());
             MessageClientBasic messageClientBasic = new MessageClientBasic(message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
