@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -18,7 +19,7 @@ public class UserCenterTest {
     private MemberService members;
     private CloseableHttpClient httpClient;
 
-   // @Before
+    @Before
     public void init() {
         UcConfig ucConfig = new UcConfig();
         ucConfig.setBaseUrl("http://10.0.41.112/api/");
@@ -30,7 +31,7 @@ public class UserCenterTest {
         members.setConfig(ucConfig);
     }
 
-    @Test
+    //@Test
     public void verify() {
         for (int i = 0; i < 2; i++) {
             try {
