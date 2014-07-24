@@ -4,6 +4,7 @@ import cn.w.im.utils.sdk.usercenter.config.UcConfig;
 import cn.w.im.utils.sdk.usercenter.model.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -58,12 +59,12 @@ public class UserCenterSupport {
     }
 
     private String execute(HttpUriRequest request) throws IOException, UserCenterException {
-        logger.debug("request =>"+request.getURI().toString());
+        logger.debug("request =>" + request.getURI().toString());
         CloseableHttpResponse httpResponse = config.getHttpClient().execute(request);
         int httpStatus = httpResponse.getStatusLine().getStatusCode();
         if (httpStatus == 200) {
             String resp = EntityUtils.toString(httpResponse.getEntity());
-            logger.debug("response =>\n"+resp);
+            logger.debug("response =>\n" + resp);
             return resp;
         }
         throw new UserCenterException("request error, code[" + httpStatus + "].");
@@ -115,6 +116,13 @@ public class UserCenterSupport {
             sb.append(entry.getKey()).append("=").append(entry.getValue());
         }
         return sb.toString();
+    }
+
+
+    protected void checkWid(String wid) throws UserCenterException {
+        if (!StringUtils.isNumeric(wid) || StringUtils.length(wid) < 7 || StringUtils.length(wid) > 14) {
+            throw new UserCenterException("[" + wid + "] is not valid");
+        }
     }
 
     public UcConfig getConfig() {

@@ -152,6 +152,12 @@
             <version>${org.springframework.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.3</version>
+        </dependency>
+
         <!-- HTTP CLIENT  -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

@@ -8,6 +8,7 @@ import cn.w.im.utils.sdk.usercenter.Members;
 import cn.w.im.utils.sdk.usercenter.UserCenterException;
 import cn.w.im.utils.sdk.usercenter.model.MemberProfile;
 import cn.w.im.utils.spring.SpringContext;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
  * default linkman provider.
  */
 public class DefaultLinkmanProviderImpl implements LinkmanProvider {
+    private Logger logger = Logger.getLogger(this.getClass());
 
     private MemberCacheProvider memberCacheProvider = new MemberCacheProvider();
 
@@ -51,7 +53,7 @@ public class DefaultLinkmanProviderImpl implements LinkmanProvider {
                 memberCacheProvider.cacheAdd(lightweight, null);
                 return lightweight;
             } catch (UserCenterException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
         }
         return null;

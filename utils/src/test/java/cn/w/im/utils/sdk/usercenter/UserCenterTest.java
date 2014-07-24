@@ -2,10 +2,10 @@ package cn.w.im.utils.sdk.usercenter;
 
 import cn.w.im.utils.sdk.usercenter.config.UcConfig;
 import cn.w.im.utils.sdk.usercenter.model.Account;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -18,7 +18,7 @@ public class UserCenterTest {
     private MemberService members;
     private CloseableHttpClient httpClient;
 
-    @Before
+   // @Before
     public void init() {
         UcConfig ucConfig = new UcConfig();
         ucConfig.setBaseUrl("http://10.0.41.112/api/");
@@ -40,4 +40,17 @@ public class UserCenterTest {
             }
         }
     }
+
+    @Test
+    public void widVerify() throws UserCenterException {
+        String wid = "123456789012341";
+        checkWid(wid);
+    }
+
+    protected void checkWid(String wid) throws UserCenterException {
+        if (!StringUtils.isNumeric(wid) || StringUtils.length(wid) < 7 || StringUtils.length(wid) > 14) {
+            throw new UserCenterException("[" + wid + "] is not valid");
+        }
+    }
+
 }

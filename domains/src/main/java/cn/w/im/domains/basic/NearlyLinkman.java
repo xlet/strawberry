@@ -18,7 +18,8 @@ public class NearlyLinkman {
     }
 
     public String toggle(String other) {
-        return other.equals(memberId1) ? memberId2 : memberId1;
+        String another = other.equals(memberId1) ? memberId2 : memberId1;
+        return other.equals(another) ? "" : another;
     }
 
     public String getMemberId1() {

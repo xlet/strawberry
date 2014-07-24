@@ -10,6 +10,7 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.CharsetUtil;
 
@@ -31,6 +32,7 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         socketChannel.pipeline().addLast(
+                new LoggingHandler(),
                 new LengthFieldPrepender(4),
                 new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4),
                 new StringEncoder(CharsetUtil.UTF_8),

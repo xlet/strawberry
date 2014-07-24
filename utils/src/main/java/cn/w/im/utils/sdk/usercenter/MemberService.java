@@ -22,6 +22,7 @@ public class MemberService extends UserCenterSupport implements Members {
      */
     @Override
     public MemberProfile getByWid(String wid) throws UserCenterException {
+        checkWid(wid);
         String url = config.getBaseUrl() + "member/" + wid;
         return get(url, MemberProfile.class);
     }
@@ -34,6 +35,7 @@ public class MemberService extends UserCenterSupport implements Members {
      */
     @Override
     public boolean verify(Account account) throws UserCenterException {
+        checkWid(account.getWid());
         String url = config.getBaseUrl() + "member/" + account.getWid() + "/verify";
         Map<String, String> params = new HashMap<String, String>();
         params.put("password", MD5Util.twiceMd5(account.getPassword()));
