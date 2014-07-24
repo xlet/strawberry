@@ -4,6 +4,9 @@ import cn.w.im.domains.messages.heartbeat.Heartbeat;
 import cn.w.im.domains.messages.heartbeat.HeartbeatResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.timeout.ReadTimeoutException;
+import org.apache.log4j.Logger;
+
 
 /**
  * Creator: JimmyLin
@@ -11,6 +14,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  * Summary: heartbeat response handler
  */
 public class HeartbeatRespHandler extends ChannelInboundHandlerAdapter {
+
+    private final Logger logger = Logger.getLogger(this.getClass());
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -21,14 +26,18 @@ public class HeartbeatRespHandler extends ChannelInboundHandlerAdapter {
                 response.setSeq(heartbeat.getSeq());
                 ctx.writeAndFlush(response);
             }
-        }else{
+        } else {
             ctx.fireChannelRead(msg);
         }
     }
 
+
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("channelActive");
-        super.channelActive(ctx);
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if (cause instanceof ReadTimeoutException) {
+            logger.debug(ctx.channel().remoteAddress().toString() + " read idle timeout.");
+        } else {
+            ctx.fireExceptionCaught(cause);
+        }
     }
 }

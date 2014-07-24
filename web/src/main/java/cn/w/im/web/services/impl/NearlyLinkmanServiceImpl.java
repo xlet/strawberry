@@ -35,7 +35,9 @@ public class NearlyLinkmanServiceImpl implements NearlyLinkmanService {
             MemberViewObject memberViewObject = memberService.get(linkmanId, referrer);
             linkmanViewObject.setName(memberViewObject.getId());
             linkmanViewObject.setStatus(memberViewObject.getStatus());
+            linkmanViewObject.setThumb(memberViewObject.getThumb());
             linkmanViewObjects.add(linkmanViewObject);
+
         }
         return linkmanViewObjects;
     }

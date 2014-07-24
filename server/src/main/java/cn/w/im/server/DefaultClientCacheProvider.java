@@ -21,6 +21,8 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
 
     private Log logger;
 
+    private static final String NEWLINE = String.format("%n");
+
     /**
      * all linked clients contains serverClient and message Client.
      * key:linkedHost.
@@ -50,27 +52,28 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
 
 
     private void dump() {
-        logger.debug("dumping clientMap start---");
         for (Map.Entry<String, Map<Integer, Client>> portEntry : clientMap.entrySet()) {
-            printMap("hostip" + portEntry.getKey(), portEntry.getValue());
+            printMap(portEntry.getKey(), portEntry.getValue());
         }
-        logger.debug("dumping clientMap end---");
 
-        logger.debug("dumping messageClientOnThisServerMap start---");
         for (Map.Entry<String, Map<MessageClientType, Client>> entry : messageClientOnThisServerMap.entrySet()) {
 
-            printMap("loginId" + entry.getKey(), entry.getValue());
+            printMap(entry.getKey(), entry.getValue());
 
         }
-        logger.debug("dumping messageClientOnThisServerMap end---");
 
     }
 
     private <K, V> void printMap(String keyName, Map<K, V> map) {
-        logger.debug("keyName=" + keyName);
+        StringBuilder sb = new StringBuilder();
+        sb.append(NEWLINE).append("+----------------------------------+");
+        sb.append(NEWLINE).append("            "+keyName);
+        sb.append(NEWLINE).append("+---------+-------------------------+");
         for (Map.Entry<K, V> entry : map.entrySet()) {
-            logger.debug(entry.getKey() + "=" + entry.getValue().toString());
+            sb.append(NEWLINE).append("|\t").append(entry.getKey()).append("\t|\t").append(entry.getValue()).append("\t|");
         }
+        sb.append(NEWLINE).append("+---------+-------------------------+");
+        logger.debug(sb.toString());
     }
 
 
