@@ -41,10 +41,8 @@ public class MessagePersistentPlugin<TMessage extends Message> extends MessagePl
     @Override
     public void processMessage(TMessage message, PluginContext context) {
         try {
-            if (!(message instanceof GetProfileRequestMessage)) {
-                MessageDao messageDao = PersistentRepositoryFactory.getMessageDao(message);
-                messageDao.save(message);
-            }
+            MessageDao messageDao = PersistentRepositoryFactory.getMessageDao(message);
+            messageDao.save(message);
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
         }
