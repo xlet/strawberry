@@ -43,7 +43,7 @@ public class UserCenterTest {
 
     @Test
     public void widVerify() throws UserCenterException {
-        String wid = "123456789012341";
+        String wid = "1234567890123";
         checkWid(wid);
     }
 
