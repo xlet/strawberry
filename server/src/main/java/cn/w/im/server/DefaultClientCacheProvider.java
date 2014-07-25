@@ -4,7 +4,7 @@ import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.client.*;
 import cn.w.im.exceptions.*;
-import cn.w.im.persistent.OnLineMemberStatusDao;
+import cn.w.im.persistent.OnlineMemberStatusDao;
 import cn.w.im.persistent.PersistentRepositoryFactory;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.logging.Log;
@@ -78,7 +78,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
         logger.debug(sb.toString());
     }
 
-    private OnLineMemberStatusDao onLineMemberStatusDao;
+    private OnlineMemberStatusDao onlineMemberStatusDao;
 
 
     /**
@@ -91,7 +91,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
         this.messageClientOnThisServerMap = new ConcurrentHashMap<String, Map<MessageClientType, Client>>();
         this.messageClientOnOtherServerMap = new ConcurrentHashMap<String, Map<String, Map<MessageClientType, MessageClientBasic>>>();
         try {
-            this.onLineMemberStatusDao = PersistentRepositoryFactory.getDao(OnLineMemberStatusDao.class);
+            this.onlineMemberStatusDao = PersistentRepositoryFactory.getDao(OnlineMemberStatusDao.class);
         } catch (NotSupportedDataStoreException ex) {
             logger.error("client cache provider create error.", ex);
         }
@@ -345,7 +345,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
             MessageClient messageClient = (MessageClient) removeClient;
 
             logger.debug("remove member online status.loginId=" + messageClient.getLoginId());
-            onLineMemberStatusDao.delete(messageClient.getLoginId());
+            onlineMemberStatusDao.delete(messageClient.getLoginId());
 
             if (this.messageClientOnThisServerMap.containsKey(messageClient.getLoginId())) {
                 Map<MessageClientType, Client> clientMap = this.messageClientOnThisServerMap.get(messageClient.getLoginId());

@@ -10,7 +10,7 @@ import cn.w.im.domains.messages.client.ConnectMessage;
 import cn.w.im.domains.messages.client.LogoutMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
-import cn.w.im.persistent.OnLineMemberStatusDao;
+import cn.w.im.persistent.OnlineMemberStatusDao;
 import cn.w.im.plugins.MultiMessagePlugin;
 import cn.w.im.server.MessageServer;
 import cn.w.im.utils.spring.SpringContext;
@@ -26,7 +26,7 @@ public class StatusPlugin extends MultiMessagePlugin {
 
     private final static Log LOG = LogFactory.getLog(StatusPlugin.class);
 
-    private OnLineMemberStatusDao onLineMemberStatusDao;
+    private OnlineMemberStatusDao onlineMemberStatusDao;
 
     /**
      * 构造函数.
@@ -35,7 +35,7 @@ public class StatusPlugin extends MultiMessagePlugin {
      */
     public StatusPlugin(ServerType containerType) {
         super("memberStatusPlugin", "add online member to cache.", containerType);
-        this.onLineMemberStatusDao = SpringContext.context().getBean(OnLineMemberStatusDao.class);
+        this.onlineMemberStatusDao = SpringContext.context().getBean(OnlineMemberStatusDao.class);
     }
 
     @Override
@@ -61,12 +61,12 @@ public class StatusPlugin extends MultiMessagePlugin {
             String loginId = ((ConnectMessage) message).getLoginId();
             if (MessageServer.current().clientCacheProvider().getClients(loginId).size() != 0) {
                 OnlineMemberStatus memberStatus = new OnlineMemberStatus(loginId, Status.Online);
-                this.onLineMemberStatusDao.save(memberStatus);
+                this.onlineMemberStatusDao.save(memberStatus);
 
             }
         } else if (message.getMessageType().equals(MessageType.Logout)) {
             String loginId = ((LogoutMessage) message).getLoginId();
-            this.onLineMemberStatusDao.delete(loginId);
+            this.onlineMemberStatusDao.delete(loginId);
         }
     }
 }

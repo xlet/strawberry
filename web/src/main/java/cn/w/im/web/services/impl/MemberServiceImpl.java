@@ -3,7 +3,7 @@ package cn.w.im.web.services.impl;
 import cn.w.im.domains.basic.OnlineMemberStatus;
 import cn.w.im.domains.basic.Status;
 import cn.w.im.domains.basic.TempMember;
-import cn.w.im.persistent.OnLineMemberStatusDao;
+import cn.w.im.persistent.OnlineMemberStatusDao;
 import cn.w.im.persistent.TempMemberDao;
 import cn.w.im.utils.sdk.usercenter.Members;
 import cn.w.im.utils.sdk.usercenter.UserCenterException;
@@ -47,7 +47,7 @@ public class MemberServiceImpl implements MemberService {
     private TempMemberDao tempMemberDao;
 
     @Autowired
-    private OnLineMemberStatusDao onLineMemberStatusDao;
+    private OnlineMemberStatusDao onlineMemberStatusDao;
 
     @Autowired
     private Members userCenterMembers;
@@ -137,7 +137,7 @@ public class MemberServiceImpl implements MemberService {
             return Status.valueOf(this.getCachedMember(memberId, referrer).getStatus());
         }
 
-        OnlineMemberStatus memberStatus = this.onLineMemberStatusDao.get(memberId);
+        OnlineMemberStatus memberStatus = this.onlineMemberStatusDao.get(memberId);
         return memberStatus.getStatus();
     }
 
