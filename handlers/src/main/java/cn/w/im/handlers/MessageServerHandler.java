@@ -46,6 +46,7 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
         for (Plugin plugin : plugins) {
             plugin.process(context);
         }
+        super.channelRead(ctx, msg);
     }
 
     @Override

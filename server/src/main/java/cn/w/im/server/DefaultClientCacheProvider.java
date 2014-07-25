@@ -4,6 +4,8 @@ import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.client.*;
 import cn.w.im.exceptions.*;
+import cn.w.im.persistent.OnLineMemberStatusDao;
+import cn.w.im.persistent.PersistentRepositoryFactory;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,7 +69,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
     private <K, V> void printMap(String keyName, Map<K, V> map) {
         StringBuilder sb = new StringBuilder();
         sb.append(NEWLINE).append("+----------------------------------+");
-        sb.append(NEWLINE).append("            "+keyName);
+        sb.append(NEWLINE).append("            " + keyName);
         sb.append(NEWLINE).append("+---------+-------------------------+");
         for (Map.Entry<K, V> entry : map.entrySet()) {
             sb.append(NEWLINE).append("|\t").append(entry.getKey()).append("\t|\t").append(entry.getValue()).append("\t|");
@@ -75,6 +77,8 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
         sb.append(NEWLINE).append("+---------+-------------------------+");
         logger.debug(sb.toString());
     }
+
+    private OnLineMemberStatusDao onLineMemberStatusDao;
 
 
     /**
@@ -86,6 +90,11 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
         this.serverClientMap = new ConcurrentHashMap<String, Client>();
         this.messageClientOnThisServerMap = new ConcurrentHashMap<String, Map<MessageClientType, Client>>();
         this.messageClientOnOtherServerMap = new ConcurrentHashMap<String, Map<String, Map<MessageClientType, MessageClientBasic>>>();
+        try {
+            this.onLineMemberStatusDao = PersistentRepositoryFactory.getDao(OnLineMemberStatusDao.class);
+        } catch (NotSupportedDataStoreException ex) {
+            logger.error("client cache provider create error.", ex);
+        }
     }
 
     @Override
@@ -330,9 +339,14 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
 
 
     private void removeMessageClientMap(Client removeClient) {
+
         logger.debug("removing client => " + removeClient.toString());
         if (removeClient instanceof MessageClient) {
             MessageClient messageClient = (MessageClient) removeClient;
+
+            logger.debug("remove member online status.loginId=" + messageClient.getLoginId());
+            onLineMemberStatusDao.delete(messageClient.getLoginId());
+
             if (this.messageClientOnThisServerMap.containsKey(messageClient.getLoginId())) {
                 Map<MessageClientType, Client> clientMap = this.messageClientOnThisServerMap.get(messageClient.getLoginId());
                 if (clientMap.containsKey(messageClient.getMessageClientType())) {
@@ -348,7 +362,6 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
             } else {
                 logger.debug(messageClient.getLoginId() + " not found");
             }
-
         }
     }
 }

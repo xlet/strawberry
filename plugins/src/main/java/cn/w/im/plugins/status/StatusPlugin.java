@@ -62,6 +62,7 @@ public class StatusPlugin extends MultiMessagePlugin {
             if (MessageServer.current().clientCacheProvider().getClients(loginId).size() != 0) {
                 OnlineMemberStatus memberStatus = new OnlineMemberStatus(loginId, Status.Online);
                 this.onLineMemberStatusDao.save(memberStatus);
+
             }
         } else if (message.getMessageType().equals(MessageType.Logout)) {
             String loginId = ((LogoutMessage) message).getLoginId();
