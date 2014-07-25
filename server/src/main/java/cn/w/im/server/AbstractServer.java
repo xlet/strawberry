@@ -2,7 +2,6 @@ package cn.w.im.server;
 
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
-import cn.w.im.server.cache.member.MemberCacheProvider;
 
 import java.util.Date;
 
@@ -18,7 +17,6 @@ public abstract class AbstractServer {
     private ClientCacheProvider clientCacheProvider;
     private SendMessageProvider sendMessageProvider;
     private RespondProvider respondProvider;
-    private MemberCacheProvider linkmanCacheProvider;
     private boolean init = false;
 
     /**

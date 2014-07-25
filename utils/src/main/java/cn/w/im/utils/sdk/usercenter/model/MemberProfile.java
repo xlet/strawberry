@@ -34,6 +34,7 @@ public class MemberProfile {
     private boolean mobileValid;
     private boolean realNameValid;
     private boolean companyValid;
+    private int validState;
 
 
     public String getId() {
@@ -283,5 +284,13 @@ public class MemberProfile {
                 ", realNameValid=" + realNameValid +
                 ", companyValid=" + companyValid +
                 '}';
+    }
+
+    public int getValidState() {
+        return validState;
+    }
+
+    public void setValidState(int validState) {
+        this.validState = validState;
     }
 }
