@@ -3,7 +3,7 @@ package cn.w.im.persistent.mongo.basic;
 import cn.w.im.domains.basic.OnlineMemberStatus;
 import cn.w.im.domains.basic.Status;
 import cn.w.im.domains.mongo.basic.MongoOnlineMemberStatus;
-import cn.w.im.persistent.OnLineMemberStatusDao;
+import cn.w.im.persistent.OnlineMemberStatusDao;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
- * implement {@link cn.w.im.persistent.OnLineMemberStatusDao} with mongo.
+ * implement {@link cn.w.im.persistent.OnlineMemberStatusDao} with mongo.
  */
 @Component("mongoOnlineMemberStatusDao")
-public class MongoOnlineMemberStatusDaoImpl extends BasicDAO<MongoOnlineMemberStatus, ObjectId> implements OnLineMemberStatusDao {
+public class MongoOnlineMemberStatusDaoImpl extends BasicDAO<MongoOnlineMemberStatus, ObjectId> implements OnlineMemberStatusDao {
 
 
     @Autowired

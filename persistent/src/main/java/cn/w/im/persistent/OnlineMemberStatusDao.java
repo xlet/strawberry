@@ -5,7 +5,7 @@ import cn.w.im.domains.basic.OnlineMemberStatus;
 /**
  * {@link cn.w.im.domains.basic.OnlineMemberStatus} dao.
  */
-public interface OnLineMemberStatusDao {
+public interface OnlineMemberStatusDao {
 
     /**
      * save member status.
