@@ -3,7 +3,6 @@ package cn.w.im.plugins.persistentMessage;
 import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.messages.Message;
-import cn.w.im.domains.messages.client.GetProfileRequestMessage;
 import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.persistent.MessageDao;
 import cn.w.im.persistent.PersistentRepositoryFactory;
@@ -34,7 +33,6 @@ public class MessagePersistentPlugin<TMessage extends Message> extends MessagePl
 
     @Override
     public boolean isMatch(PluginContext context) {
-        //TODO does all messages need to be saved?
         return true;
     }
 

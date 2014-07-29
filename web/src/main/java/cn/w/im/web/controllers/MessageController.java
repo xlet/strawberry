@@ -10,6 +10,7 @@ import cn.w.im.web.vo.response.GetMessageResponse;
 import cn.w.im.web.vo.response.SendMessageResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -30,6 +31,8 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "/api/message")
 public class MessageController extends BaseController {
+
+    private static final Logger logger = Logger.getLogger(MessageController.class);
 
     private final static int MAX_MESSAGE_LENGTH = 255;
 
@@ -65,6 +68,7 @@ public class MessageController extends BaseController {
         response.setMessages(messages);
 
         String responseJson = mapper.writeValueAsString(response);
+        logger.debug("get:\n"+responseJson);
         if (!StringUtils.isEmpty(callback)) {
             responseJson = callback + "(" + responseJson + ")";
         }
@@ -134,7 +138,9 @@ public class MessageController extends BaseController {
 
 
     private String createSendResponse(SendMessageResponse sendMessageResponse, String callback) throws JsonProcessingException {
+
         String responseJson = mapper.writeValueAsString(sendMessageResponse);
+        logger.debug("responseJson:\n"+responseJson);
         if (!StringUtils.isEmpty(callback)) {
             responseJson = callback + "(" + responseJson + ")";
         }

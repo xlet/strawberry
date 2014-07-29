@@ -10,6 +10,8 @@ import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.persistent.NearlyLinkmanDao;
 import cn.w.im.plugins.MessagePlugin;
 import cn.w.im.utils.spring.SpringContext;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -20,6 +22,9 @@ public class NearlyLinkmanPlugin extends MessagePlugin<NormalMessage> {
 
     private final static Log LOG = LogFactory.getLog(NearlyLinkmanPlugin.class);
     private NearlyLinkmanDao nearlyLinkmanDao;
+
+    private final ObjectMapper mapper = new ObjectMapper();
+
 
     /**
      * 构造函数.
@@ -43,6 +48,11 @@ public class NearlyLinkmanPlugin extends MessagePlugin<NormalMessage> {
         if (nearlyLinkman == null) {
             LOG.debug("create new link relations.");
             nearlyLinkman = new NearlyLinkman(message.getFrom(), message.getTo());
+            try {
+                LOG.debug(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(nearlyLinkman));
+            } catch (JsonProcessingException e) {
+                LOG.error(e);
+            }
             this.nearlyLinkmanDao.save(nearlyLinkman);
         } else {
             LOG.debug("update existed link relations.");
