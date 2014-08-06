@@ -4,7 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="file:/etc/imtest/server/server.conf"/>
+    <context:property-placeholder location="file:/etc/im/server/server.conf"/>
     <import resource="serverConfig.xml"/>
 
     <context:component-scan base-package="cn.w.im" />
@@ -27,7 +27,7 @@
     <bean id="dataStore" class="cn.w.im.utils.mongo.DatastoreFactoryBean">
         <property name="morphia" ref="morphia"/>
         <property name="mongo" ref="mongo"/>
-        <property name="dbName" value="im"/>
+        <property name="dbName" value="login"/>
         <property name="toEnsureIndexes" value="true"/>
         <property name="toEnsureCaps" value="true"/>
     </bean>
