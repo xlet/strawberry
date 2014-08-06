@@ -26,9 +26,9 @@
     </organization>
 
     <scm>
-        <url>http://10.0.40.19/svn/java.im/trunk/</url>
-        <connection>scm:svn:http://10.0.40.19/svn/java.im/trunk/</connection>
-        <developerConnection>scm:svn:http://10.0.40.19/svn/java.im/trunk/</developerConnection>
+        <url>http://git.dev/im.git</url>
+        <connection>scm:git:ssh://git@git.dev/git/im.git</connection>
+        <developerConnection>scm:git:ssh://git@git.dev/git/im.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
