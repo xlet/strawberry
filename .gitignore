@@ -1,8 +1,11 @@
 #idea project file
 *.iml
 
-#idea project cache dictionary
+#idea project cache directory
 .idea/
+
+#maven target directory
+target/
 
 *.class
 
