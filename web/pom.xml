@@ -5,7 +5,7 @@
     <parent>
         <artifactId>im-parent</artifactId>
         <groupId>cn.w.im</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${current.version}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -48,12 +48,12 @@
         <dependency>
             <groupId>cn.w.im</groupId>
             <artifactId>im-persistent</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.w.im</groupId>
             <artifactId>im-handlers</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
