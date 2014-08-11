@@ -4,6 +4,7 @@ import cn.w.im.domains.messages.client.NormalMessage;
 import cn.w.im.handlers.HeartbeatReqHandler;
 import cn.w.im.handlers.JsonMessageDecoder;
 import cn.w.im.handlers.JsonMessageEncoder;
+import cn.w.im.web.GlobalConfiguration;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -22,6 +23,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
@@ -42,6 +44,9 @@ public class MessageServerClient extends Thread{
     private WebMessageHandler webMessageHandler = new WebMessageHandler();
     private boolean started = false;
 
+    @Autowired
+    private GlobalConfiguration globalConfiguration;
+
     public MessageServerClient() {
         init();
         if (!started) {
@@ -55,42 +60,6 @@ public class MessageServerClient extends Thread{
         LOG.debug("start connect message server.");
         started = true;
         LOG.debug("connected message server.");
-    }
-
-    private void connect() {
-        EventLoopGroup messageGroup = new NioEventLoopGroup();
-        try {
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(messageGroup)
-                    .channel(NioSocketChannel.class)
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(
-                                    new LengthFieldPrepender(4),
-                                    new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4),
-                                    new StringEncoder(CharsetUtil.UTF_8),
-                                    new StringDecoder(CharsetUtil.UTF_8),
-                                    new JsonMessageEncoder(),
-                                    new JsonMessageDecoder(),
-                                    new HeartbeatReqHandler(true, 30),
-                                    webMessageHandler
-
-                            );
-                        }
-                    });
-            ChannelFuture closeFuture = bootstrap.connect("10.0.41.104", 16041).sync().channel().closeFuture().sync();
-            closeFuture.addListener(new GenericFutureListener<Future<? super Void>>() {
-                @Override
-                public void operationComplete(Future<? super Void> future) throws Exception {
-
-                }
-            });
-
-        } catch (Exception ex) {
-            LOG.error("connect error!", ex);
-            messageGroup.shutdownGracefully();
-        }
     }
 
     private ChannelHandlerContext getCtx() {
@@ -113,7 +82,7 @@ public class MessageServerClient extends Thread{
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1, new DefaultThreadFactory("ReconnectThread"));
 
     private void init() {
-        remoteAddress = new InetSocketAddress("10.0.41.104", 16041);
+        remoteAddress = new InetSocketAddress(globalConfiguration.getMessageServerName(), globalConfiguration.getMessageServerPort());
         messageGroup = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
         bootstrap.group(messageGroup)
