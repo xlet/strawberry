@@ -12,7 +12,7 @@
     <groupId>cn.w.im</groupId>
     <artifactId>im-parent</artifactId>
     <packaging>pom</packaging>
-    <version>${current.version}</version>
+    <version>1.0.1.Final</version>
 
     <name>LiuLiu</name>
     <url>http://liuliu.w.cn</url>
@@ -32,10 +32,7 @@
         <tag>HEAD</tag>
     </scm>
 
-
-
     <properties>
-        <current.version>1.0.1.Final</current.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <org.springframework.version>4.0.1.RELEASE</org.springframework.version>
