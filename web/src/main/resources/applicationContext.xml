@@ -9,7 +9,7 @@
     <import resource="mongoConfig.xml"/>
     <import resource="globalConfiguration.xml"/>
 
-    <context:property-placeholder ignore-unresolvable="true" location="classpath*:applicationContext.properties"/>
+    <context:property-placeholder ignore-unresolvable="true" location="file:/etc/liuliu/web/server.conf" />
 
     <context:component-scan base-package="cn.w.im" use-default-filters="true">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>

@@ -29,15 +29,4 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
-
-    <!--解决jetty锁定静态文件的问题-->
-    <servlet>
-        <servlet-name>default</servlet-name>
-        <servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class>
-        <init-param>
-            <param-name>useFileMappedBuffer</param-name>
-            <param-value>false</param-value>
-        </init-param>
-        <load-on-startup>0</load-on-startup>
-    </servlet>
 </web-app>
