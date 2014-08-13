@@ -133,11 +133,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Status getStatus(String memberId, String referrer) {
+        LOG.debug("get member status:" + memberId + ":" + referrer);
         if (this.cacheExisted(memberId, referrer)) {
-            return Status.valueOf(this.getCachedMember(memberId, referrer).getStatus());
+            Status memberStatus = Status.valueOf(this.getCachedMember(memberId, referrer).getStatus());
+            LOG.debug("get web cached member status:" + memberStatus);
+            return memberStatus;
         }
 
         OnlineMemberStatus memberStatus = this.onlineMemberStatusDao.get(memberId);
+        LOG.debug("get message server member status:" + memberStatus.getStatus());
         return memberStatus.getStatus();
     }
 
