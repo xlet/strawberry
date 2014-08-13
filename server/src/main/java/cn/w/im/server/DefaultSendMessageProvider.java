@@ -117,6 +117,7 @@ public class DefaultSendMessageProvider implements SendMessageProvider {
         }
 
         if (message instanceof NormalMessage) {
+            logger.debug("set message forward true");
             ((NormalMessage) message).setForward(true);
         }
     }

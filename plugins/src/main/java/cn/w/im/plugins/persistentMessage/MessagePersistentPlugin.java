@@ -3,6 +3,7 @@ package cn.w.im.plugins.persistentMessage;
 import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.messages.Message;
+import cn.w.im.domains.messages.client.NormalMessage;
 import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.persistent.MessageDao;
 import cn.w.im.persistent.PersistentRepositoryFactory;
@@ -39,6 +40,11 @@ public class MessagePersistentPlugin<TMessage extends Message> extends MessagePl
     @Override
     public void processMessage(TMessage message, PluginContext context) {
         try {
+            if (logger.isDebugEnabled()) {
+                if (message instanceof NormalMessage) {
+                    logger.debug("this normal message forward is " + ((NormalMessage) message).isForward());
+                }
+            }
             MessageDao messageDao = PersistentRepositoryFactory.getMessageDao(message);
             messageDao.save(message);
         } catch (ServerInnerException ex) {

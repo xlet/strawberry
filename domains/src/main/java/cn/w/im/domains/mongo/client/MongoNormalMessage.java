@@ -41,6 +41,7 @@ public class MongoNormalMessage extends NormalMessage implements MongoDomain {
         this.setContent(normalMessage.getContent());
         this.setFrom(normalMessage.getFrom());
         this.setTo(normalMessage.getTo());
+        this.setForward(normalMessage.isForward());
     }
 
     @Override
