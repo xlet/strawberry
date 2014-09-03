@@ -15,7 +15,7 @@ public class ServerRegisteredException extends ServerInnerException {
      * constructor.
      */
     public ServerRegisteredException(ServerBasic serverBasic) {
-        super("the server[" + serverBasic.getNodeId() + "] is registered.");
+        super("the core[" + serverBasic.getNodeId() + "] is registered.");
         this.serverBasic = serverBasic;
     }
 

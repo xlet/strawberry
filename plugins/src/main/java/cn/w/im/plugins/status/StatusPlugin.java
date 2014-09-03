@@ -12,7 +12,7 @@ import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.persistent.OnlineMemberStatusDao;
 import cn.w.im.plugins.MultiMessagePlugin;
-import cn.w.im.server.MessageServer;
+import cn.w.im.core.server.MessageServer;
 import cn.w.im.utils.spring.SpringContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

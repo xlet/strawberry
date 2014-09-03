@@ -8,7 +8,7 @@ import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.messages.server.RequestLinkedClientsMessage;
 import cn.w.im.domains.messages.server.ResponseLinkedClientsMessage;
 import cn.w.im.exceptions.ServerInnerException;
-import cn.w.im.server.MessageServer;
+import cn.w.im.core.server.MessageServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
@@ -35,7 +35,7 @@ public class RequestLinkedClientsPlugin extends MessagePlugin<RequestLinkedClien
      * @param containerType 服务类型.
      */
     public RequestLinkedClientsPlugin(ServerType containerType) {
-        super("RequestLinkedClientsPlugin", "message server request other server linked clients.", containerType);
+        super("RequestLinkedClientsPlugin", "message core request other core linked clients.", containerType);
         this.logger = LogFactory.getLog(this.getClass());
     }
 
@@ -66,7 +66,7 @@ public class RequestLinkedClientsPlugin extends MessagePlugin<RequestLinkedClien
             }
 
             ResponseLinkedClientsMessage responseMessage = new ResponseLinkedClientsMessage(MessageServer.current().getServerBasic(), clientBasics, message.getRespondKey());
-            MessageServer.current().sendMessageProvider().send(message.getRequestServer(), responseMessage);
+            MessageServer.current().messageProvider().send(message.getRequestServer(), responseMessage);
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
         }

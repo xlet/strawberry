@@ -52,9 +52,9 @@ public class MessageServerClient extends Thread{
     @Override
     public void start() {
         super.start();
-        LOG.debug("start connect message server.");
+        LOG.debug("start connect message core.");
         started = true;
-        LOG.debug("connected message server.");
+        LOG.debug("connected message core.");
     }
 
     private void connect() {

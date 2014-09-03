@@ -7,7 +7,7 @@ import cn.w.im.domains.messages.server.ConnectedMessage;
 import cn.w.im.domains.messages.client.ConnectResponseMessage;
 import cn.w.im.exceptions.*;
 import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.server.MessageServer;
+import cn.w.im.core.server.MessageServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -26,7 +26,7 @@ public class MessageClientConnectPlugin extends MessagePlugin<ConnectMessage> {
      * @param containerType 服务类型.
      */
     public MessageClientConnectPlugin(ServerType containerType) {
-        super("MessageClientConnectPlugin", "message client connect message server with connect token.", containerType);
+        super("MessageClientConnectPlugin", "message client connect message core with connect token.", containerType);
         logger = LogFactory.getLog(this.getClass());
     }
 
@@ -54,16 +54,16 @@ public class MessageClientConnectPlugin extends MessagePlugin<ConnectMessage> {
             MessageClientBasic messageClientBasic = new MessageClientBasic(message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
             ConnectedMessage connectedMessage = new ConnectedMessage(message.getToken(), messageClientBasic, MessageServer.current().getServerBasic());
 
-            MessageServer.current().sendMessageProvider().send(ServerType.MessageServer, connectedMessage);
-            MessageServer.current().sendMessageProvider().send(ServerType.LoginServer, connectedMessage);
+            MessageServer.current().messageProvider().send(ServerType.MessageServer, connectedMessage);
+            MessageServer.current().messageProvider().send(ServerType.LoginServer, connectedMessage);
         } catch (TokenNotExistedException ex) {
             logger.info(ex.getMessage(), ex);
             ConnectResponseMessage errorResponse = new ConnectResponseMessage(ex.getErrorCode(), ex.getMessage());
-            MessageServer.current().sendMessageProvider().send(message.getLoginId(), errorResponse);
+            MessageServer.current().messageProvider().send(message.getLoginId(), errorResponse);
         } catch (TokenErrorException ex) {
             logger.info(ex.getMessage(), ex);
             ConnectResponseMessage errorResponse = new ConnectResponseMessage(ex.getErrorCode(), ex.getMessage());
-            MessageServer.current().sendMessageProvider().send(message.getLoginId(), errorResponse);
+            MessageServer.current().messageProvider().send(message.getLoginId(), errorResponse);
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
         }

@@ -40,7 +40,7 @@ public abstract class MessagePlugin<T extends Message> extends AbstractPlugin {
         } catch (ClassCastException castException) {
             logger.error("isMatch perhaps error.", castException);
         } catch (NotSupportedServerTypeException notSupportException) {
-            logger.error("this plugin[" + this.name() + "] not support this server.", notSupportException);
+            logger.error("this plugin[" + this.name() + "] not support this core.", notSupportException);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }

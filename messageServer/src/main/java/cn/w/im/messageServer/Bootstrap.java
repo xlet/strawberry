@@ -1,7 +1,7 @@
 package cn.w.im.messageServer;
 
 import cn.w.im.domains.conf.Configuration;
-import cn.w.im.server.MessageServer;
+import cn.w.im.core.server.MessageServer;
 import cn.w.im.utils.spring.SpringContext;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -64,7 +64,7 @@ public class Bootstrap {
     }
 
     private void startServer() throws Exception {
-        logger.debug("server starting.");
+        logger.debug("core starting.");
 
         int serverPort = MessageServer.current().getPort();
         String serverHost = MessageServer.current().getHost();
@@ -90,7 +90,7 @@ public class Bootstrap {
         public void operationComplete(ChannelFuture future) throws Exception {
             if (future.isSuccess()) {
                 MessageServer.current().start();
-                logger.debug("server started!");
+                logger.debug("core started!");
             }
         }
     };

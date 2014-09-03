@@ -15,7 +15,7 @@ public class NotRegisterRespondServerException extends ServerInnerException {
      * @param serverNodeId not register respond server node id.
      */
     public NotRegisterRespondServerException(String serverNodeId) {
-        super("the responded server[" + serverNodeId + "] has not registered.");
+        super("the responded core[" + serverNodeId + "] has not registered.");
         this.serverNodeId = serverNodeId;
     }
 

@@ -15,7 +15,7 @@ public class ServerNotRegisterException extends ServerInnerException {
      * @param nodeId server node id.
      */
     public ServerNotRegisterException(String nodeId) {
-        super("the server[" + nodeId + "] dit not register.");
+        super("the core[" + nodeId + "] dit not register.");
         this.nodeId = nodeId;
     }
 

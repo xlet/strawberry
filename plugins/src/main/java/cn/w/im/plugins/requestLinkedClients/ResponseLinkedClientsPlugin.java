@@ -6,7 +6,7 @@ import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.messages.server.ReadyMessage;
 import cn.w.im.domains.messages.server.ResponseLinkedClientsMessage;
 import cn.w.im.exceptions.ServerInnerException;
-import cn.w.im.server.MessageServer;
+import cn.w.im.core.server.MessageServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
@@ -59,10 +59,10 @@ public class ResponseLinkedClientsPlugin extends MessagePlugin<ResponseLinkedCli
 
                 if (MessageServer.current().respondProvider().allResponded(message.getRespondKey())) {
                     ReadyMessage readyMessage = new ReadyMessage(MessageServer.current().getServerBasic());
-                    MessageServer.current().sendMessageProvider().send(ServerType.LoginServer, readyMessage);
+                    MessageServer.current().messageProvider().send(ServerType.LoginServer, readyMessage);
                 }
             } else {
-                logger.error("server[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());
+                logger.error("core[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());
                 MessageServer.current().respondProvider().interrupt(message.getRespondKey());
             }
         } catch (ServerInnerException ex) {

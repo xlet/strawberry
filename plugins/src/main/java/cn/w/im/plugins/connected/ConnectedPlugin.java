@@ -7,8 +7,8 @@ import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.server.LoginServer;
-import cn.w.im.server.MessageServer;
+import cn.w.im.core.server.LoginServer;
+import cn.w.im.core.server.MessageServer;
 
 /**
  * Creator: JackieHan.
@@ -22,7 +22,7 @@ public class ConnectedPlugin extends MessagePlugin<ConnectedMessage> {
      * @param containerType 服务类型.
      */
     public ConnectedPlugin(ServerType containerType) {
-        super("ConnectedPlugin", "message client connected message server.", containerType);
+        super("ConnectedPlugin", "message client connected message core.", containerType);
     }
 
     @Override
@@ -48,16 +48,16 @@ public class ConnectedPlugin extends MessagePlugin<ConnectedMessage> {
         try {
             MessageServer.current().clientCacheProvider().registerClient(message.getMessageClientBasic(), message.getFromServer());
             ConnectedResponseMessage connectedResponseMessage = new ConnectedResponseMessage(message.getToken(), LoginServer.current().getServerBasic(), message.getRespondKey());
-            MessageServer.current().sendMessageProvider().send(message.getFromServer(), connectedResponseMessage);
+            MessageServer.current().messageProvider().send(message.getFromServer(), connectedResponseMessage);
         } catch (ServerInnerException ex) {
             ConnectedResponseMessage errorResponse = new ConnectedResponseMessage(ex.getErrorCode(), ex.getMessage(), MessageServer.current().getServerBasic(), message.getRespondKey());
-            MessageServer.current().sendMessageProvider().send(message.getFromServer(), errorResponse);
+            MessageServer.current().messageProvider().send(message.getFromServer(), errorResponse);
         }
     }
 
     private void processMessageWithLoginServer(ConnectedMessage message, PluginContext context) {
         LoginServer.current().allocateProvider().connected(message.getToken(), message.getMessageClientBasic(), message.getFromServer());
         ConnectedResponseMessage connectedResponseMessage = new ConnectedResponseMessage(message.getToken(), LoginServer.current().getServerBasic(), message.getRespondKey());
-        LoginServer.current().sendMessageProvider().send(message.getFromServer(), connectedResponseMessage);
+        LoginServer.current().messageProvider().send(message.getFromServer(), connectedResponseMessage);
     }
 }

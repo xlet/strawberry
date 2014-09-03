@@ -9,7 +9,7 @@ import cn.w.im.domains.messages.client.GetProfileResponseMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.server.MessageServer;
+import cn.w.im.core.server.MessageServer;
 
 import java.util.List;
 
@@ -33,6 +33,6 @@ public class MemberProfilePlugin extends MessagePlugin<GetProfileRequestMessage>
     protected void processMessage(GetProfileRequestMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
         MessageServer messageServer = MessageServer.current();
         List<Member> members = messageServer.linkmanProvider().getMembers(message.getIds());
-        messageServer.sendMessageProvider().send(context.getCurrentHost(), context.getCurrentPort(), new GetProfileResponseMessage(members));
+        messageServer.messageProvider().send(context.getCurrentHost(), context.getCurrentPort(), new GetProfileResponseMessage(members));
     }
 }

@@ -1,7 +1,7 @@
 package cn.w.im.forwardServer;
 
 import cn.w.im.domains.conf.ForwardConfiguration;
-import cn.w.im.server.ForwardServer;
+import cn.w.im.core.server.ForwardServer;
 import cn.w.im.utils.spring.SpringContext;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -99,7 +99,7 @@ public class Bootstrap {
                     connectServer();
                 } catch (Exception ex) {
                     ForwardServer.current().connectedError();
-                    logger.error("start server error.", ex);
+                    logger.error("start core error.", ex);
                     connectingServer = false;
                     stopServer();
                 }
@@ -123,7 +123,7 @@ public class Bootstrap {
     }
 
     private void connectServer() throws InterruptedException {
-        logger.debug("connect message bus server starting.");
+        logger.debug("connect message bus core starting.");
         try {
             io.netty.bootstrap.Bootstrap bootstrap = new io.netty.bootstrap.Bootstrap();
             bootstrap.group(this.serverClientGroup)
@@ -152,13 +152,13 @@ public class Bootstrap {
         @Override
         public void operationComplete(ChannelFuture future) throws Exception {
             connectingServer = false;
-            logger.debug("connect server completed.");
+            logger.debug("connect core completed.");
         }
     };
 
 
     private void connectMessageBus() throws InterruptedException {
-        logger.debug("connect message bus server starting.");
+        logger.debug("connect message bus core starting.");
         try {
             io.netty.bootstrap.Bootstrap bootstrap = new io.netty.bootstrap.Bootstrap();
             bootstrap.group(messageBusClientGroup)
@@ -187,7 +187,7 @@ public class Bootstrap {
         @Override
         public void operationComplete(ChannelFuture future) throws Exception {
             connectingBus = false;
-            logger.debug("connect message bus server completed.");
+            logger.debug("connect message bus core completed.");
         }
     };
 

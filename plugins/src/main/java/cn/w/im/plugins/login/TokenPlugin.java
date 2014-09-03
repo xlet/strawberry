@@ -9,8 +9,8 @@ import cn.w.im.domains.messages.server.TokenResponseMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.server.LoginServer;
-import cn.w.im.server.MessageServer;
+import cn.w.im.core.server.LoginServer;
+import cn.w.im.core.server.MessageServer;
 
 /**
  * Creator: JackieHan.
@@ -56,6 +56,6 @@ public class TokenPlugin extends MessagePlugin<TokenMessage> {
         MessageServer.current().addToken(token);
 
         TokenResponseMessage responseMessage = new TokenResponseMessage(token, MessageServer.current().getServerBasic(), message.getRespondKey());
-        MessageServer.current().sendMessageProvider().send(ServerType.LoginServer, responseMessage);
+        MessageServer.current().messageProvider().send(ServerType.LoginServer, responseMessage);
     }
 }

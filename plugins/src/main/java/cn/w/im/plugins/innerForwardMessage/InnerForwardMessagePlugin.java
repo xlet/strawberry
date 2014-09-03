@@ -1,7 +1,7 @@
 package cn.w.im.plugins.innerForwardMessage;
 
 import cn.w.im.domains.PluginContext;
-import cn.w.im.server.MessageServer;
+import cn.w.im.core.server.MessageServer;
 import cn.w.im.domains.messages.client.NormalMessage;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
@@ -54,6 +54,6 @@ public class InnerForwardMessagePlugin extends MessagePlugin<NormalMessage> {
     }
 
     private void processMessageWithMessageServer(NormalMessage message, PluginContext context) {
-        MessageServer.current().sendMessageProvider().send(message.getTo(), message);
+        MessageServer.current().messageProvider().send(message.getTo(), message);
     }
 }

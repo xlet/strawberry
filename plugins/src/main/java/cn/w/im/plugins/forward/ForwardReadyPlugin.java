@@ -8,7 +8,7 @@ import cn.w.im.domains.messages.server.ServerRegisterMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.server.ServerInstance;
+import cn.w.im.core.server.ServerInstance;
 
 /**
  * Creator: JackieHan.
@@ -24,7 +24,7 @@ public class ForwardReadyPlugin extends MessagePlugin<ForwardReadyMessage> {
      * @param containerType 服务类型.
      */
     public ForwardReadyPlugin(ServerType containerType) {
-        super("ForwardReadyPlugin", "register to message bus server.", containerType);
+        super("ForwardReadyPlugin", "register to message bus core.", containerType);
     }
 
     @Override
@@ -48,6 +48,6 @@ public class ForwardReadyPlugin extends MessagePlugin<ForwardReadyMessage> {
 
     private void registerThisServerToMessageBus(PluginContext context) throws NotSupportedServerTypeException {
         ServerRegisterMessage serverRegisterMessage = new ServerRegisterMessage(ServerInstance.current(this.containerType()).getServerBasic());
-        ServerInstance.current(this.containerType()).sendMessageProvider().send(context.getCurrentHost(), context.getCurrentPort(), serverRegisterMessage);
+        ServerInstance.current(this.containerType()).messageProvider().send(context.getCurrentHost(), context.getCurrentPort(), serverRegisterMessage);
     }
 }

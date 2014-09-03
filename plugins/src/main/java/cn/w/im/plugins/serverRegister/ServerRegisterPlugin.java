@@ -8,7 +8,7 @@ import cn.w.im.domains.client.ServerClient;
 import cn.w.im.domains.messages.server.ServerRegisterMessage;
 import cn.w.im.domains.messages.server.ServerRegisterResponseMessage;
 import cn.w.im.exceptions.ServerInnerException;
-import cn.w.im.server.MessageBus;
+import cn.w.im.core.server.MessageBus;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
@@ -38,7 +38,7 @@ public class ServerRegisterPlugin extends MessagePlugin<ServerRegisterMessage> {
      * @param containerType 服务类型.
      */
     public ServerRegisterPlugin(ServerType containerType) {
-        super("serverRegisterPlugin", "server register to message bus server.", containerType);
+        super("serverRegisterPlugin", "core register to message bus core.", containerType);
         logger = LogFactory.getLog(this.getClass());
     }
 
@@ -77,7 +77,7 @@ public class ServerRegisterPlugin extends MessagePlugin<ServerRegisterMessage> {
                 }
             }
             ServerRegisterResponseMessage responseMessage = new ServerRegisterResponseMessage(startedServers, MessageBus.current().getServerBasic());
-            MessageBus.current().sendMessageProvider().send(serverBasic, responseMessage);
+            MessageBus.current().messageProvider().send(serverBasic, responseMessage);
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
         }

@@ -3,7 +3,7 @@ package cn.w.im.handlers;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.messages.forward.ForwardResponseMessage;
 import cn.w.im.exceptions.ListeningThreadStartErrorException;
-import cn.w.im.server.ForwardServer;
+import cn.w.im.core.server.ForwardServer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.commons.logging.Log;
@@ -34,7 +34,7 @@ public class ForwardServerHandler extends ChannelInboundHandlerAdapter {
 
     private synchronized void waitConnected() throws Exception {
         while (true) {
-            logger.debug("waiting for server and bus all connected.");
+            logger.debug("waiting for core and bus all connected.");
             this.wait(500);
             if (ForwardServer.current().isConnectedError()) {
                 throw new ListeningThreadStartErrorException();
@@ -47,7 +47,7 @@ public class ForwardServerHandler extends ChannelInboundHandlerAdapter {
 
     private synchronized void waitResponded() throws Exception {
         while (true) {
-            logger.debug("waiting for server and bus all responded.");
+            logger.debug("waiting for core and bus all responded.");
             this.wait(500);
             if (ForwardServer.current().allResponded()) {
                 break;
@@ -70,7 +70,7 @@ public class ForwardServerHandler extends ChannelInboundHandlerAdapter {
                 ctx.fireChannelRead(msg);
             }
         } catch (Exception ex) {
-            logger.error("forward server crashed.");
+            logger.error("forward core crashed.");
             logger.error(ex.getMessage(), ex);
             ForwardServer.current().crashed();
         }
@@ -78,14 +78,14 @@ public class ForwardServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.error("forward server stopped.");
+        logger.error("forward core stopped.");
         ForwardServer.current().serverStopped();
         super.channelInactive(ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("server crashed.", cause);
+        logger.error("core crashed.", cause);
         ForwardServer.current().serverCrashed();
     }
 }

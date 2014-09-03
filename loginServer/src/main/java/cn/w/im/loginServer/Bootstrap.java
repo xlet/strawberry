@@ -2,7 +2,7 @@ package cn.w.im.loginServer;
 
 
 import cn.w.im.domains.conf.Configuration;
-import cn.w.im.server.LoginServer;
+import cn.w.im.core.server.LoginServer;
 import cn.w.im.utils.spring.SpringContext;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -70,7 +70,7 @@ public class Bootstrap {
     }
 
     private void startServer() throws Exception {
-        logger.debug("server starting.");
+        logger.debug("core starting.");
 
         String host = LoginServer.current().getHost();
         int serverPort = LoginServer.current().getPort();
@@ -95,7 +95,7 @@ public class Bootstrap {
         public void operationComplete(ChannelFuture future) throws Exception {
             if (future.isSuccess()) {
                 LoginServer.current().start();
-                logger.debug("server started.");
+                logger.debug("core started.");
             }
         }
     };

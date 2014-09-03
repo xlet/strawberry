@@ -9,7 +9,7 @@ import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.server.LoginServer;
+import cn.w.im.core.server.LoginServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -53,9 +53,9 @@ public class TokenResponsePlugin extends MessagePlugin<TokenResponseMessage> {
         if (message.isSuccess()) {
             ConnectToken token = message.getToken();
             LoginResponseMessage loginResponseMessage = new LoginResponseMessage(token);
-            LoginServer.current().sendMessageProvider().send(token.getLoginId(), loginResponseMessage);
+            LoginServer.current().messageProvider().send(token.getLoginId(), loginResponseMessage);
         } else {
-            logger.error("server[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());
+            logger.error("core[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());
         }
     }
 }

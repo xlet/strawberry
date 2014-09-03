@@ -12,7 +12,7 @@ import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.server.MessageServer;
+import cn.w.im.core.server.MessageServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -72,18 +72,18 @@ public class ConnectedResponsePlugin extends MessagePlugin<ConnectedResponseMess
                     //离线消息列表
                     List<NormalMessage> offlineMessages = messageServer.messageProvider().getOfflineMessages(connectToken.getLoginId());
                     responseMessage.setOfflineMessages(offlineMessages);
-                    messageServer.sendMessageProvider().send(connectToken.getLoginId(), responseMessage);
+                    messageServer.messageProvider().send(connectToken.getLoginId(), responseMessage);
                     //将离线消息状态标记为已送达
                     messageServer.messageProvider().setMessageForwarded(connectToken.getLoginId());
                 }
             } else {
-                logger.error("server[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());
+                logger.error("core[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());
                 MessageServer.current().respondProvider().interrupt(message.getRespondKey());
             }
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
             ConnectResponseMessage errorResponseMessage = new ConnectResponseMessage(ex.getErrorCode(), ex.getMessage());
-            MessageServer.current().sendMessageProvider().send(connectToken.getLoginId(), errorResponseMessage);
+            MessageServer.current().messageProvider().send(connectToken.getLoginId(), errorResponseMessage);
         }
     }
 }

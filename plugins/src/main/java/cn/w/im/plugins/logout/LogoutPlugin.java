@@ -10,7 +10,7 @@ import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.ClientNotRegisterException;
 import cn.w.im.exceptions.ServerNotRegisterException;
 import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.server.MessageServer;
+import cn.w.im.core.server.MessageServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -49,10 +49,10 @@ public class LogoutPlugin extends MessagePlugin<LogoutMessage> {
 
             LogoutResponseMessage logoutResponseMessage = new LogoutResponseMessage(true);
             //notify other message servers
-            messageServer.sendMessageProvider().send(ServerType.MessageServer, message);
+            messageServer.messageProvider().send(ServerType.MessageServer, message);
             //response to client
             //TODO if client has been removed, send call will not work
-            messageServer.sendMessageProvider().send(message.getLoginId(), logoutResponseMessage);
+            messageServer.messageProvider().send(message.getLoginId(), logoutResponseMessage);
             //unregister the client
             messageServer.clientCacheProvider().removeClient(context.getCurrentHost(), context.getCurrentPort());
             //close the client

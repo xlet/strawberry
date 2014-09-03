@@ -51,7 +51,7 @@
         <module>loginServer</module>
         <module>persistent</module>
         <module>messageBus</module>
-        <module>server</module>
+        <module>core</module>
         <module>forwardServer</module>
         <module>web</module>
     </modules>

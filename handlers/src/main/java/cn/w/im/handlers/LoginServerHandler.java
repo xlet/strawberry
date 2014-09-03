@@ -4,7 +4,7 @@ import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.init.PluginInitializerFactory;
-import cn.w.im.server.LoginServer;
+import cn.w.im.core.server.LoginServer;
 import cn.w.im.utils.netty.IpAddressProvider;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

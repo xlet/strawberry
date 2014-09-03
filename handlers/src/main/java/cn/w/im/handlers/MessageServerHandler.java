@@ -4,7 +4,7 @@ import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.plugins.Plugin;
 import cn.w.im.plugins.init.PluginInitializerFactory;
-import cn.w.im.server.MessageServer;
+import cn.w.im.core.server.MessageServer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.commons.logging.Log;

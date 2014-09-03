@@ -15,7 +15,7 @@ public class RegisteredRespondServerException extends ServerInnerException {
      * @param serverNodeId server node id.
      */
     public RegisteredRespondServerException(String serverNodeId) {
-        super("the server[" + serverNodeId + "] has registered exception.");
+        super("the core[" + serverNodeId + "] has registered exception.");
         this.serverNodeId = serverNodeId;
     }
 

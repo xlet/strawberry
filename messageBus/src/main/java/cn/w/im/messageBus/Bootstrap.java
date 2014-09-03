@@ -1,7 +1,7 @@
 package cn.w.im.messageBus;
 
 import cn.w.im.domains.conf.Configuration;
-import cn.w.im.server.MessageBus;
+import cn.w.im.core.server.MessageBus;
 import cn.w.im.utils.spring.SpringContext;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -68,7 +68,7 @@ public final class Bootstrap {
     }
 
     private void startServer() throws Exception {
-        logger.info("message bus server starting");
+        logger.info("message bus core starting");
 
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();
@@ -94,13 +94,13 @@ public final class Bootstrap {
         @Override
         public void operationComplete(ChannelFuture future) throws Exception {
             MessageBus.current().start();
-            logger.debug("message bus server started!");
+            logger.debug("message bus core started!");
         }
     };
 
     private void stopServer() throws Exception {
         try {
-            logger.debug("server stopping.");
+            logger.debug("core stopping.");
             if (bossGroup != null) {
                 bossGroup.shutdownGracefully();
             }
@@ -108,7 +108,7 @@ public final class Bootstrap {
                 workerGroup.shutdownGracefully();
             }
             MessageBus.current().stop();
-            logger.debug("server stopped.");
+            logger.debug("core stopped.");
             System.exit(0);
         } catch (Throwable t) {
             logger.error("stopped error.", t);

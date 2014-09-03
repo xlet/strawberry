@@ -8,7 +8,7 @@ import cn.w.im.domains.messages.client.LoginResponseMessage;
 import cn.w.im.domains.messages.server.TokenMessage;
 import cn.w.im.exceptions.*;
 import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.server.LoginServer;
+import cn.w.im.core.server.LoginServer;
 import cn.w.im.utils.sdk.usercenter.Members;
 import cn.w.im.utils.sdk.usercenter.UserCenterException;
 import cn.w.im.utils.sdk.usercenter.model.Account;
@@ -64,16 +64,16 @@ public class LoginPlugin extends MessagePlugin<LoginMessage> {
             ConnectToken token = LoginServer.current().allocateProvider().allocate(message.getLoginId(), context.getCurrentHost());
             //通知消息服务登陆token信息.
             TokenMessage tokenMessage = new TokenMessage(token, LoginServer.current().getServerBasic());
-            LoginServer.current().sendMessageProvider().send(token.getAllocatedMessageServer(), tokenMessage);
+            LoginServer.current().messageProvider().send(token.getAllocatedMessageServer(), tokenMessage);
 
             //notify other started login server that this has allocated a message server to login client.
-            LoginServer.current().sendMessageProvider().send(ServerType.LoginServer, tokenMessage);
+            LoginServer.current().messageProvider().send(ServerType.LoginServer, tokenMessage);
         } catch (IdPasswordException idPasswordException) {
             LoginResponseMessage idPasswordErrorMessage = new LoginResponseMessage(idPasswordException.getErrorCode(), idPasswordException.getMessage());
-            LoginServer.current().sendMessageProvider().send(context.getCurrentHost(), context.getCurrentPort(), idPasswordErrorMessage);
+            LoginServer.current().messageProvider().send(context.getCurrentHost(), context.getCurrentPort(), idPasswordErrorMessage);
         } catch (LoggedInException loggedInException) {
             LoginResponseMessage loggedInErrorMessage = new LoginResponseMessage(loggedInException.getErrorCode(), loggedInException.getMessage(), loggedInException.getLocalizedMessage());
-            LoginServer.current().sendMessageProvider().send(context.getCurrentHost(), context.getCurrentPort(), loggedInErrorMessage);
+            LoginServer.current().messageProvider().send(context.getCurrentHost(), context.getCurrentPort(), loggedInErrorMessage);
         }
 
     }

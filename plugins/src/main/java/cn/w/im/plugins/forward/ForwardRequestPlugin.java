@@ -8,7 +8,7 @@ import cn.w.im.domains.messages.forward.ForwardResponseMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.server.ServerInstance;
+import cn.w.im.core.server.ServerInstance;
 
 /**
  * Creator: JackieHan.
@@ -20,7 +20,7 @@ public class ForwardRequestPlugin extends MessagePlugin<ForwardRequestMessage> {
      * 构造函数.
      */
     public ForwardRequestPlugin(ServerType containerType) {
-        super("ForwardRequestPlugin", "respond response message for forward server request.", containerType);
+        super("ForwardRequestPlugin", "respond response message for forward core request.", containerType);
     }
 
     @Override
@@ -31,6 +31,6 @@ public class ForwardRequestPlugin extends MessagePlugin<ForwardRequestMessage> {
     @Override
     protected void processMessage(ForwardRequestMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
         ForwardResponseMessage responseMessage = new ForwardResponseMessage(ServerInstance.current(this.containerType()).getServerBasic());
-        ServerInstance.current(this.containerType()).sendMessageProvider().send(context.getCurrentHost(), context.getCurrentPort(), responseMessage);
+        ServerInstance.current(this.containerType()).messageProvider().send(context.getCurrentHost(), context.getCurrentPort(), responseMessage);
     }
 }

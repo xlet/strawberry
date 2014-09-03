@@ -5,7 +5,7 @@ import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.server.ServerRegisterResponseMessage;
 import cn.w.im.exceptions.ServerInnerException;
-import cn.w.im.server.LoginServer;
+import cn.w.im.core.server.LoginServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
@@ -31,7 +31,7 @@ public class LoginServerRegisterResponsePlugin extends MessagePlugin<ServerRegis
      * 构造函数.
      */
     public LoginServerRegisterResponsePlugin(ServerType containerType) {
-        super("LoginServerRegisterResponsePlugin", "add response started server basic.", containerType);
+        super("LoginServerRegisterResponsePlugin", "add response started core basic.", containerType);
         logger = LogFactory.getLog(this.getClass());
     }
 
@@ -61,7 +61,7 @@ public class LoginServerRegisterResponsePlugin extends MessagePlugin<ServerRegis
                 }
                 //todo:jackie register to message server and request message server linked clients count.
             } else {
-                logger.error("server[" + responseMessage.getFromServer().getNodeId() + "] perhaps error! errorCode[" + responseMessage.getErrorCode() + "] errorMessage:" + responseMessage.getErrorMessage());
+                logger.error("core[" + responseMessage.getFromServer().getNodeId() + "] perhaps error! errorCode[" + responseMessage.getErrorCode() + "] errorMessage:" + responseMessage.getErrorMessage());
             }
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);

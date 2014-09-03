@@ -5,7 +5,7 @@ import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.server.ReadyMessage;
 import cn.w.im.exceptions.ServerInnerException;
-import cn.w.im.server.LoginServer;
+import cn.w.im.core.server.LoginServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
@@ -30,7 +30,7 @@ public class MessageServerReadyPlugin extends MessagePlugin<ReadyMessage> {
      * @param containerType 服务类型.
      */
     public MessageServerReadyPlugin(ServerType containerType) {
-        super("MessageServerReadyPlugin", "message server ready.", containerType);
+        super("MessageServerReadyPlugin", "message core ready.", containerType);
         logger = LogFactory.getLog(this.getClass());
     }
 

@@ -33,6 +33,6 @@ public class ServerClient extends Client {
 
     @Override
     public String toString() {
-        return super.toString()+" server basic ="+serverBasic.toString();
+        return super.toString()+" core basic ="+serverBasic.toString();
     }
 }

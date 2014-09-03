@@ -2,7 +2,7 @@ package cn.w.im.plugins.forwardMessage;
 
 import cn.w.im.domains.PluginContext;
 import cn.w.im.domains.messages.server.ForwardMessage;
-import cn.w.im.server.MessageBus;
+import cn.w.im.core.server.MessageBus;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
@@ -21,7 +21,7 @@ public class ForwardMessagePlugin extends MessagePlugin<ForwardMessage> {
      * @param containerType 服务类型.
      */
     public ForwardMessagePlugin(ServerType containerType) {
-        super("ForwardMessagePlugin", "forward message between server and server.", containerType);
+        super("ForwardMessagePlugin", "forward message between core and core.", containerType);
     }
 
     @Override
@@ -41,6 +41,6 @@ public class ForwardMessagePlugin extends MessagePlugin<ForwardMessage> {
     }
 
     private void processMessageWithMessageBus(ForwardMessage message, PluginContext context) throws ClientNotFoundException {
-        MessageBus.current().sendMessageProvider().send(message.getToServer(), message);
+        MessageBus.current().messageProvider().send(message.getToServer(), message);
     }
 }
