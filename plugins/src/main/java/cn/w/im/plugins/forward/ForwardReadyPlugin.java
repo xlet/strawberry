@@ -1,14 +1,12 @@
 package cn.w.im.plugins.forward;
 
 import cn.w.im.domains.MessageType;
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.messages.forward.ForwardReadyMessage;
 import cn.w.im.domains.messages.server.ServerRegisterMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
-import cn.w.im.exceptions.NotSupportedServerTypeException;
-import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.core.server.ServerInstance;
+import cn.w.im.core.plugins.MessagePlugin;
 
 /**
  * Creator: JackieHan.
@@ -20,34 +18,30 @@ public class ForwardReadyPlugin extends MessagePlugin<ForwardReadyMessage> {
 
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public ForwardReadyPlugin(ServerType containerType) {
-        super("ForwardReadyPlugin", "register to message bus core.", containerType);
+    public ForwardReadyPlugin() {
+        super("ForwardReadyPlugin", "register to message bus core.");
     }
 
     @Override
-    protected boolean isMatch(PluginContext context) {
-        return context.getMessage().getMessageType() == MessageType.ForwardReady;
+    public boolean isMatch(PluginContext context) {
+        return (context.getMessage().getMessageType() == MessageType.ForwardReady)
+                && ((context.getServer().getServerType() == ServerType.MessageServer)
+                || (context.getServer().getServerType() == ServerType.LoginServer));
     }
 
     @Override
-    protected void processMessage(ForwardReadyMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
-        switch (this.containerType()) {
+    protected void processMessage(ForwardReadyMessage message, PluginContext context) throws ClientNotFoundException {
+        switch (context.getServer().getServerType()) {
             case LoginServer:
             case MessageServer:
                 registerThisServerToMessageBus(context);
                 break;
-            case MessageBus:
-                break;
-            default:
-                throw new NotSupportedServerTypeException(this.containerType());
         }
     }
 
-    private void registerThisServerToMessageBus(PluginContext context) throws NotSupportedServerTypeException {
-        ServerRegisterMessage serverRegisterMessage = new ServerRegisterMessage(ServerInstance.current(this.containerType()).getServerBasic());
-        ServerInstance.current(this.containerType()).messageProvider().send(context.getCurrentHost(), context.getCurrentPort(), serverRegisterMessage);
+    private void registerThisServerToMessageBus(PluginContext context) {
+        ServerRegisterMessage serverRegisterMessage = new ServerRegisterMessage(context.getServer().getServerBasic());
+        context.getServer().messageProvider().send(context.getCurrentHost(), context.getCurrentPort(), serverRegisterMessage);
     }
 }

@@ -2,13 +2,13 @@ package cn.w.im.plugins.login;
 
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.MessageType;
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.messages.server.TokenResponseMessage;
 import cn.w.im.domains.messages.client.LoginResponseMessage;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
-import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.core.plugins.MessagePlugin;
 import cn.w.im.core.server.LoginServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,27 +25,24 @@ public class TokenResponsePlugin extends MessagePlugin<TokenResponseMessage> {
 
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public TokenResponsePlugin(ServerType containerType) {
-        super("TokenResponsePlugin", "send loginResponse message to client.", containerType);
+    public TokenResponsePlugin() {
+        super("TokenResponsePlugin", "send loginResponse message to client.");
         this.logger = LogFactory.getLog(this.getClass());
     }
 
     @Override
-    protected boolean isMatch(PluginContext context) {
-        return context.getMessage().getMessageType().equals(MessageType.TokenResponse);
+    public boolean isMatch(PluginContext context) {
+        return (context.getMessage().getMessageType().equals(MessageType.TokenResponse))
+                && (context.getServer().getServerType() == ServerType.LoginServer);
     }
 
     @Override
-    protected void processMessage(TokenResponseMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
-        switch (this.containerType()) {
+    protected void processMessage(TokenResponseMessage message, PluginContext context) throws ClientNotFoundException {
+        switch (context.getServer().getServerType()) {
             case LoginServer:
                 processMessageWithLoginServer(message, context);
                 break;
-            default:
-                throw new NotSupportedServerTypeException(this.containerType());
         }
     }
 
@@ -53,7 +50,7 @@ public class TokenResponsePlugin extends MessagePlugin<TokenResponseMessage> {
         if (message.isSuccess()) {
             ConnectToken token = message.getToken();
             LoginResponseMessage loginResponseMessage = new LoginResponseMessage(token);
-            LoginServer.current().messageProvider().send(token.getLoginId(), loginResponseMessage);
+            context.getServer().messageProvider().send(token.getLoginId(), loginResponseMessage);
         } else {
             logger.error("core[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());
         }

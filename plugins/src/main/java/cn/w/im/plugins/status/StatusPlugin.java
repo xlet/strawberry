@@ -1,7 +1,7 @@
 package cn.w.im.plugins.status;
 
 import cn.w.im.domains.MessageType;
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.basic.OnlineMemberStatus;
 import cn.w.im.domains.basic.Status;
@@ -11,7 +11,7 @@ import cn.w.im.domains.messages.client.LogoutMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.persistent.OnlineMemberStatusDao;
-import cn.w.im.plugins.MultiMessagePlugin;
+import cn.w.im.core.plugins.MultiMessagePlugin;
 import cn.w.im.core.server.MessageServer;
 import cn.w.im.utils.spring.SpringContext;
 import org.apache.commons.logging.Log;
@@ -30,36 +30,33 @@ public class StatusPlugin extends MultiMessagePlugin {
 
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public StatusPlugin(ServerType containerType) {
-        super("memberStatusPlugin", "add online member to cache.", containerType);
+    public StatusPlugin() {
+        super("memberStatusPlugin", "add online member to cache.");
         this.onlineMemberStatusDao = SpringContext.context().getBean(OnlineMemberStatusDao.class);
     }
 
     @Override
-    protected boolean isMatch(PluginContext context) {
+    public boolean isMatch(PluginContext context) {
         MessageType messageType = context.getMessage().getMessageType();
-        return ((messageType.equals(MessageType.Connect)) || (messageType.equals(MessageType.Logout)));
+        return (((messageType.equals(MessageType.Connect)) || (messageType.equals(MessageType.Logout)))
+                && (context.getServer().getServerType() == ServerType.MessageServer));
     }
 
     @Override
-    protected void processMessage(Message message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
+    protected void processMessage(Message message, PluginContext context) throws ClientNotFoundException {
 
-        switch (this.containerType()) {
+        switch (context.getServer().getServerType()) {
             case MessageServer:
                 processMessageWithMessageServer(message, context);
                 break;
-            default:
-                throw new NotSupportedServerTypeException(this.containerType());
         }
     }
 
     private void processMessageWithMessageServer(Message message, PluginContext context) {
         if (message.getMessageType().equals(MessageType.Connect)) {
             String loginId = ((ConnectMessage) message).getLoginId();
-            if (MessageServer.current().clientCacheProvider().getClients(loginId).size() != 0) {
+            if (context.getServer().clientCacheProvider().getClients(loginId).size() != 0) {
                 OnlineMemberStatus memberStatus = new OnlineMemberStatus(loginId, Status.Online);
                 this.onlineMemberStatusDao.save(memberStatus);
 

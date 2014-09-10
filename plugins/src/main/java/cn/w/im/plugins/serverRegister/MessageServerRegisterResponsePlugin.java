@@ -1,6 +1,6 @@
 package cn.w.im.plugins.serverRegister;
 
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.server.ReadyMessage;
@@ -11,7 +11,7 @@ import cn.w.im.core.server.MessageServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
-import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.core.plugins.MessagePlugin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -29,48 +29,45 @@ public class MessageServerRegisterResponsePlugin extends MessagePlugin<ServerReg
 
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public MessageServerRegisterResponsePlugin(ServerType containerType) {
-        super("MessageServerRegisterResponsePlugin", "add response started message core to local and send request linked clients message to these message core.", containerType);
+    public MessageServerRegisterResponsePlugin() {
+        super("MessageServerRegisterResponsePlugin", "add response started message core to local and send request linked clients message to these message core.");
         logger = LogFactory.getLog(this.getClass());
     }
 
     @Override
     public boolean isMatch(PluginContext context) {
-        boolean isMatch = context.getMessage().getMessageType() == MessageType.ServerRegisterResponse;
-        return isMatch;
+        return (context.getMessage().getMessageType() == MessageType.ServerRegisterResponse)
+                && (context.getServer().getServerType() == ServerType.MessageServer);
     }
 
     @Override
-    public void processMessage(ServerRegisterResponseMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
-        switch (this.containerType()) {
+    public void processMessage(ServerRegisterResponseMessage message, PluginContext context) throws ClientNotFoundException {
+        switch (context.getServer().getServerType()) {
             case MessageServer:
                 processMessageWithMessageServer(message, context);
                 break;
-            default:
-                throw new NotSupportedServerTypeException(this.containerType());
         }
     }
 
     private void processMessageWithMessageServer(ServerRegisterResponseMessage message, PluginContext context) {
+        MessageServer currentServer = (MessageServer) context.getServer();
         try {
             if (message.isSuccess()) {
                 List<ServerBasic> startedServers = message.getStartedServers();
                 List<ServerBasic> startedMessageServers = new ArrayList<ServerBasic>();
                 for (ServerBasic serverBasic : startedServers) {
-                    MessageServer.current().clientCacheProvider().registerClient(serverBasic, context.getCurrentHost(), context.getCurrentPort());
+                    currentServer.clientCacheProvider().registerClient(serverBasic, context.getCurrentHost(), context.getCurrentPort());
                     if (serverBasic.getServerType() == ServerType.MessageServer) {
                         startedMessageServers.add(serverBasic);
                     }
                 }
                 if (startedMessageServers.size() == 0) {
-                    ReadyMessage readyMessage = new ReadyMessage(MessageServer.current().getServerBasic());
-                    MessageServer.current().messageProvider().send(ServerType.LoginServer, readyMessage);
+                    ReadyMessage readyMessage = new ReadyMessage(currentServer.getServerBasic());
+                    currentServer.messageProvider().send(ServerType.LoginServer, readyMessage);
                 } else {
-                    RequestLinkedClientsMessage requestMessage = new RequestLinkedClientsMessage(MessageServer.current().getServerBasic());
-                    MessageServer.current().messageProvider().send(ServerType.MessageServer, requestMessage);
+                    RequestLinkedClientsMessage requestMessage = new RequestLinkedClientsMessage(currentServer.getServerBasic());
+                    currentServer.messageProvider().send(ServerType.MessageServer, requestMessage);
                 }
             } else {
                 logger.error("core[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());

@@ -9,21 +9,7 @@ import cn.w.im.domains.ServerType;
  */
 public class MessageBus extends AbstractServer {
 
-    private static MessageBus currentMessageBus;
-
-    /**
-     * 获取单例消息总线信息.
-     *
-     * @return 消息总线信息.
-     */
-    public synchronized static MessageBus current() {
-        if (currentMessageBus == null) {
-            currentMessageBus = new MessageBus();
-        }
-        return currentMessageBus;
-    }
-
-    private MessageBus() {
-        super(ServerType.MessageBus);
+    public MessageBus(String host, int port) {
+        super(ServerType.MessageBus, host, port);
     }
 }

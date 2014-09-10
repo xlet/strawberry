@@ -2,13 +2,13 @@ package cn.w.im.plugins.login;
 
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.MessageType;
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.messages.server.TokenMessage;
 import cn.w.im.domains.messages.server.TokenResponseMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
-import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.core.plugins.MessagePlugin;
 import cn.w.im.core.server.LoginServer;
 import cn.w.im.core.server.MessageServer;
 
@@ -21,41 +21,42 @@ public class TokenPlugin extends MessagePlugin<TokenMessage> {
 
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public TokenPlugin(ServerType containerType) {
-        super("TokenPlugin", "process login token message.", containerType);
+    public TokenPlugin() {
+        super("TokenPlugin", "process login token message.");
     }
 
     @Override
     public boolean isMatch(PluginContext context) {
-        return context.getMessage().getMessageType() == MessageType.Token;
+        return (context.getMessage().getMessageType() == MessageType.Token)
+                && ((context.getServer().getServerType() == ServerType.MessageServer)
+                || (context.getServer().getServerType() == ServerType.LoginServer));
     }
 
     @Override
-    public void processMessage(TokenMessage message, PluginContext context) throws NotSupportedServerTypeException, ClientNotFoundException {
-        switch (this.containerType()) {
+    public void processMessage(TokenMessage message, PluginContext context) throws ClientNotFoundException {
+        switch (context.getServer().getServerType()) {
             case MessageServer:
                 processMessageWithMessageServer(message, context);
                 break;
             case LoginServer:
                 processMessageWithLoginServer(message, context);
-            default:
-                throw new NotSupportedServerTypeException(this.containerType());
+                break;
         }
     }
 
     private void processMessageWithLoginServer(TokenMessage message, PluginContext context) {
+        LoginServer currentServer = (LoginServer) context.getServer();
         ConnectToken connectToken = message.getToken();
-        LoginServer.current().allocateProvider().syncAllocation(connectToken);
+        currentServer.allocateProvider().syncAllocation(connectToken);
     }
 
     private void processMessageWithMessageServer(TokenMessage message, PluginContext context) {
+        MessageServer currentServer = (MessageServer) context.getServer();
         ConnectToken token = message.getToken();
-        MessageServer.current().addToken(token);
+        currentServer.addToken(token);
 
-        TokenResponseMessage responseMessage = new TokenResponseMessage(token, MessageServer.current().getServerBasic(), message.getRespondKey());
-        MessageServer.current().messageProvider().send(ServerType.LoginServer, responseMessage);
+        TokenResponseMessage responseMessage = new TokenResponseMessage(token, currentServer.getServerBasic(), message.getRespondKey());
+        currentServer.messageProvider().send(ServerType.LoginServer, responseMessage);
     }
 }

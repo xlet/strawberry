@@ -1,6 +1,6 @@
 package cn.w.im.plugins.requestLinkedClients;
 
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.messages.server.ReadyMessage;
@@ -10,7 +10,7 @@ import cn.w.im.core.server.MessageServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
-import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.core.plugins.MessagePlugin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,45 +25,43 @@ public class ResponseLinkedClientsPlugin extends MessagePlugin<ResponseLinkedCli
 
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public ResponseLinkedClientsPlugin(ServerType containerType) {
-        super("ResponseLinkedClientsPlugin", "request linked clients response message process.", containerType);
+    public ResponseLinkedClientsPlugin() {
+        super("ResponseLinkedClientsPlugin", "request linked clients response message process.");
         logger = LogFactory.getLog(this.getClass());
     }
 
     @Override
     public boolean isMatch(PluginContext context) {
-        return context.getMessage().getMessageType() == MessageType.ResponseLinkedClients;
+        return (context.getMessage().getMessageType() == MessageType.ResponseLinkedClients)
+                && (context.getServer().getServerType() == ServerType.MessageServer);
     }
 
     @Override
-    public void processMessage(ResponseLinkedClientsMessage message, PluginContext context) throws NotSupportedServerTypeException, ClientNotFoundException {
-        switch (this.containerType()) {
+    public void processMessage(ResponseLinkedClientsMessage message, PluginContext context) throws ClientNotFoundException {
+        switch (context.getServer().getServerType()) {
             case MessageServer:
                 processMessageWithMessageServer(message, context);
                 break;
-            default:
-                throw new NotSupportedServerTypeException(this.containerType());
         }
     }
 
     private void processMessageWithMessageServer(ResponseLinkedClientsMessage message, PluginContext context) {
+        MessageServer currentServer = (MessageServer) context.getServer();
         try {
             if (message.isSuccess()) {
-                MessageServer.current().respondProvider().receivedRespondedMessage(message);
+                currentServer.respondProvider().receivedRespondedMessage(message);
                 for (MessageClientBasic messageClientBasic : message.getLinkedClients()) {
-                    MessageServer.current().clientCacheProvider().registerClient(messageClientBasic, message.getMessageServer());
+                    currentServer.clientCacheProvider().registerClient(messageClientBasic, message.getMessageServer());
                 }
 
-                if (MessageServer.current().respondProvider().allResponded(message.getRespondKey())) {
-                    ReadyMessage readyMessage = new ReadyMessage(MessageServer.current().getServerBasic());
-                    MessageServer.current().messageProvider().send(ServerType.LoginServer, readyMessage);
+                if (currentServer.respondProvider().allResponded(message.getRespondKey())) {
+                    ReadyMessage readyMessage = new ReadyMessage(currentServer.getServerBasic());
+                    currentServer.messageProvider().send(ServerType.LoginServer, readyMessage);
                 }
             } else {
                 logger.error("core[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());
-                MessageServer.current().respondProvider().interrupt(message.getRespondKey());
+                currentServer.respondProvider().interrupt(message.getRespondKey());
             }
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);

@@ -1,12 +1,12 @@
 package cn.w.im.plugins.persistentMessage;
 
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.persistent.MessageDao;
 import cn.w.im.persistent.PersistentRepositoryFactory;
-import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.core.plugins.MessagePlugin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -24,11 +24,9 @@ public class MessagePersistentPlugin<TMessage extends Message> extends MessagePl
 
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public MessagePersistentPlugin(ServerType containerType) {
-        super("MessagePersistentPlugin", "persistent message to mongo db.", containerType);
+    public MessagePersistentPlugin() {
+        super("MessagePersistentPlugin", "persistent message to mongo db.");
     }
 
     @Override

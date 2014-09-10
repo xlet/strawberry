@@ -22,6 +22,19 @@ public class ServerBasic {
     private ServerType serverType;
 
     /**
+     * constructor.
+     * @param serverType server type.
+     * @param host host.
+     * @param port port.
+     */
+    public ServerBasic(ServerType serverType, String host, int port) {
+        this.serverType = serverType;
+        this.host = host;
+        this.port = port;
+        this.nodeId = host + ":" + port;
+    }
+
+    /**
      * 获取服务绑定ip地址.
      *
      * @return 服务绑定ip地址.
@@ -113,6 +126,7 @@ public class ServerBasic {
 
     /**
      * get server type.
+     *
      * @return server type.
      */
     public ServerType getServerType() {
@@ -121,6 +135,7 @@ public class ServerBasic {
 
     /**
      * set server type.
+     *
      * @param serverType server type.
      */
     public void setServerType(ServerType serverType) {

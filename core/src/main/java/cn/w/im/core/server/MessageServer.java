@@ -1,11 +1,9 @@
 package cn.w.im.core.server;
 
-import cn.w.im.core.linkman.DefaultLinkmanProviderImpl;
-import cn.w.im.core.linkman.LinkmanProvider;
-import cn.w.im.core.message.DefaultMessageProviderImpl;
-import cn.w.im.core.message.MessageProvider;
-import cn.w.im.core.status.DefaultStatusProvider;
-import cn.w.im.core.status.StatusProvider;
+import cn.w.im.core.providers.linkman.DefaultLinkmanProviderImpl;
+import cn.w.im.core.providers.linkman.LinkmanProvider;
+import cn.w.im.core.providers.status.DefaultStatusProvider;
+import cn.w.im.core.providers.status.StatusProvider;
 import cn.w.im.domains.*;
 import cn.w.im.exceptions.TokenErrorException;
 import cn.w.im.exceptions.TokenNotExistedException;
@@ -21,23 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MessageServer extends AbstractServer {
 
     /**
-     * 单例消息服务信息.
-     */
-    private static MessageServer currentServer;
-
-    /**
-     * 单例获取消息服务信息.
-     *
-     * @return 当前消息服务信息.
-     */
-    public synchronized static MessageServer current() {
-        if (currentServer == null) {
-            currentServer = new MessageServer();
-        }
-        return currentServer;
-    }
-
-    /**
      * key:token String.
      */
     private Map<String, ConnectToken> tokens;
@@ -48,9 +29,12 @@ public class MessageServer extends AbstractServer {
 
     /**
      * 构造函数.
+     *
+     * @param host host.
+     * @param port port.
      */
-    private MessageServer() {
-        super(ServerType.MessageServer);
+    public MessageServer(String host, int port) {
+        super(ServerType.MessageServer, host, port);
         this.tokens = new ConcurrentHashMap<String, ConnectToken>();
         this.linkmanProvider = new DefaultLinkmanProviderImpl();
         this.statusProvider = new DefaultStatusProvider();
@@ -105,11 +89,11 @@ public class MessageServer extends AbstractServer {
         }
     }
 
-    public StatusProvider statusProvider(){
+    public StatusProvider statusProvider() {
         return this.statusProvider;
     }
 
-    public LinkmanProvider linkmanProvider(){
+    public LinkmanProvider linkmanProvider() {
         return this.linkmanProvider;
     }
 }

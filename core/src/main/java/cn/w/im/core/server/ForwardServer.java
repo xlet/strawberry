@@ -22,26 +22,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ForwardServer {
 
-    private static ForwardServer currentForwardServer;
-
-    /**
-     * get singleton forwardServer.
-     *
-     * @return singleton forwardServer.
-     */
-    public synchronized static ForwardServer current() {
-        if (currentForwardServer == null) {
-            currentForwardServer = new ForwardServer();
-        }
-        return currentForwardServer;
-    }
-
     private Log logger;
 
     private String busHost, serverHost;
     private int busPort, serverPort;
-
-    private boolean init = false;
 
     private boolean connectedError = false;
 
@@ -56,11 +40,20 @@ public class ForwardServer {
 
     private List<String> serverKeys;
 
-    private ForwardServer() {
+    /**
+     * initialize server.
+     *
+     * @param busHost    message bus host.
+     * @param busPort    message bus port.
+     * @param serverHost connect server host.
+     * @param serverPort connect server port.
+     */
+    public ForwardServer(String busHost, int busPort, String serverHost, int serverPort) {
         this.serverKeys = new ArrayList<String>();
         this.contextMap = new ConcurrentHashMap<String, ChannelHandlerContext>();
         this.connectedServerMap = new ConcurrentHashMap<String, ServerBasic>();
         logger = LogFactory.getLog(this.getClass());
+        init(busHost, busPort, serverHost, serverPort);
     }
 
     /**
@@ -70,22 +63,17 @@ public class ForwardServer {
      * @param busPort    message bus port.
      * @param serverHost connect server host.
      * @param serverPort connect server port.
-     * @return this.
      */
-    public ForwardServer init(String busHost, int busPort, String serverHost, int serverPort) {
-        if (!init) {
-            this.busHost = busHost;
-            this.busPort = busPort;
-            this.serverHost = serverHost;
-            this.serverPort = serverPort;
-            this.init = true;
-            String busKey = busHost + ":" + busPort;
-            String serverKey = serverHost + ":" + serverPort;
-            this.serverKeys.add(busKey);
-            this.serverKeys.add(serverKey);
-        }
+    private void init(String busHost, int busPort, String serverHost, int serverPort) {
+        this.busHost = busHost;
+        this.busPort = busPort;
+        this.serverHost = serverHost;
+        this.serverPort = serverPort;
+        String busKey = busHost + ":" + busPort;
+        String serverKey = serverHost + ":" + serverPort;
+        this.serverKeys.add(busKey);
+        this.serverKeys.add(serverKey);
         logger.debug("core initialized.");
-        return this;
     }
 
     /**
@@ -180,15 +168,6 @@ public class ForwardServer {
      */
     public int getServerPort() {
         return serverPort;
-    }
-
-    /**
-     * get is initialize.
-     *
-     * @return true:initialized.
-     */
-    public boolean isInit() {
-        return init;
     }
 
     /**

@@ -2,7 +2,7 @@ package cn.w.im.plugins.connected;
 
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.MessageType;
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.basic.Member;
 import cn.w.im.domains.messages.client.ConnectResponseMessage;
@@ -11,7 +11,7 @@ import cn.w.im.domains.messages.server.ConnectedResponseMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.exceptions.ServerInnerException;
-import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.core.plugins.MessagePlugin;
 import cn.w.im.core.server.MessageServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,61 +29,58 @@ public class ConnectedResponsePlugin extends MessagePlugin<ConnectedResponseMess
 
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public ConnectedResponsePlugin(ServerType containerType) {
-        super("ConnectedResponsePlugin", "response connect message.", containerType);
+    public ConnectedResponsePlugin() {
+        super("ConnectedResponsePlugin", "response connect message.");
         logger = LogFactory.getLog(this.getClass());
     }
 
     @Override
-    protected boolean isMatch(PluginContext context) {
-        return context.getMessage().getMessageType() == MessageType.ConnectedResponse;
+    public boolean isMatch(PluginContext context) {
+        return (context.getMessage().getMessageType() == MessageType.ConnectedResponse)
+                && (context.getServer().getServerType() == ServerType.MessageServer);
     }
 
     @Override
-    protected void processMessage(ConnectedResponseMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
-        switch (this.containerType()) {
+    protected void processMessage(ConnectedResponseMessage message, PluginContext context) throws ClientNotFoundException {
+        switch (context.getServer().getServerType()) {
             case MessageServer:
                 processMessageWithMessageServer(message, context);
                 break;
-            default:
-                throw new NotSupportedServerTypeException(this.containerType());
         }
     }
 
     private void processMessageWithMessageServer(ConnectedResponseMessage message, PluginContext context) {
-        ConnectToken connectToken = MessageServer.current().getToken(message.getToken());
+        MessageServer currentServer = (MessageServer) context.getServer();
+        ConnectToken connectToken = currentServer.getToken(message.getToken());
         try {
             if (message.isSuccess()) {
-                MessageServer.current().respondProvider().receivedRespondedMessage(message);
-                if (MessageServer.current().respondProvider().allResponded(message.getRespondKey())) {
-                    MessageServer messageServer = MessageServer.current();
-                    messageServer.connected(message.getToken());
+                currentServer.respondProvider().receivedRespondedMessage(message);
+                if (currentServer.respondProvider().allResponded(message.getRespondKey())) {
+                    currentServer.connected(message.getToken());
                     //获取最近联系人列表
-                    List<Member> recentChatWith = messageServer.linkmanProvider().getNearlyLinkmen(connectToken.getLoginId());
+                    List<Member> recentChatWith = currentServer.linkmanProvider().getNearlyLinkmen(connectToken.getLoginId());
                     //联系人状态
-                    messageServer.statusProvider().render(recentChatWith);
+                    currentServer.statusProvider().render(recentChatWith);
                     ConnectResponseMessage responseMessage = new ConnectResponseMessage();
                     responseMessage.setNearlyLinkmen(recentChatWith);
                     //当前用户信息
-                    responseMessage.setSelf(messageServer.linkmanProvider().getMember(connectToken.getLoginId()));
+                    responseMessage.setSelf(currentServer.linkmanProvider().getMember(connectToken.getLoginId()));
                     //离线消息列表
-                    List<NormalMessage> offlineMessages = messageServer.messageProvider().getOfflineMessages(connectToken.getLoginId());
+                    List<NormalMessage> offlineMessages = currentServer.messageProvider().getOfflineMessages(connectToken.getLoginId());
                     responseMessage.setOfflineMessages(offlineMessages);
-                    messageServer.messageProvider().send(connectToken.getLoginId(), responseMessage);
+                    currentServer.messageProvider().send(connectToken.getLoginId(), responseMessage);
                     //将离线消息状态标记为已送达
-                    messageServer.messageProvider().setMessageForwarded(connectToken.getLoginId());
+                    currentServer.messageProvider().setMessageForwarded(connectToken.getLoginId());
                 }
             } else {
                 logger.error("core[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());
-                MessageServer.current().respondProvider().interrupt(message.getRespondKey());
+                currentServer.respondProvider().interrupt(message.getRespondKey());
             }
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
             ConnectResponseMessage errorResponseMessage = new ConnectResponseMessage(ex.getErrorCode(), ex.getMessage());
-            MessageServer.current().messageProvider().send(connectToken.getLoginId(), errorResponseMessage);
+            currentServer.messageProvider().send(connectToken.getLoginId(), errorResponseMessage);
         }
     }
 }

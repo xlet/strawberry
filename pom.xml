@@ -41,19 +41,13 @@
     </properties>
 
     <modules>
-        <module>messageServer</module>
-        <module>handlers</module>
         <module>plugins</module>
         <module>utils</module>
-        <module>testClient</module>
         <module>domains</module>
         <module>exceptions</module>
-        <module>loginServer</module>
         <module>persistent</module>
-        <module>messageBus</module>
         <module>core</module>
-        <module>forwardServer</module>
-        <module>web</module>
+        <module>services</module>
     </modules>
 
     <dependencies>

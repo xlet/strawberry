@@ -1,8 +1,8 @@
 package cn.w.im.core.server;
 
 
-import cn.w.im.core.allocate.DefaultMessageServerAllocateProvider;
-import cn.w.im.core.allocate.MessageServerAllocateProvider;
+import cn.w.im.core.providers.allocate.DefaultMessageServerAllocateProvider;
+import cn.w.im.core.providers.allocate.MessageServerAllocateProvider;
 import cn.w.im.domains.ServerType;
 
 /**
@@ -12,27 +12,16 @@ import cn.w.im.domains.ServerType;
  */
 public class LoginServer extends AbstractServer {
 
-    private static LoginServer currentLoginServer;
-
-    /**
-     * 单例获取LoginServer.
-     *
-     * @return 登陆服务信息.
-     */
-    public synchronized static LoginServer current() {
-        if (currentLoginServer == null) {
-            currentLoginServer = new LoginServer();
-        }
-        return currentLoginServer;
-    }
-
     private MessageServerAllocateProvider messageServerAllocateProvider;
 
     /**
      * 构造函数.
+     *
+     * @param host host.
+     * @param port port.
      */
-    private LoginServer() {
-        super(ServerType.LoginServer);
+    public LoginServer(String host, int port) {
+        super(ServerType.LoginServer, host, port);
         this.messageServerAllocateProvider = new DefaultMessageServerAllocateProvider();
     }
 

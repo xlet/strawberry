@@ -1,11 +1,11 @@
 package cn.w.im.core.server;
 
-import cn.w.im.core.client.ClientCacheProvider;
-import cn.w.im.core.client.DefaultClientCacheProvider;
-import cn.w.im.core.message.DefaultRespondProvider;
-import cn.w.im.core.message.RespondProvider;
-import cn.w.im.core.message.DefaultMessageProviderImpl;
-import cn.w.im.core.message.MessageProvider;
+import cn.w.im.core.providers.cache.client.ClientCacheProvider;
+import cn.w.im.core.providers.cache.client.DefaultClientCacheProvider;
+import cn.w.im.core.providers.message.DefaultRespondProvider;
+import cn.w.im.core.providers.message.RespondProvider;
+import cn.w.im.core.providers.message.DefaultMessageProviderImpl;
+import cn.w.im.core.providers.message.MessageProvider;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
 
@@ -23,33 +23,14 @@ public abstract class AbstractServer {
     private ClientCacheProvider clientCacheProvider;
     private MessageProvider messageProvider;
     private RespondProvider respondProvider;
-    private boolean init = false;
 
     /**
      * 构造函数.
      *
      * @param serverType 服务类型.
      */
-    public AbstractServer(ServerType serverType) {
-        this.serverBasic = new ServerBasic();
-        this.serverBasic.setServerType(serverType);
-    }
-
-    /**
-     * 初始化.
-     *
-     * @param host 服务绑定ip.
-     * @param port 服务监听端口.
-     * @return AbstractServer.
-     */
-    public AbstractServer init(String host, int port) {
-        if (!init) {
-            this.init = true;
-            this.setHost(host);
-            this.setPort(port);
-            this.serverBasic.setNodeId(host + ":" + port);
-        }
-        return this;
+    public AbstractServer(ServerType serverType, String host, int port) {
+        this.serverBasic = new ServerBasic(serverType, host, port);
     }
 
     /**
@@ -72,15 +53,6 @@ public abstract class AbstractServer {
         if (this.serverBasic.isStart()) {
             this.serverBasic.setStart(false);
         }
-    }
-
-    /**
-     * 获取服务是否初始化.
-     *
-     * @return true:已经初始化
-     */
-    public boolean isInit() {
-        return init;
     }
 
     /**

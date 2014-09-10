@@ -1,14 +1,12 @@
 package cn.w.im.plugins.forward;
 
 import cn.w.im.domains.MessageType;
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.messages.forward.ForwardRequestMessage;
 import cn.w.im.domains.messages.forward.ForwardResponseMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
-import cn.w.im.exceptions.NotSupportedServerTypeException;
-import cn.w.im.plugins.MessagePlugin;
-import cn.w.im.core.server.ServerInstance;
+import cn.w.im.core.plugins.MessagePlugin;
 
 /**
  * Creator: JackieHan.
@@ -19,18 +17,19 @@ public class ForwardRequestPlugin extends MessagePlugin<ForwardRequestMessage> {
     /**
      * 构造函数.
      */
-    public ForwardRequestPlugin(ServerType containerType) {
-        super("ForwardRequestPlugin", "respond response message for forward core request.", containerType);
+    public ForwardRequestPlugin() {
+        super("ForwardRequestPlugin", "respond response message for forward core request.");
     }
 
     @Override
-    protected boolean isMatch(PluginContext context) {
-        return context.getMessage().getMessageType() == MessageType.ForwardRequest;
+    public boolean isMatch(PluginContext context) {
+        return (context.getMessage().getMessageType() == MessageType.ForwardRequest)
+                && (context.getServer().getServerType() == ServerType.MessageBus);
     }
 
     @Override
-    protected void processMessage(ForwardRequestMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
-        ForwardResponseMessage responseMessage = new ForwardResponseMessage(ServerInstance.current(this.containerType()).getServerBasic());
-        ServerInstance.current(this.containerType()).messageProvider().send(context.getCurrentHost(), context.getCurrentPort(), responseMessage);
+    protected void processMessage(ForwardRequestMessage message, PluginContext context) throws ClientNotFoundException {
+        ForwardResponseMessage responseMessage = new ForwardResponseMessage(context.getServer().getServerBasic());
+        context.getServer().messageProvider().send(context.getCurrentHost(), context.getCurrentPort(), responseMessage);
     }
 }

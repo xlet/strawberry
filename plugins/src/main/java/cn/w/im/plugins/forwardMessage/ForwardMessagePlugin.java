@@ -1,12 +1,13 @@
 package cn.w.im.plugins.forwardMessage;
 
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
+import cn.w.im.domains.MessageType;
 import cn.w.im.domains.messages.server.ForwardMessage;
 import cn.w.im.core.server.MessageBus;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
-import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.core.plugins.MessagePlugin;
 
 /**
  * Creator: JackieHan.
@@ -17,30 +18,27 @@ public class ForwardMessagePlugin extends MessagePlugin<ForwardMessage> {
 
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public ForwardMessagePlugin(ServerType containerType) {
-        super("ForwardMessagePlugin", "forward message between core and core.", containerType);
+    public ForwardMessagePlugin() {
+        super("ForwardMessagePlugin", "forward message between core and core.");
     }
 
     @Override
     public boolean isMatch(PluginContext context) {
-        return context.getMessage() instanceof ForwardMessage;
+        return (context.getMessage().getMessageType() == MessageType.Forward)
+                && (context.getServer().getServerType() == ServerType.MessageBus);
     }
 
     @Override
-    public void processMessage(ForwardMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
-        switch (this.containerType()) {
+    public void processMessage(ForwardMessage message, PluginContext context) throws ClientNotFoundException {
+        switch (context.getServer().getServerType()) {
             case MessageBus:
                 processMessageWithMessageBus(message, context);
                 break;
-            default:
-                throw new NotSupportedServerTypeException(this.containerType());
         }
     }
 
     private void processMessageWithMessageBus(ForwardMessage message, PluginContext context) throws ClientNotFoundException {
-        MessageBus.current().messageProvider().send(message.getToServer(), message);
+        context.getServer().messageProvider().send(message.getToServer(), message);
     }
 }

@@ -19,23 +19,14 @@ public class OtherServerBasic extends ServerBasic {
     }
 
     /**
-     * default constructor.
-     */
-    protected OtherServerBasic() {
-
-    }
-
-    /**
      * constructor.
      *
      * @param serverBasic server basic.
      * @param sourceType  source type.
      */
     public OtherServerBasic(ServerBasic serverBasic, SourceType sourceType) {
+        super(serverBasic.getServerType(), serverBasic.getHost(), serverBasic.getPort());
         this.setStart(serverBasic.isStart());
-        this.setHost(serverBasic.getHost());
-        this.setNodeId(serverBasic.getNodeId());
-        this.setPort(serverBasic.getPort());
         this.setStartDateTime(serverBasic.getStartDateTime());
         this.sourceType = sourceType;
     }

@@ -1,6 +1,6 @@
 package cn.w.im.plugins.messageServerReady;
 
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.server.ReadyMessage;
@@ -9,7 +9,7 @@ import cn.w.im.core.server.LoginServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
-import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.core.plugins.MessagePlugin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -26,35 +26,33 @@ public class MessageServerReadyPlugin extends MessagePlugin<ReadyMessage> {
 
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public MessageServerReadyPlugin(ServerType containerType) {
-        super("MessageServerReadyPlugin", "message core ready.", containerType);
+    public MessageServerReadyPlugin() {
+        super("MessageServerReadyPlugin", "message core ready.");
         logger = LogFactory.getLog(this.getClass());
     }
 
     @Override
     public boolean isMatch(PluginContext context) {
-        return context.getMessage().getMessageType() == MessageType.Ready;
+        return (context.getMessage().getMessageType() == MessageType.Ready)
+                && (context.getServer().getServerType() == ServerType.LoginServer);
     }
 
     @Override
-    public void processMessage(ReadyMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
-        switch (containerType()) {
+    public void processMessage(ReadyMessage message, PluginContext context) throws ClientNotFoundException {
+        switch (context.getServer().getServerType()) {
             case LoginServer:
                 processMessageWithLoginServer(message, context);
                 break;
-            default:
-                throw new NotSupportedServerTypeException(containerType());
         }
     }
 
     private void processMessageWithLoginServer(ReadyMessage readyMessage, PluginContext context) {
+        LoginServer currentServer = (LoginServer) context.getServer();
         try {
             ServerBasic readyMessageServer = readyMessage.getMessageServer();
-            LoginServer.current().clientCacheProvider().registerClient(readyMessageServer, context.getCurrentHost(), context.getCurrentPort());
-            LoginServer.current().allocateProvider().messageServerReady(readyMessageServer);
+            currentServer.clientCacheProvider().registerClient(readyMessageServer, context.getCurrentHost(), context.getCurrentPort());
+            currentServer.allocateProvider().messageServerReady(readyMessageServer);
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
         }

@@ -1,7 +1,7 @@
 package cn.w.im.plugins.logout;
 
 import cn.w.im.domains.MessageType;
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.client.Client;
 import cn.w.im.domains.messages.client.LogoutMessage;
@@ -9,7 +9,7 @@ import cn.w.im.domains.messages.client.LogoutResponseMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.ClientNotRegisterException;
 import cn.w.im.exceptions.ServerNotRegisterException;
-import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.core.plugins.MessagePlugin;
 import cn.w.im.core.server.MessageServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,33 +28,31 @@ public class LogoutPlugin extends MessagePlugin<LogoutMessage> {
 
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public LogoutPlugin(ServerType containerType) {
-        super("LogoutPlugin", "logout process.", containerType);
+    public LogoutPlugin() {
+        super("LogoutPlugin", "logout process.");
     }
 
     @Override
     public boolean isMatch(PluginContext context) {
-        MessageType messageType = context.getMessage().getMessageType();
-        return messageType.equals(MessageType.Logout);
+        return (context.getMessage().getMessageType().equals(MessageType.Logout))
+                && (context.getServer().getServerType() == ServerType.MessageServer);
     }
 
     @Override
     public void processMessage(LogoutMessage message, PluginContext context) {
         try {
-            MessageServer messageServer = MessageServer.current();
-            Client client = messageServer.clientCacheProvider().getClient(message.getClientType(), message.getLoginId());
+            MessageServer currentServer = (MessageServer) context.getServer();
+            Client client = currentServer.clientCacheProvider().getClient(message.getClientType(), message.getLoginId());
 
             LogoutResponseMessage logoutResponseMessage = new LogoutResponseMessage(true);
             //notify other message servers
-            messageServer.messageProvider().send(ServerType.MessageServer, message);
+            currentServer.messageProvider().send(ServerType.MessageServer, message);
             //response to client
             //TODO if client has been removed, send call will not work
-            messageServer.messageProvider().send(message.getLoginId(), logoutResponseMessage);
+            currentServer.messageProvider().send(message.getLoginId(), logoutResponseMessage);
             //unregister the client
-            messageServer.clientCacheProvider().removeClient(context.getCurrentHost(), context.getCurrentPort());
+            currentServer.clientCacheProvider().removeClient(context.getCurrentHost(), context.getCurrentPort());
             //close the client
             if (client != null) {
                 client.close();

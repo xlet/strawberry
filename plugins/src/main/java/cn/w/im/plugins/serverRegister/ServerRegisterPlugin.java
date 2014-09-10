@@ -1,6 +1,6 @@
 package cn.w.im.plugins.serverRegister;
 
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.Client;
@@ -12,7 +12,7 @@ import cn.w.im.core.server.MessageBus;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
-import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.core.plugins.MessagePlugin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -34,50 +34,47 @@ public class ServerRegisterPlugin extends MessagePlugin<ServerRegisterMessage> {
 
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public ServerRegisterPlugin(ServerType containerType) {
-        super("serverRegisterPlugin", "core register to message bus core.", containerType);
+    public ServerRegisterPlugin() {
+        super("serverRegisterPlugin", "core register to message bus core.");
         logger = LogFactory.getLog(this.getClass());
     }
 
     @Override
     public boolean isMatch(PluginContext context) {
-        return context.getMessage().getMessageType() == MessageType.ServerRegister;
+        return (context.getMessage().getMessageType() == MessageType.ServerRegister)
+                && (context.getServer().getServerType() == ServerType.MessageBus);
     }
 
     @Override
-    public void processMessage(ServerRegisterMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
-        switch (containerType()) {
+    public void processMessage(ServerRegisterMessage message, PluginContext context) throws ClientNotFoundException {
+        switch (context.getServer().getServerType()) {
             case MessageBus:
                 processMessageWithMessageBus(message, context);
                 break;
-            default:
-                throw new NotSupportedServerTypeException(this.containerType());
         }
     }
 
-    private void processMessageWithMessageBus(ServerRegisterMessage registerMessage, PluginContext context) throws NotSupportedServerTypeException {
-
+    private void processMessageWithMessageBus(ServerRegisterMessage registerMessage, PluginContext context) {
+        MessageBus currentServer = (MessageBus) context.getServer();
         ServerBasic serverBasic = registerMessage.getServerBasic();
         try {
             //注册服务
-            MessageBus.current().clientCacheProvider().registerClient(serverBasic, context.getCurrentHost(), context.getCurrentPort());
+            currentServer.clientCacheProvider().registerClient(serverBasic, context.getCurrentHost(), context.getCurrentPort());
 
             //ToDo:jackie split this plugin to two plugin(register plugin and response plugin)
 
             //回复
             List<ServerBasic> startedServers = new ArrayList<ServerBasic>();
-            Iterator<Client> registeredServerIterator = MessageBus.current().clientCacheProvider().getAllServerClients().iterator();
+            Iterator<Client> registeredServerIterator = currentServer.clientCacheProvider().getAllServerClients().iterator();
             while (registeredServerIterator.hasNext()) {
                 ServerClient serverClient = (ServerClient) registeredServerIterator.next();
                 if (!serverClient.getServerBasic().getNodeId().equals(serverBasic.getNodeId())) {
                     startedServers.add(serverClient.getServerBasic());
                 }
             }
-            ServerRegisterResponseMessage responseMessage = new ServerRegisterResponseMessage(startedServers, MessageBus.current().getServerBasic());
-            MessageBus.current().messageProvider().send(serverBasic, responseMessage);
+            ServerRegisterResponseMessage responseMessage = new ServerRegisterResponseMessage(startedServers, currentServer.getServerBasic());
+            currentServer.messageProvider().send(serverBasic, responseMessage);
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
         }

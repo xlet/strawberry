@@ -1,12 +1,12 @@
 package cn.w.im.plugins.connected;
 
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.*;
 import cn.w.im.domains.messages.server.ConnectedMessage;
 import cn.w.im.domains.messages.server.ConnectedResponseMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
-import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.exceptions.ServerInnerException;
-import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.core.plugins.MessagePlugin;
 import cn.w.im.core.server.LoginServer;
 import cn.w.im.core.server.MessageServer;
 
@@ -18,46 +18,46 @@ import cn.w.im.core.server.MessageServer;
 public class ConnectedPlugin extends MessagePlugin<ConnectedMessage> {
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public ConnectedPlugin(ServerType containerType) {
-        super("ConnectedPlugin", "message client connected message core.", containerType);
+    public ConnectedPlugin() {
+        super("ConnectedPlugin", "message client connected message core.");
     }
 
     @Override
-    protected boolean isMatch(PluginContext context) {
-        return context.getMessage().getMessageType() == MessageType.Connected;
+    public boolean isMatch(PluginContext context) {
+        return (context.getMessage().getMessageType() == MessageType.Connected)
+                && ((context.getServer().getServerType() == ServerType.MessageServer)
+                || (context.getServer().getServerType() == ServerType.LoginServer));
     }
 
     @Override
-    protected void processMessage(ConnectedMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
-        switch (this.containerType()) {
+    protected void processMessage(ConnectedMessage message, PluginContext context) throws ClientNotFoundException {
+        switch (context.getServer().getServerType()) {
             case LoginServer:
                 processMessageWithLoginServer(message, context);
                 break;
             case MessageServer:
                 processMessageWithMessageServer(message, context);
                 break;
-            default:
-                throw new NotSupportedServerTypeException(this.containerType());
         }
     }
 
     private void processMessageWithMessageServer(ConnectedMessage message, PluginContext context) {
         try {
-            MessageServer.current().clientCacheProvider().registerClient(message.getMessageClientBasic(), message.getFromServer());
-            ConnectedResponseMessage connectedResponseMessage = new ConnectedResponseMessage(message.getToken(), LoginServer.current().getServerBasic(), message.getRespondKey());
-            MessageServer.current().messageProvider().send(message.getFromServer(), connectedResponseMessage);
+            MessageServer currentServer = (MessageServer) context.getServer();
+            currentServer.clientCacheProvider().registerClient(message.getMessageClientBasic(), message.getFromServer());
+            ConnectedResponseMessage connectedResponseMessage = new ConnectedResponseMessage(message.getToken(), currentServer.getServerBasic(), message.getRespondKey());
+            context.getServer().messageProvider().send(message.getFromServer(), connectedResponseMessage);
         } catch (ServerInnerException ex) {
-            ConnectedResponseMessage errorResponse = new ConnectedResponseMessage(ex.getErrorCode(), ex.getMessage(), MessageServer.current().getServerBasic(), message.getRespondKey());
-            MessageServer.current().messageProvider().send(message.getFromServer(), errorResponse);
+            ConnectedResponseMessage errorResponse = new ConnectedResponseMessage(ex.getErrorCode(), ex.getMessage(), context.getServer().getServerBasic(), message.getRespondKey());
+            context.getServer().messageProvider().send(message.getFromServer(), errorResponse);
         }
     }
 
     private void processMessageWithLoginServer(ConnectedMessage message, PluginContext context) {
-        LoginServer.current().allocateProvider().connected(message.getToken(), message.getMessageClientBasic(), message.getFromServer());
-        ConnectedResponseMessage connectedResponseMessage = new ConnectedResponseMessage(message.getToken(), LoginServer.current().getServerBasic(), message.getRespondKey());
-        LoginServer.current().messageProvider().send(message.getFromServer(), connectedResponseMessage);
+        LoginServer currentServer = (LoginServer) context.getServer();
+        currentServer.allocateProvider().connected(message.getToken(), message.getMessageClientBasic(), message.getFromServer());
+        ConnectedResponseMessage connectedResponseMessage = new ConnectedResponseMessage(message.getToken(), currentServer.getServerBasic(), message.getRespondKey());
+        currentServer.messageProvider().send(message.getFromServer(), connectedResponseMessage);
     }
 }

@@ -1,6 +1,6 @@
 package cn.w.im.plugins.serverRegister;
 
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.server.ServerRegisterResponseMessage;
@@ -9,7 +9,7 @@ import cn.w.im.core.server.LoginServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
-import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.core.plugins.MessagePlugin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -30,25 +30,23 @@ public class LoginServerRegisterResponsePlugin extends MessagePlugin<ServerRegis
     /**
      * 构造函数.
      */
-    public LoginServerRegisterResponsePlugin(ServerType containerType) {
-        super("LoginServerRegisterResponsePlugin", "add response started core basic.", containerType);
+    public LoginServerRegisterResponsePlugin() {
+        super("LoginServerRegisterResponsePlugin", "add response started core basic.");
         logger = LogFactory.getLog(this.getClass());
     }
 
     @Override
     public boolean isMatch(PluginContext context) {
-        boolean isMatch = context.getMessage().getMessageType() == MessageType.ServerRegisterResponse;
-        return isMatch;
+        return (context.getMessage().getMessageType() == MessageType.ServerRegisterResponse)
+                && (context.getServer().getServerType() == ServerType.LoginServer);
     }
 
     @Override
-    public void processMessage(ServerRegisterResponseMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
-        switch (containerType()) {
+    public void processMessage(ServerRegisterResponseMessage message, PluginContext context) throws ClientNotFoundException {
+        switch (context.getServer().getServerType()) {
             case LoginServer:
                 processMessageWithLoginServer(message, context);
                 break;
-            default:
-                throw new NotSupportedServerTypeException(containerType());
         }
     }
 
@@ -57,7 +55,7 @@ public class LoginServerRegisterResponsePlugin extends MessagePlugin<ServerRegis
             if (responseMessage.isSuccess()) {
                 List<ServerBasic> startedServers = responseMessage.getStartedServers();
                 for (ServerBasic startedServer : startedServers) {
-                    LoginServer.current().clientCacheProvider().registerClient(startedServer, context.getCurrentHost(), context.getCurrentPort());
+                    context.getServer().clientCacheProvider().registerClient(startedServer, context.getCurrentHost(), context.getCurrentPort());
                 }
                 //todo:jackie register to message server and request message server linked clients count.
             } else {

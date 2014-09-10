@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-server</artifactId>
+            <artifactId>im-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

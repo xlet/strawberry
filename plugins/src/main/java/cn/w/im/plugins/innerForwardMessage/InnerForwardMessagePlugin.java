@@ -1,12 +1,13 @@
 package cn.w.im.plugins.innerForwardMessage;
 
-import cn.w.im.domains.PluginContext;
+import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.core.server.MessageServer;
+import cn.w.im.domains.MessageType;
 import cn.w.im.domains.messages.client.NormalMessage;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.NotSupportedServerTypeException;
-import cn.w.im.plugins.MessagePlugin;
+import cn.w.im.core.plugins.MessagePlugin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -16,8 +17,8 @@ import org.apache.commons.logging.LogFactory;
  * Summary: 转发一般消息.
  * one server
  * message ----------------> client
- ** |                        /|\
- ** | other server            |
+ * * |                        /|\
+ * * | other server            |
  * \|/        the server      |
  * messageBus  --------->   messageServer
  */
@@ -30,30 +31,27 @@ public class InnerForwardMessagePlugin extends MessagePlugin<NormalMessage> {
 
     /**
      * 构造函数.
-     *
-     * @param containerType 服务类型.
      */
-    public InnerForwardMessagePlugin(ServerType containerType) {
-        super("InnerForwardMessagePlugin", "forward message to client.", containerType);
+    public InnerForwardMessagePlugin() {
+        super("InnerForwardMessagePlugin", "forward message to client.");
     }
 
     @Override
     public boolean isMatch(PluginContext context) {
-        return context.getMessage() instanceof NormalMessage;
+        return (context.getMessage().getMessageType() == MessageType.Normal)
+                && (context.getServer().getServerType() == ServerType.MessageServer);
     }
 
     @Override
-    public void processMessage(NormalMessage message, PluginContext context) throws ClientNotFoundException, NotSupportedServerTypeException {
-        switch (this.containerType()) {
+    public void processMessage(NormalMessage message, PluginContext context) throws ClientNotFoundException {
+        switch (context.getServer().getServerType()) {
             case MessageServer:
                 processMessageWithMessageServer(message, context);
                 break;
-            default:
-                throw new NotSupportedServerTypeException(this.containerType());
         }
     }
 
     private void processMessageWithMessageServer(NormalMessage message, PluginContext context) {
-        MessageServer.current().messageProvider().send(message.getTo(), message);
+        context.getServer().messageProvider().send(message.getTo(), message);
     }
 }
