@@ -7,8 +7,8 @@ import cn.w.im.exceptions.*;
 import cn.w.im.persistent.OnlineMemberStatusDao;
 import cn.w.im.persistent.PersistentRepositoryFactory;
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultClientCacheProvider implements ClientCacheProvider {
 
-    private Log logger;
+    private Logger logger;
 
     private static final String NEWLINE = String.format("%n");
 
@@ -85,7 +85,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
      * constructor.
      */
     public DefaultClientCacheProvider() {
-        this.logger = LogFactory.getLog(this.getClass());
+        this.logger = LoggerFactory.getLogger(this.getClass());
         this.clientMap = new ConcurrentHashMap<String, Map<Integer, Client>>();
         this.serverClientMap = new ConcurrentHashMap<String, Client>();
         this.messageClientOnThisServerMap = new ConcurrentHashMap<String, Map<MessageClientType, Client>>();

@@ -7,7 +7,7 @@
     <bean class="cn.w.im.domains.conf.Configuration">
         <property name="dataStoreType" value="${dataStore}" />
         <property name="debug" value="${debug}" />
-        <property name="host" value="${host}" />
+        <property name="bind" value="${bind}" />
         <property name="port" value="${port}" />
     </bean>
 </beans>

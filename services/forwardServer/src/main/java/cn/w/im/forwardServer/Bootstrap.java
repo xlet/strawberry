@@ -9,8 +9,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.concurrent.Executors;
@@ -28,7 +28,7 @@ public class Bootstrap {
     /**
      * 日志
      */
-    private static Log logger = LogFactory.getLog(Bootstrap.class);
+    private static Logger logger = LoggerFactory.getLogger(Bootstrap.class);
 
     private static Bootstrap daemon = null;
 
@@ -95,7 +95,7 @@ public class Bootstrap {
                     connectServer();
                 } catch (Exception ex) {
                     forwardServer.connectedError();
-                    logger.error("start core error.", ex);
+                    logger.error("connect server error!", ex);
                     connectingServer = false;
                     stopServer();
                 }
@@ -110,7 +110,7 @@ public class Bootstrap {
                     connectMessageBus();
                 } catch (Exception ex) {
                     forwardServer.connectedError();
-                    logger.error("register to message bus error.", ex);
+                    logger.error("connect message bus error.", ex);
                     connectingBus = false;
                     stopServer();
                 }
@@ -119,7 +119,7 @@ public class Bootstrap {
     }
 
     private void connectServer() throws InterruptedException {
-        logger.debug("connect message bus core starting.");
+        logger.debug("connect server starting.");
         try {
             io.netty.bootstrap.Bootstrap bootstrap = new io.netty.bootstrap.Bootstrap();
             bootstrap.group(this.serverClientGroup)
@@ -148,13 +148,13 @@ public class Bootstrap {
         @Override
         public void operationComplete(ChannelFuture future) throws Exception {
             connectingServer = false;
-            logger.debug("connect core completed.");
+            logger.debug("connect server completed.");
         }
     };
 
 
     private void connectMessageBus() throws InterruptedException {
-        logger.debug("connect message bus core starting.");
+        logger.debug("connect message bus starting.");
         try {
             io.netty.bootstrap.Bootstrap bootstrap = new io.netty.bootstrap.Bootstrap();
             bootstrap.group(messageBusClientGroup)
@@ -164,6 +164,8 @@ public class Bootstrap {
             ChannelFuture connectFuture = bootstrap.connect(forwardServer.getBusHost(), forwardServer.getBusPort()).sync();
             connectFuture.addListener(connectionFutureListener);
             connectFuture.channel().closeFuture().sync();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         } finally {
             executor.execute(new Runnable() {
                 @Override
@@ -183,7 +185,7 @@ public class Bootstrap {
         @Override
         public void operationComplete(ChannelFuture future) throws Exception {
             connectingBus = false;
-            logger.debug("connect message bus core completed.");
+            logger.debug("connect message bus completed.");
         }
     };
 
@@ -220,6 +222,4 @@ public class Bootstrap {
             }
         }
     }
-
-
 }

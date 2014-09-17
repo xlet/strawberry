@@ -11,10 +11,9 @@ import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.core.server.MessageBus;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
-import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.core.plugins.MessagePlugin;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,14 +29,14 @@ import java.util.List;
  */
 public class ServerRegisterPlugin extends MessagePlugin<ServerRegisterMessage> {
 
-    private Log logger;
+    private Logger logger;
 
     /**
      * 构造函数.
      */
     public ServerRegisterPlugin() {
         super("serverRegisterPlugin", "core register to message bus core.");
-        logger = LogFactory.getLog(this.getClass());
+        logger = LoggerFactory.getLogger(this.getClass());
     }
 
     @Override
@@ -57,10 +56,10 @@ public class ServerRegisterPlugin extends MessagePlugin<ServerRegisterMessage> {
 
     private void processMessageWithMessageBus(ServerRegisterMessage registerMessage, PluginContext context) {
         MessageBus currentServer = (MessageBus) context.getServer();
-        ServerBasic serverBasic = registerMessage.getServerBasic();
+        ServerBasic registerServer = registerMessage.getServerBasic();
         try {
             //注册服务
-            currentServer.clientCacheProvider().registerClient(serverBasic, context.getCurrentHost(), context.getCurrentPort());
+            currentServer.clientCacheProvider().registerClient(registerServer, context.getCurrentHost(), context.getCurrentPort());
 
             //ToDo:jackie split this plugin to two plugin(register plugin and response plugin)
 
@@ -69,12 +68,12 @@ public class ServerRegisterPlugin extends MessagePlugin<ServerRegisterMessage> {
             Iterator<Client> registeredServerIterator = currentServer.clientCacheProvider().getAllServerClients().iterator();
             while (registeredServerIterator.hasNext()) {
                 ServerClient serverClient = (ServerClient) registeredServerIterator.next();
-                if (!serverClient.getServerBasic().getNodeId().equals(serverBasic.getNodeId())) {
+                if (!serverClient.getServerBasic().getNodeId().equals(registerServer.getNodeId())) {
                     startedServers.add(serverClient.getServerBasic());
                 }
             }
             ServerRegisterResponseMessage responseMessage = new ServerRegisterResponseMessage(startedServers, currentServer.getServerBasic());
-            currentServer.messageProvider().send(serverBasic, responseMessage);
+            currentServer.messageProvider().send(registerServer, responseMessage);
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
         }

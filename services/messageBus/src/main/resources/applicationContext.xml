@@ -4,7 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="file:/etc/im/server/server.conf"/>
+    <context:property-placeholder location="file:/etc/liuliu/bus/server/server.conf"/>
     <import resource="serverConfig.xml"/>
 
     <context:component-scan base-package="cn.w.im" />
@@ -32,8 +32,25 @@
         <property name="toEnsureCaps" value="true"/>
     </bean>
 
-    <!-- 插件初始化配置 -->
-    <bean id="loginServerPluginInitializer" class="cn.w.im.plugins.init.LoginServerPluginInitializer"/>
-    <bean id="messageBusPluginInitializer" class="cn.w.im.plugins.init.MessageBusPluginInitializer"/>
-    <bean id="messageServerPluginInitializer" class="cn.w.im.plugins.init.MessageServerPluginInitializer"/>
+    <!-- http client -->
+    <bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig" factory-method="custom">
+        <property name="socketTimeout" value="20000"/>
+        <property name="connectTimeout" value="50000"/>
+    </bean>
+    <bean id="requestConfig" factory-bean="requestConfigBuilder" factory-method="build"/>
+    <bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder" factory-method="create">
+        <property name="defaultRequestConfig" ref="requestConfig"/>
+    </bean>
+    <bean id="httpClient" factory-bean="httpClientBuilder" factory-method="build"/>
+
+    <bean id="ucConfig" class="cn.w.im.utils.sdk.usercenter.config.UcConfig">
+        <property name="baseUrl" value="${userCenter.api.url}"/>
+        <property name="secret" value="${userCenter.api.secret}"/>
+        <property name="httpClient" ref="httpClient"/>
+    </bean>
+
+    <bean id="members" class="cn.w.im.utils.sdk.usercenter.MemberService">
+        <property name="config" ref="ucConfig"/>
+    </bean>
+
 </beans>

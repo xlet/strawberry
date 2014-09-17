@@ -2,8 +2,8 @@ package cn.w.im.core.providers.allocate;
 
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.ServerBasic;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MessageServerAllocation {
 
-    private Log logger = LogFactory.getLog(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private ServerBasic messageServer;
 

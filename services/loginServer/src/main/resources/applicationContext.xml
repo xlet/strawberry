@@ -4,7 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="file:/etc/im/server/server.conf"/>
+    <context:property-placeholder location="file:/etc/liuliu/login/server/server.conf"/>
     <import resource="serverConfig.xml"/>
 
     <context:component-scan base-package="cn.w.im" />
@@ -31,12 +31,6 @@
         <property name="toEnsureIndexes" value="true"/>
         <property name="toEnsureCaps" value="true"/>
     </bean>
-
-    <!-- 插件初始化配置 -->
-    <bean id="loginServerPluginInitializer" class="cn.w.im.plugins.init.LoginServerPluginInitializer"/>
-    <bean id="messageBusPluginInitializer" class="cn.w.im.plugins.init.MessageBusPluginInitializer"/>
-    <bean id="messageServerPluginInitializer" class="cn.w.im.plugins.init.MessageServerPluginInitializer"/>
-
 
     <!-- http client -->
     <bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig" factory-method="custom">

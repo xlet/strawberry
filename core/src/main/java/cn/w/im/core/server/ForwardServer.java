@@ -7,8 +7,8 @@ import cn.w.im.domains.messages.forward.ForwardRequestMessage;
 import cn.w.im.domains.messages.forward.ForwardResponseMessage;
 import cn.w.im.utils.netty.IpAddressProvider;
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ForwardServer {
 
-    private Log logger;
+    private Logger logger;
 
     private String busHost, serverHost;
     private int busPort, serverPort;
@@ -52,7 +52,7 @@ public class ForwardServer {
         this.serverKeys = new ArrayList<String>();
         this.contextMap = new ConcurrentHashMap<String, ChannelHandlerContext>();
         this.connectedServerMap = new ConcurrentHashMap<String, ServerBasic>();
-        logger = LogFactory.getLog(this.getClass());
+        logger = LoggerFactory.getLogger(this.getClass());
         init(busHost, busPort, serverHost, serverPort);
     }
 

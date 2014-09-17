@@ -8,8 +8,8 @@ import cn.w.im.domains.messages.client.LogoutResponseMessage;
 import cn.w.im.domains.messages.client.NormalMessage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
@@ -23,7 +23,7 @@ public class ConnectHandler extends ChannelInboundHandlerAdapter {
     /**
      * 日志
      */
-    private static Log log;
+    private static Logger log;
 
     private ConnectToken connectToken;
 
@@ -34,7 +34,7 @@ public class ConnectHandler extends ChannelInboundHandlerAdapter {
      */
     public ConnectHandler(ConnectToken connectToken, MessageClientType clientType) {
         this.connectToken = connectToken;
-        log = LogFactory.getLog(this.getClass());
+        log = LoggerFactory.getLogger(this.getClass());
         this.clientType = clientType;
     }
 

@@ -23,8 +23,8 @@ public class ForwardRequestPlugin extends MessagePlugin<ForwardRequestMessage> {
 
     @Override
     public boolean isMatch(PluginContext context) {
-        return (context.getMessage().getMessageType() == MessageType.ForwardRequest)
-                && (context.getServer().getServerType() == ServerType.MessageBus);
+        //message is forward request message and all type server
+        return (context.getMessage().getMessageType() == MessageType.ForwardRequest);
     }
 
     @Override

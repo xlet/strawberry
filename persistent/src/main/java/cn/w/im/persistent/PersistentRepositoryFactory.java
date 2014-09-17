@@ -6,13 +6,14 @@ import cn.w.im.domains.messages.Message;
 import cn.w.im.exceptions.NotSupportMessageTypeException;
 import cn.w.im.exceptions.NotSupportedDataStoreException;
 import cn.w.im.utils.spring.SpringContext;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * persistent repository factory.
  */
 public class PersistentRepositoryFactory {
-    private static final Logger logger = Logger.getLogger(PersistentRepositoryFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(PersistentRepositoryFactory.class);
 
     private static Configuration configuration;
 
@@ -43,8 +44,6 @@ public class PersistentRepositoryFactory {
         String dataStoreType = getConfiguration().getDataStoreType();
         if (dataStoreType.equals("mongo")) {
             String mongoDaoName = "mongo" + daoClassName;
-            //
-            logger.debug("mongoDaoName="+mongoDaoName);
             TDao dao = (TDao) SpringContext.context().getBean(mongoDaoName);
             if (dao == null) {
                 throw new NullPointerException(mongoDaoName + " is not configured.");

@@ -9,13 +9,11 @@ import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.messages.client.ConnectMessage;
 import cn.w.im.domains.messages.client.LogoutMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
-import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.persistent.OnlineMemberStatusDao;
 import cn.w.im.core.plugins.MultiMessagePlugin;
-import cn.w.im.core.server.MessageServer;
 import cn.w.im.utils.spring.SpringContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * member status plugin.
@@ -24,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class StatusPlugin extends MultiMessagePlugin {
 
-    private final static Log LOG = LogFactory.getLog(StatusPlugin.class);
+    private final static Logger LOG = LoggerFactory.getLogger(StatusPlugin.class);
 
     private OnlineMemberStatusDao onlineMemberStatusDao;
 

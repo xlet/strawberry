@@ -5,8 +5,8 @@ import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  */
 public class MongoFactoryBean extends AbstractFactoryBean<Mongo> {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
      * 是否主从分离（读取从库），默认读写都在主库.
      */

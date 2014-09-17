@@ -5,13 +5,11 @@ import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.server.ServerRegisterResponseMessage;
 import cn.w.im.exceptions.ServerInnerException;
-import cn.w.im.core.server.LoginServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
-import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.core.plugins.MessagePlugin;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -25,14 +23,14 @@ import java.util.List;
  */
 public class LoginServerRegisterResponsePlugin extends MessagePlugin<ServerRegisterResponseMessage> {
 
-    private Log logger;
+    private Logger logger;
 
     /**
      * 构造函数.
      */
     public LoginServerRegisterResponsePlugin() {
         super("LoginServerRegisterResponsePlugin", "add response started core basic.");
-        logger = LogFactory.getLog(this.getClass());
+        logger = LoggerFactory.getLogger(this.getClass());
     }
 
     @Override

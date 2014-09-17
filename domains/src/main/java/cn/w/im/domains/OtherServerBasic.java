@@ -25,7 +25,7 @@ public class OtherServerBasic extends ServerBasic {
      * @param sourceType  source type.
      */
     public OtherServerBasic(ServerBasic serverBasic, SourceType sourceType) {
-        super(serverBasic.getServerType(), serverBasic.getHost(), serverBasic.getPort());
+        super(serverBasic.getServerType(), serverBasic.getPort());
         this.setStart(serverBasic.isStart());
         this.setStartDateTime(serverBasic.getStartDateTime());
         this.sourceType = sourceType;

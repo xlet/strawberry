@@ -9,8 +9,8 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creator: JackieHan.
@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class Bootstrap {
 
-    private static Log logger = LogFactory.getLog(Bootstrap.class);
+    private static Logger logger = LoggerFactory.getLogger(Bootstrap.class);
 
     private static Bootstrap daemon = null;
 
@@ -61,11 +61,11 @@ public final class Bootstrap {
 
     private Bootstrap() {
         configuration = (Configuration) SpringContext.context().getBean("serverConfig");
-        this.messageBus = new MessageBus(configuration.getHost(), configuration.getPort());
+        this.messageBus = new MessageBus(configuration.getPort());
     }
 
     private void startServer() throws Exception {
-        logger.info("message bus core starting");
+        logger.info("message bus starting");
 
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();
@@ -76,11 +76,8 @@ public final class Bootstrap {
                 .childHandler(new ServerInitializer(this.messageBus));
 
         ChannelFuture bindFuture;
-        if (configuration.isDebug()) {
-            bindFuture = bootstrap.bind(this.messageBus.getPort()).sync();
-        } else {
-            bindFuture = bootstrap.bind(this.messageBus.getHost(), this.messageBus.getPort()).sync();
-        }
+        bindFuture = bootstrap.bind(this.configuration.getBind(), this.messageBus.getPort()).sync();
+        logger.debug("listening port:" + this.messageBus.getPort());
         bindFuture.addListener(bindFutureListener);
 
         bindFuture.channel().closeFuture().sync();
@@ -91,13 +88,13 @@ public final class Bootstrap {
         @Override
         public void operationComplete(ChannelFuture future) throws Exception {
             messageBus.start();
-            logger.debug("message bus core started!");
+            logger.debug("message bus started!");
         }
     };
 
     private void stopServer() throws Exception {
         try {
-            logger.debug("core stopping.");
+            logger.debug("message bus stopping.");
             if (bossGroup != null) {
                 bossGroup.shutdownGracefully();
             }
@@ -105,7 +102,7 @@ public final class Bootstrap {
                 workerGroup.shutdownGracefully();
             }
             messageBus.stop();
-            logger.debug("core stopped.");
+            logger.debug("message bus stopped.");
             System.exit(0);
         } catch (Throwable t) {
             logger.error("stopped error.", t);
@@ -113,6 +110,4 @@ public final class Bootstrap {
             System.exit(1);
         }
     }
-
-
 }

@@ -7,8 +7,8 @@ import cn.w.im.exceptions.NotRegisterRespondMessageException;
 import cn.w.im.exceptions.NotRegisterRespondServerException;
 import cn.w.im.exceptions.RegisteredRespondMessageException;
 import cn.w.im.exceptions.RegisteredRespondServerException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultRespondProvider implements RespondProvider {
 
-    private Log logger;
+    private Logger logger;
 
     private Map<String, Map<String, Boolean>> responseMap;
 
@@ -30,7 +30,7 @@ public class DefaultRespondProvider implements RespondProvider {
      * constructor.
      */
     public DefaultRespondProvider() {
-        logger = LogFactory.getLog(this.getClass());
+        logger = LoggerFactory.getLogger(this.getClass());
         responseMap = new ConcurrentHashMap<String, Map<String, Boolean>>();
     }
 

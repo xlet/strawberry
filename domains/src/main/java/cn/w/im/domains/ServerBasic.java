@@ -1,5 +1,6 @@
 package cn.w.im.domains;
 
+import cn.w.im.utils.netty.IpAddressProvider;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -14,39 +15,40 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 public class ServerBasic {
 
-    private String host;
     private int port;
     private boolean start;
     private long startDateTime;
     private String nodeId;
     private ServerType serverType;
+    private String host;
+
+    private ServerBasic() {
+    }
 
     /**
      * constructor.
+     *
      * @param serverType server type.
-     * @param host host.
-     * @param port port.
+     * @param port       port.
      */
-    public ServerBasic(ServerType serverType, String host, int port) {
+    public ServerBasic(ServerType serverType, int port) {
         this.serverType = serverType;
-        this.host = host;
         this.port = port;
+        this.host = IpAddressProvider.getLocalIpAddress();
         this.nodeId = host + ":" + port;
     }
 
     /**
-     * 获取服务绑定ip地址.
-     *
-     * @return 服务绑定ip地址.
+     * get local host.
+     * @return local ip address.
      */
     public String getHost() {
         return host;
     }
 
     /**
-     * 设置服务绑定ip地址.
-     *
-     * @param host 服务绑定ip地址.
+     * set local host.
+     * @param host host.
      */
     public void setHost(String host) {
         this.host = host;

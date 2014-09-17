@@ -9,8 +9,8 @@ import cn.w.im.domains.messages.client.ConnectResponseMessage;
 import cn.w.im.exceptions.*;
 import cn.w.im.core.plugins.MessagePlugin;
 import cn.w.im.core.server.MessageServer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creator: JackieHan.
@@ -19,14 +19,14 @@ import org.apache.commons.logging.LogFactory;
  */
 public class MessageClientConnectPlugin extends MessagePlugin<ConnectMessage> {
 
-    private final Log logger;
+    private final Logger logger;
 
     /**
      * 构造函数.
      */
     public MessageClientConnectPlugin() {
         super("MessageClientConnectPlugin", "message client connect message core with connect token.");
-        logger = LogFactory.getLog(this.getClass());
+        logger = LoggerFactory.getLogger(this.getClass());
     }
 
     @Override

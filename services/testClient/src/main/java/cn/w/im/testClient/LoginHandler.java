@@ -5,8 +5,8 @@ import cn.w.im.domains.client.MessageClientType;
 import cn.w.im.domains.messages.client.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +22,7 @@ public class LoginHandler extends ChannelInboundHandlerAdapter {
     /**
      * 日志
      */
-    private static Log log;
+    private static Logger log;
 
     private List<HandlerListener> listeners = new ArrayList<HandlerListener>();
 
@@ -46,7 +46,7 @@ public class LoginHandler extends ChannelInboundHandlerAdapter {
         this.id = id;
         this.password = password;
         this.clientType = clientType;
-        log = LogFactory.getLog(this.getClass());
+        log = LoggerFactory.getLogger(this.getClass());
     }
 
     /**

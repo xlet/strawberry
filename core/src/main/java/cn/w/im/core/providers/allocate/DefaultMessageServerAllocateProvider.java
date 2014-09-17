@@ -4,8 +4,8 @@ import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.client.MessageClientType;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultMessageServerAllocateProvider implements MessageServerAllocateProvider {
 
-    private Log logger;
+    private Logger logger;
     private TokenProvider tokenProvider;
 
     /**
@@ -29,7 +29,7 @@ public class DefaultMessageServerAllocateProvider implements MessageServerAlloca
      * constructor.
      */
     public DefaultMessageServerAllocateProvider() {
-        logger = LogFactory.getLog(this.getClass());
+        logger = LoggerFactory.getLogger(this.getClass());
         messageServerAllocations = new ConcurrentHashMap<String, MessageServerAllocation>();
         //ToDo: jackie config this provider.
         tokenProvider = new DefaultTokenProvider();

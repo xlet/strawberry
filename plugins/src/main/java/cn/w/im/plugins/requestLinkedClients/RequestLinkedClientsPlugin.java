@@ -8,13 +8,11 @@ import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.messages.server.RequestLinkedClientsMessage;
 import cn.w.im.domains.messages.server.ResponseLinkedClientsMessage;
 import cn.w.im.exceptions.ServerInnerException;
-import cn.w.im.core.server.MessageServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
-import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.core.plugins.MessagePlugin;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,14 +25,14 @@ import java.util.List;
  */
 public class RequestLinkedClientsPlugin extends MessagePlugin<RequestLinkedClientsMessage> {
 
-    private Log logger;
+    private Logger logger;
 
     /**
      * 构造函数.
      */
     public RequestLinkedClientsPlugin() {
         super("RequestLinkedClientsPlugin", "message core request other core linked clients.");
-        this.logger = LogFactory.getLog(this.getClass());
+        this.logger = LoggerFactory.getLogger(this.getClass());
     }
 
     @Override

@@ -5,7 +5,8 @@ import cn.w.im.domains.messages.heartbeat.HeartbeatResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.ReadTimeoutException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -15,7 +16,7 @@ import org.apache.log4j.Logger;
  */
 public class HeartbeatRespHandler extends ChannelInboundHandlerAdapter {
 
-    private final Logger logger = Logger.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

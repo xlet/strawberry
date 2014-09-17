@@ -29,8 +29,8 @@ public abstract class AbstractServer {
      *
      * @param serverType 服务类型.
      */
-    public AbstractServer(ServerType serverType, String host, int port) {
-        this.serverBasic = new ServerBasic(serverType, host, port);
+    public AbstractServer(ServerType serverType, int port) {
+        this.serverBasic = new ServerBasic(serverType, port);
     }
 
     /**

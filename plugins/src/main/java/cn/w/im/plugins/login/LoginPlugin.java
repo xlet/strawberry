@@ -14,8 +14,8 @@ import cn.w.im.utils.sdk.usercenter.Members;
 import cn.w.im.utils.sdk.usercenter.UserCenterException;
 import cn.w.im.utils.sdk.usercenter.model.Account;
 import cn.w.im.utils.spring.SpringContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creator: JackieHan.
@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LoginPlugin extends MessagePlugin<LoginMessage> {
 
-    private Log logger = LogFactory.getLog(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private Members members = SpringContext.context().getBean("members", Members.class);
 

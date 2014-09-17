@@ -4,6 +4,7 @@ import cn.w.im.core.handlers.HeartbeatRespHandler;
 import cn.w.im.core.handlers.JsonMessageDecoder;
 import cn.w.im.core.handlers.JsonMessageEncoder;
 import cn.w.im.core.handlers.MessageBusHandler;
+import cn.w.im.core.plugins.Plugin;
 import cn.w.im.core.server.MessageBus;
 import cn.w.im.plugins.PluginsContainer;
 import io.netty.channel.ChannelInitializer;
@@ -16,6 +17,7 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.CharsetUtil;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,9 +28,11 @@ import java.util.concurrent.TimeUnit;
 public class ServerInitializer extends ChannelInitializer<SocketChannel> {
 
     private MessageBus currentServer;
+    private Collection<Plugin> allPlugins;
 
     public ServerInitializer(MessageBus messageBus) {
         this.currentServer = messageBus;
+        this.allPlugins = PluginsContainer.all();
     }
 
     @Override
@@ -44,6 +48,6 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
                 //heartbeat
                 new ReadTimeoutHandler(35, TimeUnit.SECONDS),
                 new HeartbeatRespHandler(),
-                new MessageBusHandler(this.currentServer, PluginsContainer.all()));
+                new MessageBusHandler(this.currentServer, this.allPlugins));
     }
 }

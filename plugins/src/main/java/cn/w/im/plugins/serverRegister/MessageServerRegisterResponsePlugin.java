@@ -10,10 +10,9 @@ import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.core.server.MessageServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
-import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.core.plugins.MessagePlugin;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +24,14 @@ import java.util.List;
  */
 public class MessageServerRegisterResponsePlugin extends MessagePlugin<ServerRegisterResponseMessage> {
 
-    private Log logger;
+    private Logger logger;
 
     /**
      * 构造函数.
      */
     public MessageServerRegisterResponsePlugin() {
         super("MessageServerRegisterResponsePlugin", "add response started message core to local and send request linked clients message to these message core.");
-        logger = LogFactory.getLog(this.getClass());
+        logger = LoggerFactory.getLogger(this.getClass());
     }
 
     @Override

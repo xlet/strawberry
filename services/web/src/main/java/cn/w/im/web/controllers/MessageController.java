@@ -10,7 +10,8 @@ import cn.w.im.web.vo.response.GetMessageResponse;
 import cn.w.im.web.vo.response.SendMessageResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -32,7 +33,7 @@ import java.util.List;
 @RequestMapping(value = "/api/message")
 public class MessageController extends BaseController {
 
-    private static final Logger logger = Logger.getLogger(MessageController.class);
+    private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
 
     private final static int MAX_MESSAGE_LENGTH = 255;
 

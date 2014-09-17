@@ -17,8 +17,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.PooledByteBufAllocator;
-import org.apache.log4j.Logger;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -33,7 +34,7 @@ import java.util.UUID;
  */
 public class MessageTest {
 
-    private Logger LOG = Logger.getLogger(this.getClass());
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -48,7 +49,7 @@ public class MessageTest {
 
         LoginMessage loginMessage = new LoginMessage(CLIENT_TYPE, "13622882929", "w123456");
         String token = UUID.randomUUID().toString().replace("-", "");
-        ServerBasic serverBasic = new ServerBasic(ServerType.LoginServer, "10.0.41.104", 17021);
+        ServerBasic serverBasic = new ServerBasic(ServerType.LoginServer, 17021);
         serverBasic.setStart(true);
         serverBasic.setStartDateTime(System.currentTimeMillis());
         ConnectToken connectToken = new ConnectToken("10.0.40.18", "username", token, serverBasic);

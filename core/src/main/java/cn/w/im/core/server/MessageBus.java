@@ -9,7 +9,7 @@ import cn.w.im.domains.ServerType;
  */
 public class MessageBus extends AbstractServer {
 
-    public MessageBus(String host, int port) {
-        super(ServerType.MessageBus, host, port);
+    public MessageBus(int port) {
+        super(ServerType.MessageBus, port);
     }
 }

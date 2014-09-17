@@ -9,10 +9,9 @@ import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.core.server.MessageServer;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
-import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.core.plugins.MessagePlugin;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creator: JackieHan.
@@ -21,14 +20,14 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ResponseLinkedClientsPlugin extends MessagePlugin<ResponseLinkedClientsMessage> {
 
-    private Log logger;
+    private Logger logger;
 
     /**
      * 构造函数.
      */
     public ResponseLinkedClientsPlugin() {
         super("ResponseLinkedClientsPlugin", "request linked clients response message process.");
-        logger = LogFactory.getLog(this.getClass());
+        logger = LoggerFactory.getLogger(this.getClass());
     }
 
     @Override

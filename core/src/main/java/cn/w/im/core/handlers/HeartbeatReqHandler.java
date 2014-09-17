@@ -6,7 +6,8 @@ import cn.w.im.utils.netty.channel.NettyChannel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.concurrent.DefaultThreadFactory;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -20,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Summary:
  */
 public class HeartbeatReqHandler extends ChannelInboundHandlerAdapter {
-    private final Logger logger = Logger.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private volatile ScheduledFuture<?> heartbeatFuture;
 
@@ -36,11 +37,11 @@ public class HeartbeatReqHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-       if(msg instanceof HeartbeatResponse){
-           channel.setResult((HeartbeatResponse) msg);
-       }else{
-           ctx.fireChannelRead(msg);
-       }
+        if (msg instanceof HeartbeatResponse) {
+            channel.setResult((HeartbeatResponse) msg);
+        } else {
+            ctx.fireChannelRead(msg);
+        }
     }
 
 
@@ -81,7 +82,7 @@ public class HeartbeatReqHandler extends ChannelInboundHandlerAdapter {
     }
 
     private static class HeartbeatTask implements Runnable {
-        private static final Logger logger = Logger.getLogger(HeartbeatTask.class);
+        private static final Logger logger = LoggerFactory.getLogger(HeartbeatTask.class);
         private static final long timeout = 5 * 1000;
 
         private final HeartbeatReqHandler handler;
@@ -120,8 +121,8 @@ public class HeartbeatReqHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    public void destory(){
-        if(this.executor!=null && !this.executor.isShutdown()){
+    public void destory() {
+        if (this.executor != null && !this.executor.isShutdown()) {
             this.executor.shutdownNow();
         }
     }

@@ -1,14 +1,13 @@
 package cn.w.im.plugins.persistentMessage;
 
 import cn.w.im.core.plugins.PluginContext;
-import cn.w.im.domains.ServerType;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.persistent.MessageDao;
 import cn.w.im.persistent.PersistentRepositoryFactory;
 import cn.w.im.core.plugins.MessagePlugin;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creator: JackieHan.
@@ -20,7 +19,7 @@ public class MessagePersistentPlugin<TMessage extends Message> extends MessagePl
     /**
      * 日志.
      */
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 构造函数.

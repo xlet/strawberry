@@ -3,7 +3,8 @@ package cn.w.im.utils.netty.future;
 
 import cn.w.im.utils.netty.exception.TimeoutException;
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Summary:
  */
 public class WriteFuture<V> {
-    protected Logger logger = Logger.getLogger(this.getClass());
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
     protected V result;
     protected AtomicBoolean done = new AtomicBoolean(false);
     protected AtomicBoolean success = new AtomicBoolean(false);

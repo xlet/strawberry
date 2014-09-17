@@ -7,11 +7,9 @@ import cn.w.im.domains.messages.server.TokenResponseMessage;
 import cn.w.im.domains.messages.client.LoginResponseMessage;
 import cn.w.im.domains.ServerType;
 import cn.w.im.exceptions.ClientNotFoundException;
-import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.core.plugins.MessagePlugin;
-import cn.w.im.core.server.LoginServer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creator: JackieHan.
@@ -21,14 +19,14 @@ import org.apache.commons.logging.LogFactory;
  */
 public class TokenResponsePlugin extends MessagePlugin<TokenResponseMessage> {
 
-    private Log logger;
+    private Logger logger;
 
     /**
      * 构造函数.
      */
     public TokenResponsePlugin() {
         super("TokenResponsePlugin", "send loginResponse message to client.");
-        this.logger = LogFactory.getLog(this.getClass());
+        this.logger = LoggerFactory.getLogger(this.getClass());
     }
 
     @Override

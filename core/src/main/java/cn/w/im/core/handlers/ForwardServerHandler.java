@@ -6,8 +6,8 @@ import cn.w.im.exceptions.ListeningThreadStartErrorException;
 import cn.w.im.core.server.ForwardServer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creator: JackieHan.
@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ForwardServerHandler extends ChannelInboundHandlerAdapter {
 
-    private Log logger = LogFactory.getLog(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private ForwardServer currentServer;
 
@@ -32,7 +32,7 @@ public class ForwardServerHandler extends ChannelInboundHandlerAdapter {
         try {
             waitConnected();
             currentServer.requestServerBasic(ctx);
-        } catch (ListeningThreadStartErrorException ex) {
+        } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
         super.channelActive(ctx);
@@ -40,7 +40,7 @@ public class ForwardServerHandler extends ChannelInboundHandlerAdapter {
 
     private synchronized void waitConnected() throws Exception {
         while (true) {
-            logger.debug("waiting for core and bus all connected.");
+            logger.debug("waiting for server and bus all connected.");
             this.wait(500);
             if (currentServer.isConnectedError()) {
                 throw new ListeningThreadStartErrorException();
@@ -53,7 +53,7 @@ public class ForwardServerHandler extends ChannelInboundHandlerAdapter {
 
     private synchronized void waitResponded() throws Exception {
         while (true) {
-            logger.debug("waiting for core and bus all responded.");
+            logger.debug("waiting for server and bus all responded.");
             this.wait(500);
             if (currentServer.allResponded()) {
                 break;
@@ -76,7 +76,7 @@ public class ForwardServerHandler extends ChannelInboundHandlerAdapter {
                 ctx.fireChannelRead(msg);
             }
         } catch (Exception ex) {
-            logger.error("forward core crashed.");
+            logger.error("forward crashed.");
             logger.error(ex.getMessage(), ex);
             currentServer.crashed();
         }
@@ -84,7 +84,7 @@ public class ForwardServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.error("forward core stopped.");
+        logger.error("forward stopped.");
         currentServer.serverStopped();
         super.channelInactive(ctx);
     }

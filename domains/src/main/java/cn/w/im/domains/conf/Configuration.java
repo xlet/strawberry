@@ -7,7 +7,7 @@ package cn.w.im.domains.conf;
  */
 public class Configuration {
 
-    private String host;
+    private String bind;
 
     private int port;
 
@@ -16,19 +16,19 @@ public class Configuration {
     private String dataStoreType = "mongo";
 
     /**
-     * get host.
-     * @return host.
+     * get bind.
+     * @return bind.
      */
-    public String getHost(){
-        return this.host;
+    public String getBind(){
+        return this.bind;
     }
 
     /**
-     * set host.
-     * @param host host.
+     * set bind.
+     * @param bind bind.
      */
-    public void setHost(String host){
-        this.host=host;
+    public void setBind(String bind){
+        this.bind = bind;
     }
 
     /**

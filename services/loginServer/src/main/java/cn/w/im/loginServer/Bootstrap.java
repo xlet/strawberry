@@ -10,8 +10,8 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -24,7 +24,7 @@ public class Bootstrap {
     /**
      * 日志
      */
-    private static Log logger = LogFactory.getLog(Bootstrap.class);
+    private static Logger logger = LoggerFactory.getLogger(Bootstrap.class);
 
     private static Bootstrap daemon = null;
 
@@ -63,13 +63,12 @@ public class Bootstrap {
 
     private Bootstrap() {
         configuration = SpringContext.context().getBean(Configuration.class);
-        this.loginServer = new LoginServer(configuration.getHost(), configuration.getPort());
+        this.loginServer = new LoginServer(configuration.getPort());
     }
 
     private void startServer() throws Exception {
         logger.debug("core starting.");
 
-        String host = this.loginServer.getHost();
         int serverPort = this.loginServer.getPort();
 
         ServerBootstrap serverBootstrap = new ServerBootstrap();
@@ -78,11 +77,7 @@ public class Bootstrap {
                 .childHandler(new ServerInitializer(this.loginServer));
 
         ChannelFuture bindFuture;
-        if (configuration.isDebug()) {
-            bindFuture = serverBootstrap.bind(serverPort).sync();
-        } else {
-            bindFuture = serverBootstrap.bind(host, serverPort).sync();
-        }
+        bindFuture = serverBootstrap.bind(this.configuration.getBind(), serverPort).sync();
         bindFuture.addListener(bindFutureListener);
         bindFuture.channel().closeFuture().sync();
     }

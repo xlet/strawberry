@@ -6,21 +6,20 @@ import cn.w.im.domains.ServerType;
 import cn.w.im.domains.basic.NearlyLinkman;
 import cn.w.im.domains.messages.client.NormalMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
-import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.persistent.NearlyLinkmanDao;
 import cn.w.im.core.plugins.MessagePlugin;
 import cn.w.im.utils.spring.SpringContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * nearly linkman plugin.
  */
 public class NearlyLinkmanPlugin extends MessagePlugin<NormalMessage> {
 
-    private final static Log LOG = LogFactory.getLog(NearlyLinkmanPlugin.class);
+    private final static Logger LOG = LoggerFactory.getLogger(NearlyLinkmanPlugin.class);
     private NearlyLinkmanDao nearlyLinkmanDao;
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -49,7 +48,7 @@ public class NearlyLinkmanPlugin extends MessagePlugin<NormalMessage> {
             try {
                 LOG.debug(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(nearlyLinkman));
             } catch (JsonProcessingException e) {
-                LOG.error(e);
+                LOG.error(e.getMessage(), e);
             }
             this.nearlyLinkmanDao.save(nearlyLinkman);
         } else {

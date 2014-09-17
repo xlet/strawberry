@@ -17,6 +17,7 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.CharsetUtil;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -29,9 +30,11 @@ import java.util.concurrent.TimeUnit;
 public class ServerInitializer extends ChannelInitializer<SocketChannel> {
 
     private LoginServer currentServer;
+    private Collection<Plugin> allPlugins;
 
     public ServerInitializer(LoginServer currentServer) {
         this.currentServer = currentServer;
+        this.allPlugins = PluginsContainer.all();
     }
 
     @Override
@@ -47,6 +50,6 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
                 //once read time out detected, channel will be disposed
                 new ReadTimeoutHandler(35, TimeUnit.SECONDS),
                 new HeartbeatRespHandler(),
-                new LoginServerHandler(this.currentServer, PluginsContainer.all()));
+                new LoginServerHandler(this.currentServer, this.allPlugins));
     }
 }

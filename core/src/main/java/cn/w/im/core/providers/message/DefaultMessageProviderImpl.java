@@ -14,8 +14,8 @@ import cn.w.im.exceptions.RegisteredRespondServerException;
 import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.persistent.NormalMessageDao;
 import cn.w.im.persistent.PersistentRepositoryFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class DefaultMessageProviderImpl implements MessageProvider {
 
-    private final static Log LOG = LogFactory.getLog(DefaultMessageProviderImpl.class);
+    private final static Logger LOG = LoggerFactory.getLogger(DefaultMessageProviderImpl.class);
 
     private NormalMessageDao normalMessageDao;
 

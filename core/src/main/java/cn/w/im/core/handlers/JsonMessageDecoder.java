@@ -4,8 +4,8 @@ import cn.w.im.domains.messages.Message;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
 public class JsonMessageDecoder extends MessageToMessageDecoder<String> {
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, String message, List<Object> objects) throws Exception {

@@ -2,8 +2,8 @@ package cn.w.im.core.plugins;
 
 import cn.w.im.domains.messages.Message;
 import cn.w.im.exceptions.ClientNotFoundException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creator: JackieHan.
@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class MessagePlugin<T extends Message> extends AbstractPlugin {
 
-    private Log logger = LogFactory.getLog(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 构造函数.

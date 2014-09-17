@@ -10,8 +10,8 @@ import cn.w.im.core.plugins.Plugin;
 import cn.w.im.utils.netty.IpAddressProvider;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class MessageBusHandler extends ChannelInboundHandlerAdapter {
 
-    private Log logger = LogFactory.getLog(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private AbstractServer currentServer;
 
@@ -40,7 +40,7 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         this.currentServer.clientCacheProvider().registerClient(ctx);
-        logger.debug("channel active.");
+        logger.debug("client linked in");
         super.channelActive(ctx);
     }
 

@@ -9,12 +9,11 @@ import cn.w.im.domains.messages.client.ConnectResponseMessage;
 import cn.w.im.domains.messages.client.NormalMessage;
 import cn.w.im.domains.messages.server.ConnectedResponseMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
-import cn.w.im.exceptions.NotSupportedServerTypeException;
 import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.core.plugins.MessagePlugin;
 import cn.w.im.core.server.MessageServer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -25,14 +24,14 @@ import java.util.List;
  */
 public class ConnectedResponsePlugin extends MessagePlugin<ConnectedResponseMessage> {
 
-    private final Log logger;
+    private final Logger logger;
 
     /**
      * 构造函数.
      */
     public ConnectedResponsePlugin() {
         super("ConnectedResponsePlugin", "response connect message.");
-        logger = LogFactory.getLog(this.getClass());
+        logger = LoggerFactory.getLogger(this.getClass());
     }
 
     @Override

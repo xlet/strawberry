@@ -30,11 +30,10 @@ public class MessageServer extends AbstractServer {
     /**
      * 构造函数.
      *
-     * @param host host.
      * @param port port.
      */
-    public MessageServer(String host, int port) {
-        super(ServerType.MessageServer, host, port);
+    public MessageServer(int port) {
+        super(ServerType.MessageServer, port);
         this.tokens = new ConcurrentHashMap<String, ConnectToken>();
         this.linkmanProvider = new DefaultLinkmanProviderImpl();
         this.statusProvider = new DefaultStatusProvider();

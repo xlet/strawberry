@@ -17,11 +17,10 @@ public class LoginServer extends AbstractServer {
     /**
      * 构造函数.
      *
-     * @param host host.
      * @param port port.
      */
-    public LoginServer(String host, int port) {
-        super(ServerType.LoginServer, host, port);
+    public LoginServer(int port) {
+        super(ServerType.LoginServer, port);
         this.messageServerAllocateProvider = new DefaultMessageServerAllocateProvider();
     }
 

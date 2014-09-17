@@ -1,7 +1,7 @@
 package cn.w.im.utils.spring;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -14,7 +14,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class SpringContext implements ApplicationContextAware {
 
-    private final static Log LOG = LogFactory.getLog(SpringContext.class);
+    private final static Logger LOG = LoggerFactory.getLogger(SpringContext.class);
 
     private static ApplicationContext appCtx;
 

@@ -12,6 +12,7 @@
     <packaging>pom</packaging>
 
     <artifactId>im-services</artifactId>
+    <name>Im/Services</name>
 
     <modules>
         <module>forwardServer</module>

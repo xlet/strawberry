@@ -9,8 +9,8 @@ import cn.w.im.core.plugins.Plugin;
 import cn.w.im.core.server.MessageServer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class MessageServerHandler extends ChannelInboundHandlerAdapter {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private AbstractServer currentServer;
 

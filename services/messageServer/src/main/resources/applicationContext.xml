@@ -32,11 +32,6 @@
         <property name="toEnsureCaps" value="true"/>
     </bean>
 
-    <!-- 插件初始化配置 -->
-    <bean id="loginServerPluginInitializer" class="cn.w.im.plugins.init.LoginServerPluginInitializer"/>
-    <bean id="messageBusPluginInitializer" class="cn.w.im.plugins.init.MessageBusPluginInitializer"/>
-    <bean id="messageServerPluginInitializer" class="cn.w.im.plugins.init.MessageServerPluginInitializer"/>
-
     <!-- http client -->
     <bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig" factory-method="custom">
         <property name="socketTimeout" value="20000"/>
