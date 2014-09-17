@@ -4,7 +4,6 @@ import com.mongodb.Mongo;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
-import org.springframework.stereotype.Component;
 
 /**
  * Creator: JackieHan.
