@@ -128,15 +128,29 @@ public enum MessageType {
      */
     WebNormalResponse(0x1A),
 
-    /**heartbeat request*/
+    /**
+     * heartbeat request.
+     */
     Heartbeat(0x1B),
 
-    /**response for heartbeat request*/
+    /**
+     * response for heartbeat request.
+     */
     HeartbeatResponse(0x1C),
 
     GetProfileRequest(0x1D),
 
-    GetProfileResponse(0x1E);
+    GetProfileResponse(0x1E),
+
+    /**
+     * nearlyLinkman message.
+     */
+    NearlyLinkman(0x1F),
+
+    /**
+     * offline message.
+     */
+    Offline(0x20);
 
     /**
      * 构造函数.

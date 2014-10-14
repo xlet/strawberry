@@ -76,7 +76,7 @@ public class MongoNormalMessageDao extends BasicDAO<MongoNormalMessage, ObjectId
         Query query = this.getDatastore().createQuery(MongoNormalMessage.class).filter("to =", memberId).filter("forward =", false);
         UpdateOperations<MongoNormalMessage> updateForward = this.getDatastore()
                 .createUpdateOperations(MongoNormalMessage.class).set("forward", true);
-        UpdateResults<MongoNormalMessage> updateResults = this.update(query, updateForward);
+        UpdateResults updateResults = this.update(query, updateForward);
         return updateResults.getUpdatedCount();
     }
 
@@ -86,7 +86,7 @@ public class MongoNormalMessageDao extends BasicDAO<MongoNormalMessage, ObjectId
                 .filter("to =", to).filter("forward =", false).filter("from =", from);
         UpdateOperations<MongoNormalMessage> updateForward = this.getDatastore()
                 .createUpdateOperations(MongoNormalMessage.class).set("forward", true);
-        UpdateResults<MongoNormalMessage> updateResults = this.update(query, updateForward);
+        UpdateResults updateResults = this.update(query, updateForward);
         return updateResults.getUpdatedCount();
     }
 }

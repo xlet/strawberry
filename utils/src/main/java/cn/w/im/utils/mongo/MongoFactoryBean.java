@@ -14,7 +14,7 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  * DateTime: 14-1-2 下午2:09.
  * Summary: MongoFactory.
  */
-public class MongoFactoryBean extends AbstractFactoryBean<Mongo> {
+public class MongoFactoryBean extends AbstractFactoryBean<MongoClient> {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
@@ -58,9 +58,9 @@ public class MongoFactoryBean extends AbstractFactoryBean<Mongo> {
     }
 
     @Override
-    protected Mongo createInstance() throws Exception {
+    protected MongoClient createInstance() throws Exception {
         logger.debug("the url is :" + this.url);
-        Mongo mongo = new MongoClient(new MongoClientURI(url));
+        MongoClient mongo = new MongoClient(new MongoClientURI(url));
 
         if (readSecondary) {
             mongo.setReadPreference(ReadPreference.secondaryPreferred());

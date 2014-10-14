@@ -59,23 +59,20 @@
                 <executions>
                     <execution>
                         <id>copy-configuration</id>
-                        <phase>process-resources</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
                         <configuration>
                             <tasks>
                                 <echo>Ant Task - copying files.....</echo>
-                                <copy file="${project.basedir}/../../config/messageBus.conf"
-                                      tofile="${project.build.directory}/conf/server.conf"></copy>
-                                <copy todir="${project.build.directory}/conf" overwrite="true">
-                                    <fileset dir="${project.basedir}/../../config/wrapper/messageBus/conf"/>
-                                </copy>
-                                <copy todir="${project.build.directory}/bin" overwrite="true">
-                                    <fileset dir="${project.basedir}/../../config/wrapper/messageBus/bin"/>
-                                </copy>
-                                <copy todir="${project.build.directory}/lib" overwrite="true">
-                                    <fileset dir="${project.basedir}/../../config/wrapper/lib"/>
+                                <echo>copy to bin</echo>
+                                <echo>copy jar to bin</echo>
+                                <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
+                                        tofile="${project.basedir}/../../bin/bus/bootstrap.jar"></copy>
+                                <echo>copy dependence to bin</echo>
+                                <copy todir="${project.basedir}/../../bin/bus/lib/" overwrite="true">
+                                    <fileset dir="${project.build.directory}/lib/" />
                                 </copy>
                             </tasks>
                         </configuration>

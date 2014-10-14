@@ -15,10 +15,10 @@
     <name>Im/Services</name>
 
     <modules>
-        <module>forwardServer</module>
         <module>loginServer</module>
         <module>messageBus</module>
         <module>messageServer</module>
+        <module>forwardServer</module>
         <module>testClient</module>
         <module>web</module>
     </modules>

@@ -16,10 +16,6 @@ public class ConnectResponseMessage extends ResponseMessage implements ServerToC
 
     private Member self;
 
-    private List<Member> nearlyLinkmen = new ArrayList<Member>();
-
-    private List<NormalMessage> offlineMessages = new ArrayList<NormalMessage>();
-
     /**
      * 构造函数.
      */
@@ -30,14 +26,11 @@ public class ConnectResponseMessage extends ResponseMessage implements ServerToC
     /**
      * constructor.
      *
-     * @param self                login member self info.
-     * @param nearlyLinkmen       nearly linkman list.
-     * @param notReceivedMessages not received message.
+     * @param self login member self info.
      */
-    public ConnectResponseMessage(Member self, List<Member> nearlyLinkmen, List<NormalMessage> notReceivedMessages) {
+    public ConnectResponseMessage(Member self) {
         this();
-        this.nearlyLinkmen = nearlyLinkmen;
-        this.offlineMessages = notReceivedMessages;
+        this.self = self;
     }
 
     /**
@@ -50,41 +43,6 @@ public class ConnectResponseMessage extends ResponseMessage implements ServerToC
         super(MessageType.ConnectResponse, errorCode, errorMessage);
     }
 
-    /**
-     * get nearly linkmen.
-     *
-     * @return nearly linkmen.
-     */
-    public List<Member> getNearlyLinkmen() {
-        return nearlyLinkmen;
-    }
-
-    /**
-     * set nearly linkmen.
-     *
-     * @param nearlyLinkmen nearly linkman list.
-     */
-    public void setNearlyLinkmen(List<Member> nearlyLinkmen) {
-        this.nearlyLinkmen = nearlyLinkmen;
-    }
-
-    /**
-     * get not received message list.
-     *
-     * @return not received message list.
-     */
-    public List<NormalMessage> getOfflineMessages() {
-        return offlineMessages;
-    }
-
-    /**
-     * set not received message list.
-     *
-     * @param offlineMessages not received message.
-     */
-    public void setOfflineMessages(List<NormalMessage> offlineMessages) {
-        this.offlineMessages = offlineMessages;
-    }
 
     public Member getSelf() {
         return self;

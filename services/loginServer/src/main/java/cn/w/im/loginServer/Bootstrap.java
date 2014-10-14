@@ -55,8 +55,8 @@ public class Bootstrap {
         }
     }
 
-    private final EventLoopGroup bossGroup = new NioEventLoopGroup();
-    private final EventLoopGroup workerGroup = new NioEventLoopGroup();
+    private EventLoopGroup bossGroup;
+    private EventLoopGroup workerGroup;
     private Configuration configuration;
     private LoginServer loginServer;
 
@@ -68,6 +68,9 @@ public class Bootstrap {
 
     private void startServer() throws Exception {
         logger.debug("core starting.");
+
+        bossGroup = new NioEventLoopGroup();
+        workerGroup = new NioEventLoopGroup();
 
         int serverPort = this.loginServer.getPort();
 

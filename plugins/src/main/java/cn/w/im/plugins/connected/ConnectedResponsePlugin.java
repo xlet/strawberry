@@ -6,7 +6,9 @@ import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.basic.Member;
 import cn.w.im.domains.messages.client.ConnectResponseMessage;
+import cn.w.im.domains.messages.client.NearlyLinkmanMessage;
 import cn.w.im.domains.messages.client.NormalMessage;
+import cn.w.im.domains.messages.client.OfflineMessage;
 import cn.w.im.domains.messages.server.ConnectedResponseMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.ServerInnerException;
@@ -57,18 +59,23 @@ public class ConnectedResponsePlugin extends MessagePlugin<ConnectedResponseMess
                 currentServer.respondProvider().receivedRespondedMessage(message);
                 if (currentServer.respondProvider().allResponded(message.getRespondKey())) {
                     currentServer.connected(message.getToken());
-                    //获取最近联系人列表
-                    List<Member> recentChatWith = currentServer.linkmanProvider().getNearlyLinkmen(connectToken.getLoginId());
-                    //联系人状态
-                    currentServer.statusProvider().render(recentChatWith);
-                    ConnectResponseMessage responseMessage = new ConnectResponseMessage();
-                    responseMessage.setNearlyLinkmen(recentChatWith);
-                    //当前用户信息
-                    responseMessage.setSelf(currentServer.linkmanProvider().getMember(connectToken.getLoginId()));
-                    //离线消息列表
-                    List<NormalMessage> offlineMessages = currentServer.messageProvider().getOfflineMessages(connectToken.getLoginId());
-                    responseMessage.setOfflineMessages(offlineMessages);
+
+                    //send connectResponse Message to client,client connected success.
+                    Member self = currentServer.linkmanProvider().getMember(connectToken.getLoginId());
+                    ConnectResponseMessage responseMessage = new ConnectResponseMessage(self);
                     currentServer.messageProvider().send(connectToken.getLoginId(), responseMessage);
+
+                    //send nearlyLinkman message to client.
+                    List<Member> nearlyLinkmen = currentServer.linkmanProvider().getNearlyLinkmen(connectToken.getLoginId());
+                    currentServer.statusProvider().render(nearlyLinkmen);
+                    NearlyLinkmanMessage nearlyLinkmanMessage = new NearlyLinkmanMessage(nearlyLinkmen);
+                    currentServer.messageProvider().send(connectToken.getLoginId(), nearlyLinkmanMessage);
+
+                    //send offline message to client.
+                    List<NormalMessage> offlineMessages = currentServer.messageProvider().getOfflineMessages(connectToken.getLoginId());
+                    OfflineMessage offlineMessage = new OfflineMessage(offlineMessages);
+                    currentServer.messageProvider().send(connectToken.getLoginId(), offlineMessage);
+
                     //将离线消息状态标记为已送达
                     currentServer.messageProvider().setMessageForwarded(connectToken.getLoginId());
                 }

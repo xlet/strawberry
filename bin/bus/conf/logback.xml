@@ -22,7 +22,7 @@
 
     <logger name="org.springframework" level="INFO"/>
 
-	<root level="WARN">
+	<root level="DEBUG">
 		<appender-ref ref="rollingFile" />
         <appender-ref ref="console" />
 	</root>

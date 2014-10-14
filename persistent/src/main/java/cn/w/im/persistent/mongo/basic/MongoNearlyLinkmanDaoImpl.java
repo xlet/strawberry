@@ -65,7 +65,7 @@ public class MongoNearlyLinkmanDaoImpl extends BasicDAO<MongoNearlyLinkman, Obje
     public int updateLinkTime(NearlyLinkman nearlyLinkman) {
         Query<MongoNearlyLinkman> query = this.getDatastore().createQuery(MongoNearlyLinkman.class);
         UpdateOperations<MongoNearlyLinkman> updateOperations = this.getDatastore().createUpdateOperations(MongoNearlyLinkman.class).set("lastLinkTime", System.currentTimeMillis());
-        UpdateResults<MongoNearlyLinkman> updateResults = null;
+        UpdateResults updateResults = null;
         if (nearlyLinkman instanceof MongoNearlyLinkman) {
             query.field("_id").equal(((MongoNearlyLinkman) nearlyLinkman).getId());
             updateResults = this.update(query, updateOperations);

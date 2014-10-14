@@ -1,6 +1,7 @@
 package cn.w.im.utils.mongo;
 
 import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
@@ -18,9 +19,9 @@ public class DatastoreFactoryBean extends AbstractFactoryBean<Datastore> {
     private Morphia morphia;
 
     /**
-     * mongo实例.
+     * mongo client实例.
      */
-    private Mongo mongo;
+    private MongoClient mongoClient;
 
     /**
      * 数据库名称.
@@ -49,10 +50,10 @@ public class DatastoreFactoryBean extends AbstractFactoryBean<Datastore> {
     /**
      * 设置mongo实例.
      *
-     * @param mongo mongo实例.
+     * @param mongoClient mongo实例.
      */
-    public void setMongo(Mongo mongo) {
-        this.mongo = mongo;
+    public void setMongoClient(MongoClient mongoClient) {
+        this.mongoClient = mongoClient;
     }
 
     /**
@@ -89,7 +90,7 @@ public class DatastoreFactoryBean extends AbstractFactoryBean<Datastore> {
 
     @Override
     protected Datastore createInstance() throws Exception {
-        Datastore datastore = morphia.createDatastore(mongo, dbName);
+        Datastore datastore = morphia.createDatastore(mongoClient, dbName);
 
         if (toEnsureIndexes) {
             datastore.ensureIndexes();
@@ -105,7 +106,7 @@ public class DatastoreFactoryBean extends AbstractFactoryBean<Datastore> {
     @Override
     public void afterPropertiesSet() throws Exception {
         super.afterPropertiesSet();
-        if (mongo == null) {
+        if (mongoClient == null) {
             throw new IllegalStateException("mongo is not set");
         }
         if (morphia == null) {

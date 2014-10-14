@@ -19,7 +19,7 @@
     </bean>
     <bean id="dataStore" class="cn.w.im.utils.mongo.DatastoreFactoryBean">
         <property name="morphia" ref="morphia" />
-        <property name="mongo" ref="mongo" />
+        <property name="mongoClient" ref="mongo" />
         <property name="dbName" value="im" />
         <property name="toEnsureIndexes" value="true" />
         <property name="toEnsureCaps" value="true" />

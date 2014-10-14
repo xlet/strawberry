@@ -23,8 +23,8 @@
 #             script's ability to control the application.
 
 # Application
-APP_NAME="messagebus"
-APP_LONG_NAME="Im Message Bus Server"
+APP_NAME="loginServer"
+APP_LONG_NAME="Im Login Server"
 
 # Wrapper
 WRAPPER_CMD="./wrapper"
