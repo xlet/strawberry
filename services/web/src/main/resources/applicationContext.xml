@@ -38,7 +38,7 @@
         <property name="httpClient" ref="httpClient"/>
     </bean>
 
-    <bean id="members" class="cn.w.im.utils.sdk.usercenter.MemberService">
+    <bean id="members" class="cn.w.im.utils.sdk.usercenter.WcnMemberServiceImpl">
         <property name="config" ref="ucConfig"/>
     </bean>
 </beans>

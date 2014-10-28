@@ -1,6 +1,7 @@
 package cn.w.im.plugins.persistentMessage;
 
 import cn.w.im.core.plugins.PluginContext;
+import cn.w.im.domains.NonePersistentMessage;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.persistent.MessageDao;
@@ -30,6 +31,9 @@ public class MessagePersistentPlugin<TMessage extends Message> extends MessagePl
 
     @Override
     public boolean isMatch(PluginContext context) {
+        if (context.getMessage() instanceof NonePersistentMessage) {
+            return false;
+        }
         return true;
     }
 

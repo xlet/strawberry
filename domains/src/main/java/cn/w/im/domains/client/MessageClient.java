@@ -1,5 +1,6 @@
 package cn.w.im.domains.client;
 
+import cn.w.im.domains.messages.client.ProductType;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
@@ -9,17 +10,19 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class MessageClient extends Client {
 
-    private String loginId;
+    private ProductType productType;
+
+    private String memberId;
 
     private MessageClientType messageClientType;
 
     /**
-     * get login id.
+     * get member id.
      *
-     * @return login id.
+     * @return member id.
      */
-    public String getLoginId() {
-        return this.loginId;
+    public String getMemberId() {
+        return this.memberId;
     }
 
     /**
@@ -32,23 +35,36 @@ public class MessageClient extends Client {
     }
 
     /**
+     * get product type.
+     *
+     * @return product type.
+     */
+    public ProductType getProductType() {
+        return this.productType;
+    }
+
+    /**
      * constructor.
      *
+     * @param context           current channel context.
      * @param messageClientType client type.
-     * @param loginId    login id.
+     * @param productType       product type.
+     * @param memberId          member id.
      */
-    public MessageClient(ChannelHandlerContext context, MessageClientType messageClientType, String loginId) {
+    public MessageClient(ChannelHandlerContext context, ProductType productType,
+                         MessageClientType messageClientType, String memberId) {
         super(context);
+        this.productType = productType;
         this.messageClientType = messageClientType;
-        this.loginId = loginId;
+        this.memberId = memberId;
     }
 
     @Override
     public String toString() {
         return "MessageClient{" +
-                "loginId='" + loginId + '\'' +
+                "memberId='" + memberId + '\'' +
                 ", messageClientType=" + messageClientType +
-                ", key="+super.toString()+
+                ", key=" + super.toString() +
                 '}';
     }
 }

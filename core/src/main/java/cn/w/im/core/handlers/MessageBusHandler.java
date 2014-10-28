@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class MessageBusHandler extends ChannelInboundHandlerAdapter {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageBusHandler.class);
 
     private AbstractServer currentServer;
 
@@ -40,7 +40,7 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         this.currentServer.clientCacheProvider().registerClient(ctx);
-        logger.debug("client linked in");
+        LOGGER.debug("client linked in");
         super.channelActive(ctx);
     }
 
@@ -50,6 +50,9 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
 
         PluginContext context = new PluginContext(message, ctx, currentServer);
         List<Plugin> plugins = pluginProvider.getMatchedPlugins(context);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("matched {} plugins", plugins.size());
+        }
         for (Plugin plugin : plugins) {
             plugin.process(context);
         }
@@ -60,7 +63,7 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
         String remoteIp = IpAddressProvider.getRemoteIpAddress(ctx);
         int remotePort = IpAddressProvider.getRemotePort(ctx);
         //TODO:jackie 处理退出, tell all server.
-        logger.debug("client[" + remoteIp + ":" + remotePort + "] disconnected!");
+        LOGGER.debug("client[" + remoteIp + ":" + remotePort + "] disconnected!");
         this.currentServer.clientCacheProvider().removeClient(ctx);
         super.channelInactive(ctx);
     }
@@ -70,6 +73,6 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
         String remoteIp = IpAddressProvider.getRemoteIpAddress(ctx);
         int remotePort = IpAddressProvider.getRemotePort(ctx);
         //TODO: 容错处理
-        logger.error("client[" + remoteIp + ":" + remotePort + "] crashed!", cause);
+        LOGGER.error("client[" + remoteIp + ":" + remotePort + "] crashed!", cause);
     }
 }

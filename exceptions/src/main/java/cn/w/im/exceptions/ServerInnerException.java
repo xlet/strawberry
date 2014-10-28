@@ -22,6 +22,17 @@ public abstract class ServerInnerException extends Exception {
     }
 
     /**
+     * constructor.
+     *
+     * @param errorMessage error message.
+     * @param throwable    inner exception.
+     */
+    public ServerInnerException(String errorMessage, Throwable throwable) {
+        super(errorMessage, throwable);
+        this.errorCode = ErrorCodeDefine.SERVERINNERERROR;
+    }
+
+    /**
      * get error code.
      *
      * @return error code.

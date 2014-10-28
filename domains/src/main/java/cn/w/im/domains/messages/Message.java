@@ -1,7 +1,6 @@
 package cn.w.im.domains.messages;
 
 import cn.w.im.domains.MessageType;
-import cn.w.im.domains.basic.NearlyLinkman;
 import cn.w.im.domains.messages.client.*;
 import cn.w.im.domains.messages.forward.ForwardReadyMessage;
 import cn.w.im.domains.messages.forward.ForwardRequestMessage;
@@ -27,8 +26,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = LogoutMessage.class, name = "Logout"),
         @JsonSubTypes.Type(value = LogoutResponseMessage.class, name = "LogoutResponse"),
         @JsonSubTypes.Type(value = NormalMessage.class, name = "Normal"),
-        @JsonSubTypes.Type(value = NearlyLinkman.class, name = "NearlyLinkman"),
-        @JsonSubTypes.Type(value = OfflineMessage.class, name = "OfflineMessage"),
+        @JsonSubTypes.Type(value = FriendGroupMessage.class, name = "FriendGroup"),
+        @JsonSubTypes.Type(value = RecentContactsMessage.class, name = "RecentContacts"),
+        @JsonSubTypes.Type(value = OfflineMessage.class, name = "Offline"),
         //forward
         @JsonSubTypes.Type(value = ForwardReadyMessage.class, name = "ForwardReady"),
         @JsonSubTypes.Type(value = ForwardRequestMessage.class, name = "ForwardRequest"),
@@ -47,9 +47,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         //heartbeat
         @JsonSubTypes.Type(value = Heartbeat.class, name = "Heartbeat"),
         @JsonSubTypes.Type(value = HeartbeatResponse.class, name = "HeartbeatResponse"),
-        //profile
-        @JsonSubTypes.Type(value = GetProfileRequestMessage.class, name = "GetProfileRequest"),
-        @JsonSubTypes.Type(value = GetProfileResponseMessage.class, name = "GetProfileResponse")
 })
 public abstract class Message {
     /**

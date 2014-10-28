@@ -29,14 +29,13 @@ import java.util.List;
  */
 public class ServerRegisterPlugin extends MessagePlugin<ServerRegisterMessage> {
 
-    private Logger logger;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerRegisterPlugin.class);
 
     /**
      * 构造函数.
      */
     public ServerRegisterPlugin() {
         super("serverRegisterPlugin", "core register to message bus core.");
-        logger = LoggerFactory.getLogger(this.getClass());
     }
 
     @Override
@@ -75,7 +74,7 @@ public class ServerRegisterPlugin extends MessagePlugin<ServerRegisterMessage> {
             ServerRegisterResponseMessage responseMessage = new ServerRegisterResponseMessage(startedServers, currentServer.getServerBasic());
             currentServer.messageProvider().send(registerServer, responseMessage);
         } catch (ServerInnerException ex) {
-            logger.error(ex.getMessage(), ex);
+            LOGGER.error(ex.getMessage(), ex);
         }
     }
 }

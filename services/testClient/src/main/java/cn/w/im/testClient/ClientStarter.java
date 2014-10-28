@@ -1,23 +1,10 @@
 package cn.w.im.testClient;
 
-import cn.w.im.domains.ConnectToken;
-import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClientType;
-import cn.w.im.domains.messages.client.LoginResponseMessage;
-import cn.w.im.core.handlers.JsonMessageDecoder;
-import cn.w.im.core.handlers.JsonMessageEncoder;
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-import io.netty.util.CharsetUtil;
+import cn.w.im.domains.messages.client.ProductType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Scanner;
 
@@ -30,6 +17,18 @@ public class ClientStarter {
 
     private final static MessageClientType MESSAGE_CLIENT_TYPE = MessageClientType.WinForm;
 
+    private final static ProductType PRODUCT_TYPE = ProductType.OA;
+
+    private static Thread mainThread;
+
+    private static Thread loginThread;
+
+    private static Thread messageThread;
+
+    private static final ClientStarter clientStarter = new ClientStarter();
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientStarter.class);
+
     /**
      * 启动主函数.
      *
@@ -37,107 +36,57 @@ public class ClientStarter {
      * @throws Exception 异常.
      */
     public static void main(String[] args) throws Exception {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                input();
-            }
-        }).start();
+        mainThread = Thread.currentThread();
+        clientStarter.inputIdPassword();
+        while (true) {
+            mainThread.wait(200);
+        }
     }
 
-
-    private static void input() {
+    private void inputIdPassword() {
         try {
             Scanner sc = new Scanner(System.in);
             System.out.println("请输入用户名:");
             String id = sc.nextLine();
-            String password = new InputMasking().getPassword("请输入密码:");
-            new ClientStarter().login(id, password);
+            System.out.println("请输入密码:");
+            String password = sc.nextLine();
+            StartLoginThread(id, password);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-
-    EventLoopGroup loginGroup = new NioEventLoopGroup();
-
-    private void login(final String id, final String password) {
-
-        try {
-            final LoginHandler handler = new LoginHandler(MESSAGE_CLIENT_TYPE, id, password);
-            handler.addListener(loginListener);
-
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(loginGroup)
-                    .channel(NioSocketChannel.class)
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(
-                                    new LengthFieldPrepender(4),
-                                    new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4),
-                                    new StringEncoder(CharsetUtil.UTF_8),
-                                    new StringDecoder(CharsetUtil.UTF_8),
-                                    new JsonMessageEncoder(),
-                                    new JsonMessageDecoder(),
-                                    handler
-                            );
-                        }
-                    });
-            bootstrap.connect("10.0.41.102", 17041).sync().channel().closeFuture().sync();
-        } catch (Exception ex) {
-            loginGroup.shutdownGracefully();
-            ex.printStackTrace();
-        }
+    public void loginError() {
+        LOGGER.info("登陆失败!,重新登陆:");
+        inputIdPassword();
     }
 
-    private HandlerListener loginListener = new HandlerListener() {
-        @Override
-        public void operationComplete(PluginContext context) {
-            if (context.getMessage() instanceof LoginResponseMessage) {
-                LoginResponseMessage loginResponseMessage = (LoginResponseMessage) context.getMessage();
-                loginGroup.shutdownGracefully();
-                if (loginResponseMessage.isSuccess()) {
-                    System.out.println("登陆成功!");
-                    ConnectToken connectToken = ((LoginResponseMessage) context.getMessage()).getToken();
-                    connectMessageServer(connectToken);
-                } else {
-                    System.out.print("登录失败！");
-                    input();
-                }
+    public void StartLoginThread(final String id, final String password) {
+        loginThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Login login = new Login(clientStarter, id, password, MESSAGE_CLIENT_TYPE, PRODUCT_TYPE);
+                login.login();
             }
-        }
-    };
+        });
+        loginThread.start();
+    }
 
-    private EventLoopGroup connectGroup = new NioEventLoopGroup();
+    public void StartMessageThread(final String token, final String memberId, final ServerBasic allocatedMessageServer) {
+        messageThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MessageConnector messageConnector = new MessageConnector(clientStarter, token, memberId, MESSAGE_CLIENT_TYPE,
+                        PRODUCT_TYPE, allocatedMessageServer);
+                messageConnector.connect();
+            }
+        });
+        messageThread.start();
+    }
 
-    private void connectMessageServer(ConnectToken connectToken) {
-        final ConnectHandler handler = new ConnectHandler(connectToken, MESSAGE_CLIENT_TYPE);
-        ServerBasic serverBasic = connectToken.getAllocatedMessageServer();
 
-        try {
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(connectGroup)
-                    .channel(NioSocketChannel.class)
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(
-                                    new LengthFieldPrepender(4),
-                                    new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4),
-                                    new StringEncoder(CharsetUtil.UTF_8),
-                                    new StringDecoder(CharsetUtil.UTF_8),
-                                    new JsonMessageEncoder(),
-                                    new JsonMessageDecoder(),
-                                    handler
-                            );
-                        }
-                    });
-            bootstrap.connect(serverBasic.getHost(), serverBasic.getPort()).sync().channel().closeFuture().sync();
-        } catch (Exception ex) {
-            connectGroup.shutdownGracefully();
-            ex.printStackTrace();
-        }
+    public void loginSuccess(String token, String memberId, ServerBasic allocatedMessageServer) {
+        LOGGER.debug("login success.");
+        StartMessageThread(token, memberId, allocatedMessageServer);
     }
 }

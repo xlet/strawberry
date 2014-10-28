@@ -1,11 +1,8 @@
 package cn.w.im.domains.messages.client;
 
 import cn.w.im.domains.MessageType;
-import cn.w.im.domains.basic.Member;
+import cn.w.im.domains.member.BasicMember;
 import cn.w.im.domains.messages.ResponseMessage;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Creator: JackieHan.
@@ -14,7 +11,7 @@ import java.util.List;
  */
 public class ConnectResponseMessage extends ResponseMessage implements ServerToClientMessage {
 
-    private Member self;
+    private BasicMember self;
 
     /**
      * 构造函数.
@@ -28,7 +25,7 @@ public class ConnectResponseMessage extends ResponseMessage implements ServerToC
      *
      * @param self login member self info.
      */
-    public ConnectResponseMessage(Member self) {
+    public ConnectResponseMessage(BasicMember self) {
         this();
         this.self = self;
     }
@@ -44,11 +41,11 @@ public class ConnectResponseMessage extends ResponseMessage implements ServerToC
     }
 
 
-    public Member getSelf() {
+    public BasicMember getSelf() {
         return self;
     }
 
-    public void setSelf(Member self) {
+    public void setSelf(BasicMember self) {
         this.self = self;
     }
 }

@@ -1,6 +1,6 @@
 package cn.w.im.persistent;
 
-import cn.w.im.domains.basic.TempMember;
+import cn.w.im.domains.member.TempMember;
 
 /**
  * temp member dao.
@@ -26,5 +26,5 @@ public interface TempMemberDao {
      * @param memberId member id.
      * @return temp member.
      */
-    TempMember getByName(String memberId);
+    TempMember get(String memberId);
 }

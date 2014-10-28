@@ -4,14 +4,20 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="file:/etc/liuliu/login/forward/server.conf"/>
+    <bean id="propertyConfig" class="cn.w.im.core.config.SystemPropertyPropertyPlaceholderConfigurer">
+        <constructor-arg name="systemProperty">
+            <value>liuliu.server.config</value>
+        </constructor-arg>
+    </bean>
 
-    <bean class="cn.w.im.utils.spring.SpringContext" />
 
-    <bean class="cn.w.im.domains.conf.ForwardConfiguration" >
-        <property name="busHost" value="${bus.host}" />
-        <property name="busPort" value="${bus.port}" />
-        <property name="serverHost" value="${server.host}" />
-        <property name="serverPort" value="${server.port}" />
+    <bean class="cn.w.im.utils.spring.SpringContext"/>
+
+    <bean class="cn.w.im.domains.conf.ForwardConfiguration">
+        <property name="busHost" value="${bus.host}"/>
+        <property name="busPort" value="${bus.listen.port}"/>
+        <property name="serverHost" value="${server.host}"/>
+        <property name="serverPort" value="${server.listen.port}"/>
+        <property name="nettyInnerLoggerEnable" value="${netty.inner.logger.enable}"/>
     </bean>
 </beans>

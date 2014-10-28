@@ -1,9 +1,6 @@
 package cn.w.im.core.providers.status;
 
-import cn.w.im.domains.basic.Member;
-import cn.w.im.domains.basic.Status;
-
-import java.util.List;
+import cn.w.im.domains.Status;
 
 /**
  * member status provider.
@@ -11,12 +8,10 @@ import java.util.List;
 public interface StatusProvider {
 
     /**
-     * render online status to each member
-     *
-     * @param members
+     * get member status.
+     * @param memberId member id.
+     * @return member status.
      */
-    void render(List<Member> members);
-
-    Status status(String loginId);
+    Status status(String memberId);
 
 }

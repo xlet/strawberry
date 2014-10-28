@@ -81,6 +81,7 @@ public class Bootstrap {
 
         ChannelFuture bindFuture;
         bindFuture = serverBootstrap.bind(this.configuration.getBind(), serverPort).sync();
+        logger.debug("listening port:" + this.loginServer.getPort());
         bindFuture.addListener(bindFutureListener);
         bindFuture.channel().closeFuture().sync();
     }

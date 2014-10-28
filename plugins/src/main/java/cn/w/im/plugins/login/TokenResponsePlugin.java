@@ -48,7 +48,7 @@ public class TokenResponsePlugin extends MessagePlugin<TokenResponseMessage> {
         if (message.isSuccess()) {
             ConnectToken token = message.getToken();
             LoginResponseMessage loginResponseMessage = new LoginResponseMessage(token);
-            context.getServer().messageProvider().send(token.getLoginId(), loginResponseMessage);
+            context.getServer().messageProvider().send(token.getMember().getId(), loginResponseMessage);
         } else {
             logger.error("core[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());
         }

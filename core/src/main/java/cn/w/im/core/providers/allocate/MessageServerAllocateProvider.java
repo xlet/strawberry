@@ -4,6 +4,7 @@ import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.client.MessageClientType;
+import cn.w.im.domains.member.BasicMember;
 
 /**
  * Creator: JackieHan.
@@ -26,11 +27,11 @@ public interface MessageServerAllocateProvider {
      * <p/>
      * if message client allocated return this allocation.
      *
-     * @param loginId   login id.
-     * @param loginHost login host.
+     * @param member   member id.
+     * @param clientHost client host.
      * @return ConnectToken.
      */
-    ConnectToken allocate(String loginId, String loginHost);
+    ConnectToken allocate(BasicMember member, String clientHost);
 
     /**
      * sync other login server allocation.
@@ -51,19 +52,27 @@ public interface MessageServerAllocateProvider {
     /**
      * message client disconnected message server.
      *
-     * @param loginId       login id.
-     * @param loginHost     login host.
+     * @param memberId      member id.
+     * @param clientHost    client host.
      * @param messageServer the disconnected message server.
      */
-    void disconnected(String loginId, String loginHost, ServerBasic messageServer);
+    void disconnected(String memberId, String clientHost, ServerBasic messageServer);
 
     /**
      * check if the client was connected
      *
-     * @param clientType
-     * @param loginId
-     * @param host
-     * @return
+     * @param memberId   member id.
+     * @param clientHost client host.
+     * @return true:connected.
      */
-    boolean isConnected(MessageClientType clientType, String loginId, String host);
+    boolean isConnected(String memberId, String clientHost);
+
+    /**
+     * check if client was allocated.
+     *
+     * @param memberId   member id.
+     * @param clientHost client host.
+     * @return true:allocated.
+     */
+    boolean isAllocated(String memberId, String clientHost);
 }

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -17,7 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MessageServerAllocation {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageServerAllocation.class);
 
     private ServerBasic messageServer;
 
@@ -28,12 +29,12 @@ public class MessageServerAllocation {
     /**
      * token.
      */
-    private ConcurrentHashMap<String, ConnectToken> tokenConnectingTokenMap;
+    private Map<String, ConnectToken> tokenConnectingTokenMap;
 
     /**
-     * key loginId
+     * key memberId
      */
-    private ConcurrentHashMap<String, List<ConnectToken>> loginIdConnectingTokenMap;
+    private Map<String, List<ConnectToken>> loginIdConnectingTokenMap;
 
 
     /**
@@ -97,9 +98,9 @@ public class MessageServerAllocation {
         if (!loginIdConnectingTokenMap.containsKey(token.getClientHost())) {
             List<ConnectToken> loginIdTokens = new CopyOnWriteArrayList<ConnectToken>();
             loginIdTokens.add(token);
-            loginIdConnectingTokenMap.put(token.getLoginId(), loginIdTokens);
+            loginIdConnectingTokenMap.put(token.getMember().getId(), loginIdTokens);
         } else {
-            List<ConnectToken> loginIdTokens = this.loginIdConnectingTokenMap.get(token.getLoginId());
+            List<ConnectToken> loginIdTokens = this.loginIdConnectingTokenMap.get(token.getMember().getId());
             loginIdTokens.add(token);
         }
     }
@@ -111,14 +112,13 @@ public class MessageServerAllocation {
      * @param token connected token.
      */
     public synchronized void connected(String token) {
-        logger.debug("adding to connecting list, token = " + token);
+        LOGGER.debug("adding to connecting list, token = " + token);
         this.linkedClientCount += 1;
         ConnectToken connectToken = this.tokenConnectingTokenMap.get(token);
         this.tokenConnectingTokenMap.remove(token);
 
-        List<ConnectToken> loginIdTokens = this.loginIdConnectingTokenMap.get(connectToken.getLoginId());
+        List<ConnectToken> loginIdTokens = this.loginIdConnectingTokenMap.get(connectToken.getMember().getId());
         loginIdTokens.remove(connectToken);
-
     }
 
     /**
@@ -136,22 +136,25 @@ public class MessageServerAllocation {
      * <p/>
      * if not matched return null.
      *
-     * @param loginId login id.
-     * @param host    message client host.
+     * @param memberId login id.
+     * @param host     message client host.
      * @return created ConnectToken.
      */
-    public ConnectToken getLoginToken(String loginId, String host) {
-        List<ConnectToken> loginIdTokens = this.loginIdConnectingTokenMap.get(loginId);
+    public ConnectToken getLoginToken(String memberId, String host) {
+        List<ConnectToken> loginIdTokens = this.loginIdConnectingTokenMap.get(memberId);
         if (loginIdTokens == null) {
+            LOGGER.debug("get allocate token by memberId:{},host:{},return null", memberId, host);
             return null;
         }
         Iterator<ConnectToken> loginIdTokenIterator = loginIdTokens.iterator();
         while (loginIdTokenIterator.hasNext()) {
             ConnectToken connectToken = loginIdTokenIterator.next();
             if (connectToken.getClientHost().equals(host)) {
+                LOGGER.debug("get allocate token by memberId:{},host:{},return token", memberId, host);
                 return connectToken;
             }
         }
+        LOGGER.debug("get allocate token by memberId:{},host:{},return null", memberId, host);
         return null;
     }
 }

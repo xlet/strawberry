@@ -2,6 +2,7 @@ package cn.w.im.domains.messages.server;
 
 import cn.w.im.domains.MessageType;
 import cn.w.im.domains.ServerBasic;
+import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.messages.RespondMessage;
 import cn.w.im.domains.messages.ResponseMessage;
 
@@ -11,6 +12,8 @@ import cn.w.im.domains.messages.ResponseMessage;
  * Summary: send this message when server received ConnectedMessage.
  */
 public class ConnectedResponseMessage extends ResponseMessage implements RespondMessage, ServerToServerMessage {
+
+    private MessageClientBasic connectedClient;
 
     private String token;
 
@@ -28,12 +31,14 @@ public class ConnectedResponseMessage extends ResponseMessage implements Respond
     /**
      * constructor.
      *
-     * @param token      token string.
-     * @param fromServer from server basic.
-     * @param respondKey must responded message key.
+     * @param connectedClient connected client.
+     * @param token           token string.
+     * @param fromServer      from server basic.
+     * @param respondKey      must responded message key.
      */
-    public ConnectedResponseMessage(String token, ServerBasic fromServer, String respondKey) {
+    public ConnectedResponseMessage(MessageClientBasic connectedClient, String token, ServerBasic fromServer, String respondKey) {
         this();
+        this.connectedClient = connectedClient;
         this.token = token;
         this.fromServer = fromServer;
         this.respondKey = respondKey;
@@ -51,6 +56,24 @@ public class ConnectedResponseMessage extends ResponseMessage implements Respond
         super(MessageType.ConnectedResponse, errorCode, errorMessage);
         this.fromServer = fromServer;
         this.respondKey = respondKey;
+    }
+
+    /**
+     * get connected client.
+     *
+     * @return connected client.
+     */
+    public MessageClientBasic getConnectedClient() {
+        return connectedClient;
+    }
+
+    /**
+     * set connected client.
+     *
+     * @param connectedClient connected client.
+     */
+    public void setConnectedClient(MessageClientBasic connectedClient) {
+        this.connectedClient = connectedClient;
     }
 
     /**

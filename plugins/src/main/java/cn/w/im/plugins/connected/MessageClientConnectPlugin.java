@@ -48,9 +48,10 @@ public class MessageClientConnectPlugin extends MessagePlugin<ConnectMessage> {
         MessageServer currentServer = (MessageServer) context.getServer();
         try {
             //register client, put into variety of maps...
-            currentServer.clientCacheProvider().registerClient(message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
+            currentServer.clientCacheProvider().registerClient(message.getProductType(), message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
             currentServer.connect(message.getToken(), message.getLoginId(), context.getCurrentHost());
-            MessageClientBasic messageClientBasic = new MessageClientBasic(message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
+
+            MessageClientBasic messageClientBasic = new MessageClientBasic(message.getProductType(), message.getClientType(), message.getLoginId(), context.getCurrentHost(), context.getCurrentPort());
             ConnectedMessage connectedMessage = new ConnectedMessage(message.getToken(), messageClientBasic, currentServer.getServerBasic());
 
             currentServer.messageProvider().send(ServerType.MessageServer, connectedMessage);
@@ -60,7 +61,7 @@ public class MessageClientConnectPlugin extends MessagePlugin<ConnectMessage> {
             ConnectResponseMessage errorResponse = new ConnectResponseMessage(ex.getErrorCode(), ex.getMessage());
             currentServer.messageProvider().send(message.getLoginId(), errorResponse);
         } catch (TokenErrorException ex) {
-            logger.info(ex.getMessage(), ex);
+            logger.info(ex.getInnerMessage(), ex);
             ConnectResponseMessage errorResponse = new ConnectResponseMessage(ex.getErrorCode(), ex.getMessage());
             currentServer.messageProvider().send(message.getLoginId(), errorResponse);
         } catch (ServerInnerException ex) {

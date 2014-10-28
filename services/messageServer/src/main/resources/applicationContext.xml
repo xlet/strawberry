@@ -4,7 +4,12 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="file:/etc/im/server/server.conf"/>
+    <bean id="propertyConfig" class="cn.w.im.core.config.SystemPropertyPropertyPlaceholderConfigurer">
+        <constructor-arg name="systemProperty">
+            <value>liuliu.server.config</value>
+        </constructor-arg>
+    </bean>
+
     <import resource="serverConfig.xml"/>
 
     <context:component-scan base-package="cn.w.im" />
@@ -14,7 +19,7 @@
     <bean id="mongo" class="cn.w.im.utils.mongo.MongoFactoryBean">
         <property name="readSecondary" value="false"/>
         <property name="writeConcern" value="SAFE"/>
-        <property name="url" value="${mongo.url}"/>
+        <property name="url" value="${repository.mongo.url}"/>
     </bean>
 
     <bean id="morphia" class="cn.w.im.utils.mongo.MorphiaFactoryBean">
@@ -49,7 +54,17 @@
         <property name="httpClient" ref="httpClient"/>
     </bean>
 
-    <bean id="members" class="cn.w.im.utils.sdk.usercenter.MemberService">
+    <bean id="wcnMemberService" class="cn.w.im.utils.sdk.usercenter.WcnMemberServiceImpl">
         <property name="config" ref="ucConfig"/>
+    </bean>
+
+    <!-- oa api config -->
+    <bean id="oaConfig" class="cn.w.im.utils.sdk.oa.OaConfig">
+        <property name="baseUrl" value="${oa.api.url}"/>
+        <property name="httpClient" ref="httpClient"/>
+    </bean>
+
+    <bean id="oaMemberService" class="cn.w.im.utils.sdk.oa.OaMemberServiceImpl">
+        <property name="config" ref="oaConfig" />
     </bean>
 </beans>

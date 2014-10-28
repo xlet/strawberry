@@ -45,19 +45,22 @@ public class ConnectedPlugin extends MessagePlugin<ConnectedMessage> {
     private void processMessageWithMessageServer(ConnectedMessage message, PluginContext context) {
         try {
             MessageServer currentServer = (MessageServer) context.getServer();
-            currentServer.clientCacheProvider().registerClient(message.getMessageClientBasic(), message.getFromServer());
-            ConnectedResponseMessage connectedResponseMessage = new ConnectedResponseMessage(message.getToken(), currentServer.getServerBasic(), message.getRespondKey());
+            currentServer.clientCacheProvider().registerClient(message.getConnectedClient(), message.getFromServer());
+            ConnectedResponseMessage connectedResponseMessage = new ConnectedResponseMessage(message.getConnectedClient(), message.getToken(),
+                    currentServer.getServerBasic(), message.getRespondKey());
             context.getServer().messageProvider().send(message.getFromServer(), connectedResponseMessage);
         } catch (ServerInnerException ex) {
-            ConnectedResponseMessage errorResponse = new ConnectedResponseMessage(ex.getErrorCode(), ex.getMessage(), context.getServer().getServerBasic(), message.getRespondKey());
+            ConnectedResponseMessage errorResponse = new ConnectedResponseMessage(ex.getErrorCode(), ex.getMessage(),
+                    context.getServer().getServerBasic(), message.getRespondKey());
             context.getServer().messageProvider().send(message.getFromServer(), errorResponse);
         }
     }
 
     private void processMessageWithLoginServer(ConnectedMessage message, PluginContext context) {
         LoginServer currentServer = (LoginServer) context.getServer();
-        currentServer.allocateProvider().connected(message.getToken(), message.getMessageClientBasic(), message.getFromServer());
-        ConnectedResponseMessage connectedResponseMessage = new ConnectedResponseMessage(message.getToken(), currentServer.getServerBasic(), message.getRespondKey());
+        currentServer.allocateProvider().connected(message.getToken(), message.getConnectedClient(), message.getFromServer());
+        ConnectedResponseMessage connectedResponseMessage = new ConnectedResponseMessage(message.getConnectedClient(), message.getToken(),
+                currentServer.getServerBasic(), message.getRespondKey());
         currentServer.messageProvider().send(message.getFromServer(), connectedResponseMessage);
     }
 }

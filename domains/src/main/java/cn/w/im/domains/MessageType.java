@@ -143,14 +143,19 @@ public enum MessageType {
     GetProfileResponse(0x1E),
 
     /**
-     * nearlyLinkman message.
+     * RecentContacts message.
      */
-    NearlyLinkman(0x1F),
+    RecentContacts(0x1F),
 
     /**
      * offline message.
      */
-    Offline(0x20);
+    Offline(0x20),
+
+    /**
+     * friend groups message.
+     */
+    FriendGroup(0x21);
 
     /**
      * 构造函数.

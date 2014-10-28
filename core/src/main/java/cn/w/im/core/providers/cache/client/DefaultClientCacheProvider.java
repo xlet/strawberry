@@ -3,6 +3,7 @@ package cn.w.im.core.providers.cache.client;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
 import cn.w.im.domains.client.*;
+import cn.w.im.domains.messages.client.ProductType;
 import cn.w.im.exceptions.*;
 import cn.w.im.persistent.OnlineMemberStatusDao;
 import cn.w.im.persistent.PersistentRepositoryFactory;
@@ -115,7 +116,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
     }
 
     @Override
-    public void registerClient(MessageClientType messageClientType, String loginId, String linkedHost, int linkedPort) throws MessageClientRegisteredException, ClientNotRegisterException {
+    public void registerClient(ProductType productType, MessageClientType messageClientType, String loginId, String linkedHost, int linkedPort) throws MessageClientRegisteredException, ClientNotRegisterException {
         logger.debug("register message client:" + loginId + "[" + linkedHost + ":" + linkedPort + "]");
         Map<MessageClientType, Client> clientTypeClientMap = null;
         if (this.messageClientOnThisServerMap.containsKey(loginId)) {
@@ -128,7 +129,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
             Map<Integer, Client> portClientMap = this.clientMap.get(linkedHost);
             if (portClientMap.containsKey(linkedPort)) {
                 Client registeredClient = portClientMap.get(linkedPort);
-                registeredClient = new MessageClient(registeredClient.getContext(), messageClientType, loginId);
+                registeredClient = new MessageClient(registeredClient.getContext(), productType, messageClientType, loginId);
                 portClientMap.remove(linkedPort);
                 portClientMap.put(linkedPort, registeredClient);
                 if (clientTypeClientMap != null) {
@@ -148,7 +149,7 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
 
     @Override
     public void registerClient(MessageClientBasic messageClientBasic, ServerBasic serverBasic) throws ServerNotRegisterException, MessageClientRegisteredException {
-        logger.debug("register other core message client:" + messageClientBasic.getLoginId() + "[" + serverBasic.getNodeId() + "]");
+        logger.debug("register other core message client:" + messageClientBasic.getMemberId() + "[" + serverBasic.getNodeId() + "]");
         if (!this.serverClientMap.containsKey(serverBasic.getNodeId())) {
             throw new ServerNotRegisterException(serverBasic.getNodeId());
         }
@@ -158,17 +159,17 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
 
         Map<String, Map<MessageClientType, MessageClientBasic>> loginIdMessageClientMap = this.messageClientOnOtherServerMap.get(serverBasic.getNodeId());
 
-        if (loginIdMessageClientMap.containsKey(messageClientBasic.getLoginId())) {
-            Map<MessageClientType, MessageClientBasic> clientTypeMessageClientBasicMap = loginIdMessageClientMap.get(messageClientBasic.getLoginId());
+        if (loginIdMessageClientMap.containsKey(messageClientBasic.getMemberId())) {
+            Map<MessageClientType, MessageClientBasic> clientTypeMessageClientBasicMap = loginIdMessageClientMap.get(messageClientBasic.getMemberId());
             if (clientTypeMessageClientBasicMap.containsKey(messageClientBasic.getMessageClientType())) {
-                throw new MessageClientRegisteredException(messageClientBasic.getMessageClientType(), messageClientBasic.getLoginId());
+                throw new MessageClientRegisteredException(messageClientBasic.getMessageClientType(), messageClientBasic.getMemberId());
             } else {
                 clientTypeMessageClientBasicMap.put(messageClientBasic.getMessageClientType(), messageClientBasic);
             }
         } else {
             Map<MessageClientType, MessageClientBasic> clientTypeMessageClientBasicMap = new ConcurrentHashMap<MessageClientType, MessageClientBasic>();
             clientTypeMessageClientBasicMap.put(messageClientBasic.getMessageClientType(), messageClientBasic);
-            loginIdMessageClientMap.put(messageClientBasic.getLoginId(), clientTypeMessageClientBasicMap);
+            loginIdMessageClientMap.put(messageClientBasic.getMemberId(), clientTypeMessageClientBasicMap);
         }
     }
 
@@ -344,23 +345,23 @@ public class DefaultClientCacheProvider implements ClientCacheProvider {
         if (removeClient instanceof MessageClient) {
             MessageClient messageClient = (MessageClient) removeClient;
 
-            logger.debug("remove member online status.loginId=" + messageClient.getLoginId());
-            onlineMemberStatusDao.delete(messageClient.getLoginId());
+            logger.debug("remove member online status.loginId=" + messageClient.getMemberId());
+            onlineMemberStatusDao.delete(messageClient.getMemberId());
 
-            if (this.messageClientOnThisServerMap.containsKey(messageClient.getLoginId())) {
-                Map<MessageClientType, Client> clientMap = this.messageClientOnThisServerMap.get(messageClient.getLoginId());
+            if (this.messageClientOnThisServerMap.containsKey(messageClient.getMemberId())) {
+                Map<MessageClientType, Client> clientMap = this.messageClientOnThisServerMap.get(messageClient.getMemberId());
                 if (clientMap.containsKey(messageClient.getMessageClientType())) {
                     clientMap.remove(messageClient.getMessageClientType());
                     logger.debug(messageClient.toString() + " removed!!!!!!!!!");
                 } else {
-                    logger.debug(messageClient.getLoginId() + " : " + messageClient.getMessageClientType() + "not found");
+                    logger.debug(messageClient.getMemberId() + " : " + messageClient.getMessageClientType() + "not found");
                 }
 
                 if (CollectionUtils.isEmpty(clientMap)) {
-                    this.messageClientOnThisServerMap.remove(messageClient.getLoginId());
+                    this.messageClientOnThisServerMap.remove(messageClient.getMemberId());
                 }
             } else {
-                logger.debug(messageClient.getLoginId() + " not found");
+                logger.debug(messageClient.getMemberId() + " not found");
             }
         }
     }

@@ -5,6 +5,7 @@ import cn.w.im.domains.ServerType;
 import cn.w.im.domains.client.Client;
 import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.client.MessageClientType;
+import cn.w.im.domains.messages.client.ProductType;
 import cn.w.im.exceptions.*;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -28,6 +29,7 @@ public interface ClientCacheProvider {
     /**
      * register message client.
      *
+     * @param productType       product type.
      * @param messageClientType message client type.
      * @param loginId           login id.
      * @param linkedHost        linked host.
@@ -35,7 +37,7 @@ public interface ClientCacheProvider {
      * @throws MessageClientRegisteredException message client has registered exception.
      * @throws ClientNotRegisterException       client dit not register exception.
      */
-    void registerClient(MessageClientType messageClientType, String loginId, String linkedHost, int linkedPort) throws MessageClientRegisteredException, ClientNotRegisterException;
+    void registerClient(ProductType productType, MessageClientType messageClientType, String loginId, String linkedHost, int linkedPort) throws MessageClientRegisteredException, ClientNotRegisterException;
 
     /**
      * register server.
@@ -100,7 +102,7 @@ public interface ClientCacheProvider {
      * get matched client.
      *
      * @param messageClientType message client type.
-     * @param loginId login id.
+     * @param loginId           login id.
      * @return Client.
      * @throws ClientNotFoundException client not found exception.
      */
@@ -108,6 +110,7 @@ public interface ClientCacheProvider {
 
     /**
      * get matched client.
+     *
      * @param loginId login id.
      * @return clients.
      */

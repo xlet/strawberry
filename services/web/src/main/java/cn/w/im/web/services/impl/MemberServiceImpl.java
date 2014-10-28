@@ -1,11 +1,11 @@
 package cn.w.im.web.services.impl;
 
-import cn.w.im.domains.basic.OnlineMemberStatus;
-import cn.w.im.domains.basic.Status;
-import cn.w.im.domains.basic.TempMember;
+import cn.w.im.domains.OnlineMemberStatus;
+import cn.w.im.domains.Status;
+import cn.w.im.domains.member.TempMember;
 import cn.w.im.persistent.OnlineMemberStatusDao;
 import cn.w.im.persistent.TempMemberDao;
-import cn.w.im.utils.sdk.usercenter.Members;
+import cn.w.im.utils.sdk.usercenter.WcnMemberService;
 import cn.w.im.utils.sdk.usercenter.UserCenterException;
 import cn.w.im.utils.sdk.usercenter.model.MemberProfile;
 import cn.w.im.web.GlobalConfiguration;
@@ -50,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
     private OnlineMemberStatusDao onlineMemberStatusDao;
 
     @Autowired
-    private Members userCenterMembers;
+    private WcnMemberService userCenterMembers;
 
     @Override
     public boolean existed(String name, String referrer) {
@@ -79,10 +79,10 @@ public class MemberServiceImpl implements MemberService {
         TempMember tempMember = createAndSave(referrer);
         LinkmanViewObject linkmanViewObject = new LinkmanViewObject();
         linkmanViewObject.setName(tempMember.getNickname());
-        linkmanViewObject.setId(tempMember.getName());
+        linkmanViewObject.setId(tempMember.getNickname());
         linkmanViewObject.setStatus(Status.Online.getValue());
 
-        if (!this.cacheExisted(tempMember.getName(), referrer)) {
+        if (!this.cacheExisted(tempMember.getNickname(), referrer)) {
             this.cacheAdd(tempMember, referrer);
         }
         return linkmanViewObject;
@@ -102,7 +102,7 @@ public class MemberServiceImpl implements MemberService {
 
         MemberViewObject memberViewObject = null;
 
-        TempMember tempMember = tempMemberDao.getByName(memberId);
+        TempMember tempMember = tempMemberDao.get(memberId);
         if (tempMember != null) {
             memberViewObject = createByTempMember(tempMember, referrer);
         }
@@ -168,10 +168,10 @@ public class MemberServiceImpl implements MemberService {
         MemberViewObject memberViewObject = new MemberViewObject();
         memberViewObject.setTemp(true);
         memberViewObject.setMerchant(false);
-        memberViewObject.setId(tempMember.getName());
+        memberViewObject.setId(tempMember.getNickname());
         memberViewObject.setNickName(tempMember.getNickname());
         memberViewObject.setThumb(globalConfiguration.getDefaultThumb());
-        memberViewObject.setStatus(this.getStatus(tempMember.getName(), referrer).getValue());
+        memberViewObject.setStatus(this.getStatus(tempMember.getNickname(), referrer).getValue());
         return memberViewObject;
     }
 
@@ -181,8 +181,8 @@ public class MemberServiceImpl implements MemberService {
             tempMember = new MongoTempMember();
         }
         MongoTempMember newTempMember = new MongoTempMember();
-        newTempMember.setName("t" + this.getNextId(tempMember.getName()));
-        newTempMember.setNickname("游客" + getNextId(tempMember.getName()));
+        newTempMember.setNickname("t" + this.getNextId(tempMember.getNickname()));
+        newTempMember.setNickname("游客" + getNextId(tempMember.getNickname()));
         newTempMember.setPersistentDate(System.currentTimeMillis());
         newTempMember.setSource(referrer);
         tempMemberDao.save(newTempMember);

@@ -4,12 +4,13 @@ import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.MessageType;
 import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.ServerType;
-import cn.w.im.domains.basic.Member;
+import cn.w.im.domains.member.BasicMember;
 import cn.w.im.domains.messages.client.ConnectResponseMessage;
-import cn.w.im.domains.messages.client.NearlyLinkmanMessage;
+import cn.w.im.domains.messages.client.FriendGroupMessage;
 import cn.w.im.domains.messages.client.NormalMessage;
 import cn.w.im.domains.messages.client.OfflineMessage;
 import cn.w.im.domains.messages.server.ConnectedResponseMessage;
+import cn.w.im.domains.relation.FriendGroup;
 import cn.w.im.exceptions.ClientNotFoundException;
 import cn.w.im.exceptions.ServerInnerException;
 import cn.w.im.core.plugins.MessagePlugin;
@@ -17,6 +18,7 @@ import cn.w.im.core.server.MessageServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -54,6 +56,7 @@ public class ConnectedResponsePlugin extends MessagePlugin<ConnectedResponseMess
     private void processMessageWithMessageServer(ConnectedResponseMessage message, PluginContext context) {
         MessageServer currentServer = (MessageServer) context.getServer();
         ConnectToken connectToken = currentServer.getToken(message.getToken());
+        String connectMemberId = connectToken.getMember().getId();
         try {
             if (message.isSuccess()) {
                 currentServer.respondProvider().receivedRespondedMessage(message);
@@ -61,23 +64,31 @@ public class ConnectedResponsePlugin extends MessagePlugin<ConnectedResponseMess
                     currentServer.connected(message.getToken());
 
                     //send connectResponse Message to client,client connected success.
-                    Member self = currentServer.linkmanProvider().getMember(connectToken.getLoginId());
+                    BasicMember self = connectToken.getMember();
                     ConnectResponseMessage responseMessage = new ConnectResponseMessage(self);
-                    currentServer.messageProvider().send(connectToken.getLoginId(), responseMessage);
+                    currentServer.messageProvider().send(connectMemberId, responseMessage);
+
+                    //send contracts.
+                    Collection<FriendGroup> friendGroups = currentServer.ContactProvider().getFriendGroup(self);
+                    for (FriendGroup friendGroup : friendGroups) {
+                        FriendGroupMessage friendGroupMessage = new FriendGroupMessage(friendGroup);
+                        currentServer.messageProvider().send(connectMemberId, friendGroupMessage);
+                    }
+
 
                     //send nearlyLinkman message to client.
-                    List<Member> nearlyLinkmen = currentServer.linkmanProvider().getNearlyLinkmen(connectToken.getLoginId());
-                    currentServer.statusProvider().render(nearlyLinkmen);
-                    NearlyLinkmanMessage nearlyLinkmanMessage = new NearlyLinkmanMessage(nearlyLinkmen);
-                    currentServer.messageProvider().send(connectToken.getLoginId(), nearlyLinkmanMessage);
+//                    List<BasicMember> nearlyLinkmen = currentServer.ContactProvider().getRecentContact(self);
+//                    currentServer.statusProvider().render(nearlyLinkmen);
+//                    RecentContactsMessage nearlyLinkmanMessage = new RecentContactsMessage(nearlyLinkmen);
+//                    currentServer.messageProvider().send(connectToken.getOrgCode(), nearlyLinkmanMessage);
 
                     //send offline message to client.
-                    List<NormalMessage> offlineMessages = currentServer.messageProvider().getOfflineMessages(connectToken.getLoginId());
+                    List<NormalMessage> offlineMessages = currentServer.messageProvider().getOfflineMessages(connectMemberId);
                     OfflineMessage offlineMessage = new OfflineMessage(offlineMessages);
-                    currentServer.messageProvider().send(connectToken.getLoginId(), offlineMessage);
+                    currentServer.messageProvider().send(connectMemberId, offlineMessage);
 
                     //将离线消息状态标记为已送达
-                    currentServer.messageProvider().setMessageForwarded(connectToken.getLoginId());
+                    currentServer.messageProvider().setMessageForwarded(connectMemberId);
                 }
             } else {
                 logger.error("core[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());
@@ -86,7 +97,7 @@ public class ConnectedResponsePlugin extends MessagePlugin<ConnectedResponseMess
         } catch (ServerInnerException ex) {
             logger.error(ex.getMessage(), ex);
             ConnectResponseMessage errorResponseMessage = new ConnectResponseMessage(ex.getErrorCode(), ex.getMessage());
-            currentServer.messageProvider().send(connectToken.getLoginId(), errorResponseMessage);
+            currentServer.messageProvider().send(connectMemberId, errorResponseMessage);
         }
     }
 }

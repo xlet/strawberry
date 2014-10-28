@@ -1,5 +1,7 @@
 package cn.w.im.domains;
 
+import cn.w.im.domains.member.BasicMember;
+
 import java.util.Date;
 
 /**
@@ -11,7 +13,7 @@ public class ConnectToken {
 
     private String clientHost;
 
-    private String loginId;
+    private BasicMember member;
 
     private long loginDate;
 
@@ -30,13 +32,13 @@ public class ConnectToken {
      * constructor.
      *
      * @param clientHost            client host.
-     * @param loginId               login id.
+     * @param member                member.
      * @param token                 token.
      * @param allocateMessageServer message server basic.
      */
-    public ConnectToken(String clientHost, String loginId, String token, ServerBasic allocateMessageServer) {
+    public ConnectToken(String clientHost, BasicMember member, String token, ServerBasic allocateMessageServer) {
         this.clientHost = clientHost;
-        this.loginId = loginId;
+        this.member = member;
         this.loginDate = new Date().getTime();
         this.token = token;
         this.allocatedMessageServer = allocateMessageServer;
@@ -56,8 +58,8 @@ public class ConnectToken {
      *
      * @return 登陆id.
      */
-    public String getLoginId() {
-        return loginId;
+    public BasicMember getMember() {
+        return member;
     }
 
     /**

@@ -1,6 +1,6 @@
 package cn.w.im.persistent.mongo.basic;
 
-import cn.w.im.domains.basic.TempMember;
+import cn.w.im.domains.member.TempMember;
 import cn.w.im.domains.mongo.basic.MongoTempMember;
 import cn.w.im.persistent.TempMemberDao;
 import org.bson.types.ObjectId;
@@ -32,7 +32,7 @@ public class MongoTempMemberDao extends BasicDAO<MongoTempMember, ObjectId> impl
         return this.findOne(query);
     }
 
-    public TempMember getByName(String name) {
-        return this.findOne("name", name);
+    public TempMember get(String memberId) {
+        return this.findOne("id", memberId);
     }
 }

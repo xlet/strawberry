@@ -11,6 +11,8 @@ import cn.w.im.domains.messages.Message;
  */
 public class ConnectMessage extends Message implements ClientToServerMessage {
 
+    private ProductType productType;
+
     private MessageClientType clientType;
 
     private String loginId;
@@ -27,15 +29,35 @@ public class ConnectMessage extends Message implements ClientToServerMessage {
     /**
      * constructor.
      *
-     * @param clientType message client type.
-     * @param loginId    login id.
-     * @param token      token String.
+     * @param productType product type.
+     * @param clientType  message client type.
+     * @param loginId     login id.
+     * @param token       token String.
      */
-    public ConnectMessage(MessageClientType clientType, String loginId, String token) {
+    public ConnectMessage(ProductType productType, MessageClientType clientType, String loginId, String token) {
         this();
+        this.productType = productType;
         this.clientType = clientType;
         this.loginId = loginId;
         this.token = token;
+    }
+
+    /**
+     * get product type.
+     *
+     * @return product type.
+     */
+    public ProductType getProductType() {
+        return productType;
+    }
+
+    /**
+     * set product type.
+     *
+     * @param productType product type.
+     */
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
     }
 
     /**

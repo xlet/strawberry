@@ -16,6 +16,8 @@ public class LoginMessage extends Message implements ClientToServerMessage {
 
     private MessageClientType clientType;
 
+    private ProductType productType;
+
     /**
      * 默认构造函数.
      */
@@ -26,13 +28,15 @@ public class LoginMessage extends Message implements ClientToServerMessage {
     /**
      * 构造函数.
      *
-     * @param clientType message client type.
-     * @param loginId    登陆Id.
-     * @param password   密码.
+     * @param clientType  message client type.
+     * @param productType product type.
+     * @param loginId     登陆Id.
+     * @param password    密码.
      */
-    public LoginMessage(MessageClientType clientType, String loginId, String password) {
+    public LoginMessage(MessageClientType clientType, ProductType productType, String loginId, String password) {
         super(MessageType.Login);
         this.clientType = clientType;
+        this.productType = productType;
         this.loginId = loginId;
         this.password = password;
     }
@@ -101,5 +105,21 @@ public class LoginMessage extends Message implements ClientToServerMessage {
      */
     public void setClientType(MessageClientType clientType) {
         this.clientType = clientType;
+    }
+
+    /**
+     * get product type.
+     * @return product type.
+     */
+    public ProductType getProductType() {
+        return productType;
+    }
+
+    /**
+     * set product type.
+     * @param productType product type.
+     */
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
     }
 }

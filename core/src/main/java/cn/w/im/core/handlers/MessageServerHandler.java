@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class MessageServerHandler extends ChannelInboundHandlerAdapter {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageServerHandler.class);
 
     private AbstractServer currentServer;
 
@@ -54,10 +54,14 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
 
         PluginContext context = new PluginContext(message, ctx, this.currentServer);
         List<Plugin> matchedPlugins = pluginProvider.getMatchedPlugins(context);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("matched {} plugins", matchedPlugins.size());
+        }
+
         for (Plugin plugin : matchedPlugins) {
             plugin.process(context);
         }
-        super.channelRead(ctx, msg);
     }
 
     @Override
@@ -73,6 +77,6 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
         String ipAddress = remoteAddress.getHostString();
         int port = remoteAddress.getPort();
         //TODO:jackie 异常处理.
-        logger.error("client[" + ipAddress + ":" + port + "] error !", cause);
+        LOGGER.error("client[" + ipAddress + ":" + port + "] error !", cause);
     }
 }

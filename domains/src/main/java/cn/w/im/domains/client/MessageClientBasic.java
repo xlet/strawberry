@@ -1,5 +1,7 @@
 package cn.w.im.domains.client;
 
+import cn.w.im.domains.messages.client.ProductType;
+
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-17 上午11:02.
@@ -7,11 +9,13 @@ package cn.w.im.domains.client;
  */
 public class MessageClientBasic {
 
-    private String loginId, clientHost;
+    private String memberId, clientHost;
 
     private int clientPort;
 
     private MessageClientType messageClientType;
+
+    private ProductType productType;
 
     /**
      * 构造函数.
@@ -23,16 +27,36 @@ public class MessageClientBasic {
     /**
      * 构造函数.
      *
+     * @param productType       product type.
      * @param messageClientType messageClientType.
-     * @param loginId           登陆id.
+     * @param memberId          登陆id.
      * @param clientHost        客户端host.
      * @param clientPort        客户端端口号.
      */
-    public MessageClientBasic(MessageClientType messageClientType, String loginId, String clientHost, int clientPort) {
+    public MessageClientBasic(ProductType productType, MessageClientType messageClientType, String memberId, String clientHost, int clientPort) {
+        this.productType = productType;
         this.messageClientType = messageClientType;
-        this.loginId = loginId;
+        this.memberId = memberId;
         this.clientHost = clientHost;
         this.clientPort = clientPort;
+    }
+
+    /**
+     * get product type.
+     *
+     * @return product type.
+     */
+    public ProductType getProductType() {
+        return productType;
+    }
+
+    /**
+     * set product type.
+     *
+     * @param productType product type.
+     */
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
     }
 
     /**
@@ -45,21 +69,30 @@ public class MessageClientBasic {
     }
 
     /**
+     * set client type.
+     *
+     * @param messageClientType client type.
+     */
+    public void setMessageClientType(MessageClientType messageClientType) {
+        this.messageClientType = messageClientType;
+    }
+
+    /**
      * 获取登陆id.
      *
      * @return 登陆id.
      */
-    public String getLoginId() {
-        return loginId;
+    public String getMemberId() {
+        return memberId;
     }
 
     /**
      * 设置登陆id.
      *
-     * @param loginId 登陆id.
+     * @param memberId 登陆id.
      */
-    public void setLoginId(String loginId) {
-        this.loginId = loginId;
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
     }
 
     /**

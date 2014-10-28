@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class LoginServerHandler extends ChannelInboundHandlerAdapter {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoginServerHandler.class);
 
     private AbstractServer currentServer;
 
@@ -39,7 +39,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        logger.debug("client linked in");
+        LOGGER.debug("client linked in");
         this.currentServer.clientCacheProvider().registerClient(ctx);
 
         super.channelActive(ctx);
@@ -48,9 +48,13 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;
-        logger.debug("read=" + message.getMessageType());
         PluginContext context = new PluginContext(message, ctx, this.currentServer);
         List<Plugin> plugins = this.pluginProvider.getMatchedPlugins(context);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("matched {} plugins", plugins.size());
+        }
+
         for (Plugin plugin : plugins) {
             plugin.process(context);
         }
@@ -59,7 +63,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //TODO: channel inactive process.
-        logger.debug("client channel inactive,remove cached client info.");
+        LOGGER.debug("client channel inactive,remove cached client info.");
         this.currentServer.clientCacheProvider().removeClient(ctx);
         super.channelInactive(ctx);
     }
@@ -68,7 +72,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         String ip = IpAddressProvider.getRemoteIpAddress(ctx);
         int port = IpAddressProvider.getRemotePort(ctx);
-        logger.error("client[" + ip + ":" + port + "] error !", cause);
+        LOGGER.error("client[" + ip + ":" + port + "] error !", cause);
         //TODO: not cached exception process.
         ctx.close();
 

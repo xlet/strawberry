@@ -1,7 +1,7 @@
 package cn.w.im.core.server;
 
-import cn.w.im.core.providers.linkman.DefaultLinkmanProviderImpl;
-import cn.w.im.core.providers.linkman.LinkmanProvider;
+import cn.w.im.core.providers.relation.ContactProvider;
+import cn.w.im.core.providers.relation.DefaultContactProviderImpl;
 import cn.w.im.core.providers.status.DefaultStatusProvider;
 import cn.w.im.core.providers.status.StatusProvider;
 import cn.w.im.domains.*;
@@ -23,7 +23,7 @@ public class MessageServer extends AbstractServer {
      */
     private Map<String, ConnectToken> tokens;
 
-    private LinkmanProvider linkmanProvider;
+    private ContactProvider linkmanProvider;
 
     private StatusProvider statusProvider;
 
@@ -35,7 +35,7 @@ public class MessageServer extends AbstractServer {
     public MessageServer(int port) {
         super(ServerType.MessageServer, port);
         this.tokens = new ConcurrentHashMap<String, ConnectToken>();
-        this.linkmanProvider = new DefaultLinkmanProviderImpl();
+        this.linkmanProvider = new DefaultContactProviderImpl();
         this.statusProvider = new DefaultStatusProvider();
     }
 
@@ -61,19 +61,19 @@ public class MessageServer extends AbstractServer {
     /**
      * connect.
      *
-     * @param token   message client's token.
-     * @param loginId message client's login id.
-     * @param host    message client's host.
+     * @param token    message client's token.
+     * @param memberId message client's member id.
+     * @param host     message client's host.
      * @throws TokenNotExistedException token is not existed.
      * @throws TokenErrorException      token info is different with cached token.
      */
-    public void connect(String token, String loginId, String host) throws TokenNotExistedException, TokenErrorException {
+    public void connect(String token, String memberId, String host) throws TokenNotExistedException, TokenErrorException {
         if (!this.tokens.containsKey(token)) {
             throw new TokenNotExistedException(token);
         }
         ConnectToken connectToken = this.tokens.get(token);
-        if ((!connectToken.getLoginId().equals(loginId)) || (!connectToken.getClientHost().equals(host))) {
-            throw new TokenErrorException();
+        if ((!connectToken.getMember().getId().equals(memberId)) || (!connectToken.getClientHost().equals(host))) {
+            throw new TokenErrorException(connectToken.getMember().getId(), connectToken.getClientHost(), memberId, host);
         }
     }
 
@@ -92,7 +92,7 @@ public class MessageServer extends AbstractServer {
         return this.statusProvider;
     }
 
-    public LinkmanProvider linkmanProvider() {
+    public ContactProvider ContactProvider() {
         return this.linkmanProvider;
     }
 }

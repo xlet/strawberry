@@ -2,6 +2,7 @@ package cn.w.im.core.providers.message;
 
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
+import cn.w.im.domains.member.BasicMember;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.domains.messages.client.NormalMessage;
 
@@ -22,6 +23,7 @@ public interface MessageProvider {
 
     /**
      * set message which send to given member id forwarded.
+     *
      * @param memberId member id.
      * @return update count.
      */

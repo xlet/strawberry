@@ -1,7 +1,7 @@
 package cn.w.im.persistent.mongo.basic;
 
-import cn.w.im.domains.basic.OnlineMemberStatus;
-import cn.w.im.domains.basic.Status;
+import cn.w.im.domains.OnlineMemberStatus;
+import cn.w.im.domains.Status;
 import cn.w.im.domains.mongo.basic.MongoOnlineMemberStatus;
 import cn.w.im.persistent.OnlineMemberStatusDao;
 import org.bson.types.ObjectId;

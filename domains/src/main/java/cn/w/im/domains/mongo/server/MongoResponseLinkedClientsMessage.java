@@ -42,12 +42,12 @@ public class MongoResponseLinkedClientsMessage extends ResponseLinkedClientsMess
     }
 
     @Override
-    public ObjectId getId() {
+    public ObjectId getPersistentId() {
         return id;
     }
 
     @Override
-    public void setId(ObjectId id) {
+    public void setPersistentId(ObjectId id) {
         this.id = id;
     }
 

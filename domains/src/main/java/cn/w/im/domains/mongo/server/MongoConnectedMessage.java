@@ -39,18 +39,18 @@ public class MongoConnectedMessage extends ConnectedMessage implements MongoDoma
         this.setSendTime(message.getSendTime());
         this.setReceivedTime(message.getReceivedTime());
         this.setFromServer(this.getFromServer());
-        this.setMessageClientBasic(this.getMessageClientBasic());
+        this.setConnectedClient(this.getConnectedClient());
         this.setRespondKey(this.getRespondKey());
         this.setToken(this.getToken());
     }
 
     @Override
-    public ObjectId getId() {
+    public ObjectId getPersistentId() {
         return this.id;
     }
 
     @Override
-    public void setId(ObjectId id) {
+    public void setPersistentId(ObjectId id) {
         this.id = id;
     }
 

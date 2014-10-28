@@ -1,6 +1,7 @@
 package cn.w.im.domains.messages.heartbeat;
 
 import cn.w.im.domains.MessageType;
+import cn.w.im.domains.NonePersistentMessage;
 import cn.w.im.domains.messages.Message;
 import cn.w.im.utils.netty.Sequential;
 
@@ -9,7 +10,7 @@ import cn.w.im.utils.netty.Sequential;
  * DateTime: 14-7-21 上午9:43
  * Summary: 心跳请求包
  */
-public class Heartbeat extends Message implements Sequential {
+public class Heartbeat extends Message implements Sequential, NonePersistentMessage {
 
     /**
      * the flag if this message need to be replied.
@@ -29,7 +30,7 @@ public class Heartbeat extends Message implements Sequential {
         super(MessageType.Heartbeat);
     }
 
-    public Heartbeat(boolean reply){
+    public Heartbeat(boolean reply) {
         super(MessageType.Heartbeat);
         this.reply = true;
     }

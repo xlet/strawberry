@@ -5,9 +5,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <bean class="cn.w.im.domains.conf.Configuration">
-        <property name="dataStoreType" value="${dataStore}" />
-        <property name="debug" value="${debug}" />
-        <property name="bind" value="${bind}" />
-        <property name="port" value="${port}" />
+        <property name="dataStoreType" value="${message.repository.type}" />
+        <property name="bind" value="${server.bind}" />
+        <property name="port" value="${server.listen.port}" />
+        <property name="nettyInnerLoggerEnable" value="${netty.inner.logger.enable}" />
     </bean>
 </beans>

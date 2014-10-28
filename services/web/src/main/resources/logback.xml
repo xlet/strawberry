@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+	<appender userName="console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
 	</appender>
 
-	<appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<appender userName="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>/var/logs/liuliu/bus/bus.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>/var/logs/liuliu/bus/bus.%d{yyyy-MM-dd}.gz</fileNamePattern>
@@ -18,9 +18,9 @@
 	</appender>
 
 	<!-- project default level -->
-	<logger name="cn.w.im" level="DEBUG" />
+	<logger userName="cn.w.im" level="DEBUG" />
 
-    <logger name="org.springframework" level="INFO"/>
+    <logger userName="org.springframework" level="INFO"/>
 
 	<root level="WARN">
 		<appender-ref ref="rollingFile" />

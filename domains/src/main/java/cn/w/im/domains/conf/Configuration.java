@@ -15,35 +15,41 @@ public class Configuration {
 
     private String dataStoreType = "mongo";
 
+    private boolean nettyInnerLoggerEnable = true;
+
     /**
      * get bind.
+     *
      * @return bind.
      */
-    public String getBind(){
+    public String getBind() {
         return this.bind;
     }
 
     /**
      * set bind.
+     *
      * @param bind bind.
      */
-    public void setBind(String bind){
+    public void setBind(String bind) {
         this.bind = bind;
     }
 
     /**
      * get port.
+     *
      * @return port.
      */
-    public int getPort(){
+    public int getPort() {
         return this.port;
     }
 
     /**
      * set port.
+     *
      * @param port port.
      */
-    public void setPort(int port){
+    public void setPort(int port) {
         this.port = port;
     }
 
@@ -58,9 +64,10 @@ public class Configuration {
 
     /**
      * set whether debug mode.
+     *
      * @param debug
      */
-    public void setDebug(boolean debug){
+    public void setDebug(boolean debug) {
         this.debug = debug;
     }
 
@@ -75,9 +82,26 @@ public class Configuration {
 
     /**
      * set data store type.
+     *
      * @param dataStoreType data store type.
      */
-    public void setDataStoreType(String dataStoreType){
+    public void setDataStoreType(String dataStoreType) {
         this.dataStoreType = dataStoreType;
+    }
+
+    /**
+     * get whether netty inner logger enable.
+     * @return true:enable.
+     */
+    public boolean isNettyInnerLoggerEnable() {
+        return nettyInnerLoggerEnable;
+    }
+
+    /**
+     * set whether netty inner logger enable.
+     * @param nettyInnerLoggerEnable true:enable.
+     */
+    public void setNettyInnerLoggerEnable(boolean nettyInnerLoggerEnable) {
+        this.nettyInnerLoggerEnable = nettyInnerLoggerEnable;
     }
 }

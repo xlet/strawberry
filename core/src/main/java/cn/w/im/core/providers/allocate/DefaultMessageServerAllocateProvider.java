@@ -4,10 +4,12 @@ import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.client.MessageClientBasic;
 import cn.w.im.domains.client.MessageClientType;
+import cn.w.im.domains.member.BasicMember;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -17,8 +19,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultMessageServerAllocateProvider implements MessageServerAllocateProvider {
 
-    private Logger logger;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMessageServerAllocateProvider.class);
     private TokenProvider tokenProvider;
+
+    /**
+     * member of connected message server map.
+     * key memberId+|+clientHost.
+     */
+    private Map<String, ServerBasic> connectedMemberMap;
 
     /**
      * key MessageServer nodeId.
@@ -29,8 +37,8 @@ public class DefaultMessageServerAllocateProvider implements MessageServerAlloca
      * constructor.
      */
     public DefaultMessageServerAllocateProvider() {
-        logger = LoggerFactory.getLogger(this.getClass());
-        messageServerAllocations = new ConcurrentHashMap<String, MessageServerAllocation>();
+        this.messageServerAllocations = new ConcurrentHashMap<String, MessageServerAllocation>();
+        this.connectedMemberMap = new ConcurrentHashMap<String, ServerBasic>();
         //ToDo: jackie config this provider.
         tokenProvider = new DefaultTokenProvider();
     }
@@ -41,7 +49,7 @@ public class DefaultMessageServerAllocateProvider implements MessageServerAlloca
      * @param messageServerBasic ready message server basic.
      */
     public void messageServerReady(ServerBasic messageServerBasic) {
-        logger.debug("message core[" + messageServerBasic.getNodeId() + "] ready to allocated");
+        LOGGER.debug("message core[" + messageServerBasic.getNodeId() + "] ready to allocated");
         if (!this.messageServerAllocations.containsKey(messageServerBasic.getNodeId())) {
             messageServerAllocations.put(messageServerBasic.getNodeId(), new MessageServerAllocation(messageServerBasic));
         }
@@ -53,18 +61,18 @@ public class DefaultMessageServerAllocateProvider implements MessageServerAlloca
      * <p/>
      * if message client allocated return this allocation.
      *
-     * @param loginId   login id.
-     * @param loginHost login host.
+     * @param member     login member.
+     * @param clientHost client host.
      * @return ConnectToken.
      */
-    public ConnectToken allocate(String loginId, String loginHost) {
-        logger.debug("allocating message core for client[" + loginId + ":" + loginHost + "]");
+    public ConnectToken allocate(BasicMember member, String clientHost) {
+        LOGGER.debug("allocating message core for client[" + member.getId() + ":" + clientHost + "]");
         int minAllocatedClientCount = Integer.MAX_VALUE;
         MessageServerAllocation matchedMessageServerAllocation = null;
         Iterator<MessageServerAllocation> allocationIterator = this.messageServerAllocations.values().iterator();
         while (allocationIterator.hasNext()) {
             MessageServerAllocation currentMessageServerAllocation = allocationIterator.next();
-            ConnectToken connectToken = currentMessageServerAllocation.getLoginToken(loginId, loginHost);
+            ConnectToken connectToken = currentMessageServerAllocation.getLoginToken(member.getId(), clientHost);
             if (connectToken != null) {
                 return connectToken;
             }
@@ -74,9 +82,9 @@ public class DefaultMessageServerAllocateProvider implements MessageServerAlloca
             }
         }
 
-        ConnectToken connectToken = new ConnectToken(loginHost, loginId, tokenProvider.create(), matchedMessageServerAllocation.getMessageServer());
+        ConnectToken connectToken = new ConnectToken(clientHost, member, tokenProvider.create(), matchedMessageServerAllocation.getMessageServer());
         matchedMessageServerAllocation.allocate(connectToken);
-        logger.debug("allocated message core[" + matchedMessageServerAllocation.getMessageServer().getNodeId() + "] to client.");
+        LOGGER.debug("allocated message core[" + matchedMessageServerAllocation.getMessageServer().getNodeId() + "] to client.");
         return connectToken;
     }
 
@@ -90,38 +98,48 @@ public class DefaultMessageServerAllocateProvider implements MessageServerAlloca
 
     @Override
     public void connected(String connectToken, MessageClientBasic messageClientBasic, ServerBasic allocateMessageServer) {
-        logger.debug("client[" + messageClientBasic.getLoginId() + ":" + messageClientBasic.getClientHost() + "] connected core[" + allocateMessageServer.getNodeId() + "].");
+        LOGGER.debug("client[" + messageClientBasic.getMemberId() + ":" + messageClientBasic.getClientHost() + "] connected core[" + allocateMessageServer.getNodeId() + "].");
         String nodeId = allocateMessageServer.getNodeId();
         MessageServerAllocation allocation = this.messageServerAllocations.get(nodeId);
         allocation.connected(connectToken);
-    }
 
-    /**
-     * message client disconnected message server.
-     *
-     * @param loginId       login id.
-     * @param loginHost     login host.
-     * @param messageServer the disconnected message server.
-     */
-    public void disconnected(String loginId, String loginHost, ServerBasic messageServer) {
-        logger.debug("client[" + loginId + ":" + loginHost + "] disconnected from core[" + messageServer.getNodeId() + "]");
-        String nodeId = messageServer.getNodeId();
-        MessageServerAllocation allocation = this.messageServerAllocations.get(nodeId);
-        allocation.disconnected(loginId, loginHost);
+        String connectedMemberKey = messageClientBasic.getMemberId() + "|" + messageClientBasic.getClientHost();
+        this.connectedMemberMap.put(connectedMemberKey, allocateMessageServer);
     }
 
     @Override
-    public boolean isConnected(MessageClientType clientType, String loginId, String host) {
+    public void disconnected(String memberId, String loginHost, ServerBasic messageServer) {
+        LOGGER.debug("client[" + memberId + ":" + loginHost + "] disconnected from core[" + messageServer.getNodeId() + "]");
+        String nodeId = messageServer.getNodeId();
+        MessageServerAllocation allocation = this.messageServerAllocations.get(nodeId);
+        allocation.disconnected(memberId, loginHost);
+
+        if (this.connectedMemberMap.containsKey(memberId)) {
+            this.connectedMemberMap.remove(memberId);
+        }
+    }
+
+    @Override
+    public boolean isAllocated(String memberId, String clientHost) {
         Iterator<MessageServerAllocation> allocationIterator = this.messageServerAllocations.values().iterator();
         while (allocationIterator.hasNext()) {
             MessageServerAllocation currentMessageServerAllocation = allocationIterator.next();
-            logger.debug("check nodeId="+currentMessageServerAllocation.getMessageServer().getNodeId());
-            ConnectToken connectToken = currentMessageServerAllocation.getLoginToken(loginId, host);
+            LOGGER.debug("check nodeId=" + currentMessageServerAllocation.getMessageServer().getNodeId());
+            ConnectToken connectToken = currentMessageServerAllocation.getLoginToken(memberId, clientHost);
             if (connectToken != null) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
+    }
+
+    @Override
+    public boolean isConnected(String memberId, String clientHost) {
+        String connectedmemberkey = memberId + "|" + clientHost;
+        if (this.connectedMemberMap.containsKey(connectedmemberkey)) {
+            return true;
+        }
+        return false;
     }
 }
 

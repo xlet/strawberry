@@ -1,16 +1,18 @@
 package cn.w.im.test;
 
-import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.ErrorCodeDefine;
 import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.ServerType;
-import cn.w.im.domains.basic.Member;
 import cn.w.im.domains.client.MessageClientType;
+import cn.w.im.domains.member.BasicMember;
+import cn.w.im.domains.member.OAMember;
+import cn.w.im.domains.member.WcnMember;
 import cn.w.im.domains.messages.client.*;
 import cn.w.im.domains.messages.heartbeat.Heartbeat;
 import cn.w.im.domains.messages.heartbeat.HeartbeatResponse;
 import cn.w.im.core.providers.allocate.DefaultTokenProvider;
 import cn.w.im.core.providers.allocate.TokenProvider;
+import cn.w.im.utils.sdk.oa.response.VerifyResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.buffer.ByteBuf;
@@ -45,15 +47,35 @@ public class MessageTest {
     private ByteBufAllocator allocator = new PooledByteBufAllocator();
 
     @Test
+    public void test_member_serialize() throws IOException {
+        BasicMember member = new OAMember();
+        member.setNickname("jackie");
+        member.setId("owa:w084");
+        member.setTelephone("1862687807");
+        member.setPicUrl("http://w.cn/pic/111.jpg");
+        member.setAddress("FuJian XiaMen");
+        member.setEmail("hanwwly@sohu.com");
+        member.setMobile("18626877807");
+        member.setSignature("dddd");
+
+        String jsonStr = this.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(member);
+        System.out.println(jsonStr);
+
+        BasicMember deMember = this.mapper.readValue(jsonStr, BasicMember.class);
+    }
+
+    @Test
     public void gen_login_message() throws JsonProcessingException, UnsupportedEncodingException {
 
-        LoginMessage loginMessage = new LoginMessage(CLIENT_TYPE, "13622882929", "w123456");
+        LoginMessage loginMessage = new LoginMessage(CLIENT_TYPE, ProductType.OA, "13622882929", "w123456");
         String token = UUID.randomUUID().toString().replace("-", "");
         ServerBasic serverBasic = new ServerBasic(ServerType.LoginServer, 17021);
         serverBasic.setStart(true);
         serverBasic.setStartDateTime(System.currentTimeMillis());
-        ConnectToken connectToken = new ConnectToken("10.0.40.18", "username", token, serverBasic);
-        LoginResponseMessage loginSuccessResponseMessage = new LoginResponseMessage(connectToken);
+        LoginResponseMessage loginSuccessResponseMessage = new LoginResponseMessage();
+        loginSuccessResponseMessage.setAllocateServer(serverBasic);
+        loginSuccessResponseMessage.setMemberId("11223344");
+        loginSuccessResponseMessage.setToken("dddddddddddd");
         LoginResponseMessage loginFailResponseMessage = new LoginResponseMessage(ErrorCodeDefine.IDPASSWORDERRORCODE, "IDPASSWORDERRORCODE");
         print(loginMessage);
         print(loginSuccessResponseMessage);
@@ -63,7 +85,7 @@ public class MessageTest {
     @Test
     public void gen_connect_message() {
         String token = "fcf3e04db292408eb834d9c21eb432ce";
-        ConnectMessage connectMessage = new ConnectMessage(CLIENT_TYPE, "13622882929", token);
+        ConnectMessage connectMessage = new ConnectMessage(ProductType.OA, CLIENT_TYPE, "13622882929", token);
         print(connectMessage);
         ConnectResponseMessage connectResponseMessage = new ConnectResponseMessage();
         // connectResponseMessage.setSelf();
@@ -105,10 +127,10 @@ public class MessageTest {
         print(request);
 
         GetProfileResponseMessage response = new GetProfileResponseMessage();
-        List<Member> members = new ArrayList<Member>();
-        Member member = new Member();
-        member.setThumb("http://static.w.cn/images/member/photo.png");
-        member.setNickName("溜溜");
+        List<BasicMember> members = new ArrayList<BasicMember>();
+        WcnMember member = new WcnMember();
+        member.setPicUrl("http://static.w.cn/images/member/photo.png");
+        member.setNickname("溜溜");
         member.setMobileValid(true);
         member.setMobile("13859985404");
         member.setRealNameValid(false);
@@ -118,7 +140,7 @@ public class MessageTest {
         members.add(member);
         member.setId("11223344");
         members.add(member);
-        response.setMembers(members);
+        response.setBasicMembers(members);
         print(response);
     }
 
@@ -142,6 +164,12 @@ public class MessageTest {
         System.out.print(hex.length() / 2);
 
 
+    }
+
+    @Test
+    public void test_verify_Response_Deserialize() throws IOException {
+        String jsonStr = "{\"success\":true,\"errorCode\":0,\"errorMessage\":null,\"userInfo\":{\"id\":\"woa:w060\",\"userName\":\"林群彬\",\"userSex\":\"男\",\"userPic\":\"http://10.0.41.115/preview.aspx?id=8d80dedf1b494c9ea3c1e2a296789a59\",\"moblie\":\"13276967598\",\"telephone\":\"\",\"address\":\"\",\"email\":\"linqunbin@w.cn\"}}";
+        mapper.readValue(jsonStr, VerifyResponse.class);
     }
 
     public void print(Object... o) {

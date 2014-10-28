@@ -13,7 +13,7 @@ import org.mongodb.morphia.annotations.Id;
 public class MongoGetProfileRequestMessage extends GetProfileRequestMessage implements MongoDomain {
 
     @Id
-    private ObjectId id;
+    private ObjectId persistId;
     private long persistentDate;
 
     public MongoGetProfileRequestMessage() {
@@ -27,13 +27,13 @@ public class MongoGetProfileRequestMessage extends GetProfileRequestMessage impl
     }
 
     @Override
-    public ObjectId getId() {
-        return this.id;
+    public ObjectId getPersistentId() {
+        return this.persistId;
     }
 
     @Override
-    public void setId(ObjectId id) {
-        this.id = id;
+    public void setPersistentId(ObjectId id) {
+        this.persistId = id;
     }
 
     @Override

@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 public class UserCenterTest {
 
-    private MemberService members;
+    private WcnMemberServiceImpl members;
     private CloseableHttpClient httpClient;
 
     @Before
@@ -27,7 +27,7 @@ public class UserCenterTest {
         RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(20000).setConnectTimeout(20000).build();
         httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
         ucConfig.setHttpClient(httpClient);
-        members = new MemberService();
+        members = new WcnMemberServiceImpl();
         members.setConfig(ucConfig);
     }
 

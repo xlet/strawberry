@@ -3,6 +3,8 @@ package cn.w.im.core.server;
 
 import cn.w.im.core.providers.allocate.DefaultMessageServerAllocateProvider;
 import cn.w.im.core.providers.allocate.MessageServerAllocateProvider;
+import cn.w.im.core.providers.member.DefaultMemberProviderImpl;
+import cn.w.im.core.providers.member.MemberProvider;
 import cn.w.im.domains.ServerType;
 
 /**
@@ -13,6 +15,7 @@ import cn.w.im.domains.ServerType;
 public class LoginServer extends AbstractServer {
 
     private MessageServerAllocateProvider messageServerAllocateProvider;
+    private MemberProvider memberProvider;
 
     /**
      * 构造函数.
@@ -22,6 +25,7 @@ public class LoginServer extends AbstractServer {
     public LoginServer(int port) {
         super(ServerType.LoginServer, port);
         this.messageServerAllocateProvider = new DefaultMessageServerAllocateProvider();
+        this.memberProvider = new DefaultMemberProviderImpl();
     }
 
     /**
@@ -32,4 +36,9 @@ public class LoginServer extends AbstractServer {
     public MessageServerAllocateProvider allocateProvider() {
         return messageServerAllocateProvider;
     }
+
+    public MemberProvider memberProvider() {
+        return this.memberProvider;
+    }
+
 }

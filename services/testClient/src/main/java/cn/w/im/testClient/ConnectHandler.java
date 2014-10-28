@@ -2,10 +2,7 @@ package cn.w.im.testClient;
 
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.client.MessageClientType;
-import cn.w.im.domains.messages.client.ConnectMessage;
-import cn.w.im.domains.messages.client.ConnectResponseMessage;
-import cn.w.im.domains.messages.client.LogoutResponseMessage;
-import cn.w.im.domains.messages.client.NormalMessage;
+import cn.w.im.domains.messages.client.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
@@ -25,17 +22,23 @@ public class ConnectHandler extends ChannelInboundHandlerAdapter {
      */
     private static Logger log;
 
-    private ConnectToken connectToken;
+    private String token;
+
+    private String memberId;
 
     private MessageClientType clientType;
+
+    private ProductType productType;
 
     /**
      * 构造函数.
      */
-    public ConnectHandler(ConnectToken connectToken, MessageClientType clientType) {
-        this.connectToken = connectToken;
+    public ConnectHandler(String token, String memberId, MessageClientType clientType, ProductType productType) {
+        this.token = token;
+        this.memberId = memberId;
         log = LoggerFactory.getLogger(this.getClass());
         this.clientType = clientType;
+        this.productType = productType;
     }
 
 
@@ -47,7 +50,8 @@ public class ConnectHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ConnectMessage connectMessage = new ConnectMessage(this.clientType, this.connectToken.getLoginId(), this.connectToken.getToken());
+        ConnectMessage connectMessage = new ConnectMessage(this.productType, this.clientType,
+                this.memberId, this.token);
         ctx.writeAndFlush(connectMessage);
     }
 
@@ -61,7 +65,7 @@ public class ConnectHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ConnectResponseMessage) {
-            final Console console = new Console(ctx, this.connectToken.getLoginId(), this.clientType);
+            final Console console = new Console(ctx, this.memberId, this.clientType);
             new Thread(new Runnable() {
                 @Override
                 public void run() {

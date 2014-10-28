@@ -50,8 +50,8 @@ public class Bootstrap {
         }
     }
 
-    private final EventLoopGroup bossGroup = new NioEventLoopGroup();
-    private final EventLoopGroup workerGroup = new NioEventLoopGroup();
+    private EventLoopGroup bossGroup;
+    private EventLoopGroup workerGroup;
     private Configuration configuration;
     private MessageServer messageServer;
 
@@ -63,6 +63,9 @@ public class Bootstrap {
     private void startServer() throws Exception {
         logger.debug("core starting.");
 
+        bossGroup = new NioEventLoopGroup();
+        workerGroup = new NioEventLoopGroup();
+
         int serverPort = this.messageServer.getPort();
 
         ServerBootstrap serverBootstrap = new ServerBootstrap();
@@ -73,6 +76,7 @@ public class Bootstrap {
         ChannelFuture future;
 
         future = serverBootstrap.bind(this.configuration.getBind(), serverPort).sync();
+        logger.debug("listening port:" + this.messageServer.getPort());
         future.addListener(bindFutureListener);
         future.channel().closeFuture().sync();
     }

@@ -14,7 +14,6 @@ import cn.w.im.plugins.login.TokenResponsePlugin;
 import cn.w.im.plugins.logout.LogoutPlugin;
 import cn.w.im.plugins.member.MemberProfilePlugin;
 import cn.w.im.plugins.messageServerReady.MessageServerReadyPlugin;
-import cn.w.im.plugins.nearlyLinkman.NearlyLinkmanPlugin;
 import cn.w.im.plugins.persistentMessage.MessagePersistentPlugin;
 import cn.w.im.plugins.requestLinkedClients.RequestLinkedClientsPlugin;
 import cn.w.im.plugins.requestLinkedClients.ResponseLinkedClientsPlugin;
@@ -55,7 +54,7 @@ public class PluginsContainer {
 
         allPlugins.add(new MessageServerReadyPlugin());
 
-        allPlugins.add(new NearlyLinkmanPlugin());
+        //allPlugins.add(new NearlyLinkmanPlugin());
 
         allPlugins.add(new MessagePersistentPlugin());
 

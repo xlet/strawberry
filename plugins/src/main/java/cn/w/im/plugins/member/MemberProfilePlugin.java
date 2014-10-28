@@ -3,7 +3,7 @@ package cn.w.im.plugins.member;
 import cn.w.im.domains.MessageType;
 import cn.w.im.core.plugins.PluginContext;
 import cn.w.im.domains.ServerType;
-import cn.w.im.domains.basic.Member;
+import cn.w.im.domains.member.BasicMember;
 import cn.w.im.domains.messages.client.GetProfileRequestMessage;
 import cn.w.im.domains.messages.client.GetProfileResponseMessage;
 import cn.w.im.exceptions.ClientNotFoundException;
@@ -32,7 +32,7 @@ public class MemberProfilePlugin extends MessagePlugin<GetProfileRequestMessage>
     @Override
     protected void processMessage(GetProfileRequestMessage message, PluginContext context) throws ClientNotFoundException {
         MessageServer currentServer = (MessageServer) context.getServer();
-        List<Member> members = currentServer.linkmanProvider().getMembers(message.getIds());
+        List<BasicMember> members = currentServer.ContactProvider().getMembers(message.getIds());
         currentServer.messageProvider().send(context.getCurrentHost(), context.getCurrentPort(), new GetProfileResponseMessage(members));
     }
 }

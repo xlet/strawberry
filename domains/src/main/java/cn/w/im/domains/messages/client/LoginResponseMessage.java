@@ -2,6 +2,7 @@ package cn.w.im.domains.messages.client;
 
 import cn.w.im.domains.ConnectToken;
 import cn.w.im.domains.MessageType;
+import cn.w.im.domains.ServerBasic;
 import cn.w.im.domains.messages.ResponseMessage;
 
 /**
@@ -15,7 +16,11 @@ import cn.w.im.domains.messages.ResponseMessage;
  */
 public class LoginResponseMessage extends ResponseMessage implements ServerToClientMessage {
 
-    private ConnectToken token;
+    private String token;
+
+    private String memberId;
+
+    private ServerBasic allocateServer;
 
     private String loggedOtherPlace;
 
@@ -24,7 +29,7 @@ public class LoginResponseMessage extends ResponseMessage implements ServerToCli
      *
      * @return 标识信息.
      */
-    public ConnectToken getToken() {
+    public String getToken() {
         return token;
     }
 
@@ -33,8 +38,44 @@ public class LoginResponseMessage extends ResponseMessage implements ServerToCli
      *
      * @param token 标识信息.
      */
-    public void setToken(ConnectToken token) {
+    public void setToken(String token) {
         this.token = token;
+    }
+
+    /**
+     * get member id.
+     *
+     * @return member id.
+     */
+    public String getMemberId() {
+        return memberId;
+    }
+
+    /**
+     * set member id.
+     *
+     * @param memberId member id.
+     */
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
+    }
+
+    /**
+     * get allocate server.
+     *
+     * @return allocate server.
+     */
+    public ServerBasic getAllocateServer() {
+        return allocateServer;
+    }
+
+    /**
+     * set allocate server.
+     *
+     * @param allocateServer allocate server.
+     */
+    public void setAllocateServer(ServerBasic allocateServer) {
+        this.allocateServer = allocateServer;
     }
 
     /**
@@ -69,7 +110,9 @@ public class LoginResponseMessage extends ResponseMessage implements ServerToCli
      */
     public LoginResponseMessage(ConnectToken token) {
         super(MessageType.LoginResponse);
-        this.token = token;
+        this.token = token.getToken();
+        this.memberId = token.getMember().getId();
+        this.allocateServer = token.getAllocatedMessageServer();
     }
 
     /**

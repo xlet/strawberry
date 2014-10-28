@@ -17,7 +17,7 @@ public class ConnectedMessage extends Message implements MustRespondMessage, Ser
 
     private String token;
 
-    private MessageClientBasic messageClientBasic;
+    private MessageClientBasic connectedClient;
 
     private String respondKey;
 
@@ -39,7 +39,7 @@ public class ConnectedMessage extends Message implements MustRespondMessage, Ser
     public ConnectedMessage(String token, MessageClientBasic messageClientBasic, ServerBasic fromServer) {
         this();
         this.token = token;
-        this.messageClientBasic = messageClientBasic;
+        this.connectedClient = messageClientBasic;
         this.respondKey = UUID.randomUUID().toString();
         this.fromServer = fromServer;
     }
@@ -67,17 +67,17 @@ public class ConnectedMessage extends Message implements MustRespondMessage, Ser
      *
      * @return message client basic.
      */
-    public MessageClientBasic getMessageClientBasic() {
-        return messageClientBasic;
+    public MessageClientBasic getConnectedClient() {
+        return connectedClient;
     }
 
     /**
      * set message client basic.
      *
-     * @param messageClientBasic message client basic.
+     * @param connectedClient message client basic.
      */
-    public void setMessageClientBasic(MessageClientBasic messageClientBasic) {
-        this.messageClientBasic = messageClientBasic;
+    public void setConnectedClient(MessageClientBasic connectedClient) {
+        this.connectedClient = connectedClient;
     }
 
     @Override

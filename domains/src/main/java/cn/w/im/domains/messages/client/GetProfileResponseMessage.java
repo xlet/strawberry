@@ -1,7 +1,7 @@
 package cn.w.im.domains.messages.client;
 
 import cn.w.im.domains.MessageType;
-import cn.w.im.domains.basic.Member;
+import cn.w.im.domains.member.BasicMember;
 import cn.w.im.domains.messages.ResponseMessage;
 
 import java.util.ArrayList;
@@ -14,35 +14,35 @@ import java.util.List;
  */
 public class GetProfileResponseMessage extends ResponseMessage {
 
-    private List<Member> members = new ArrayList<Member>();
+    private List<BasicMember> members = new ArrayList<BasicMember>();
 
     public GetProfileResponseMessage() {
         super(MessageType.GetProfileResponse);
     }
 
-    public GetProfileResponseMessage(Member... members) {
+    public GetProfileResponseMessage(BasicMember... members) {
         this();
-        for(Member member:members){
+        for(BasicMember member:members){
             add(member);
         }
     }
 
 
-    public GetProfileResponseMessage(List<Member> members) {
+    public GetProfileResponseMessage(List<BasicMember> members) {
         this();
         this.members = members;
     }
 
-    public GetProfileResponseMessage add(Member member){
+    public GetProfileResponseMessage add(BasicMember member){
         this.members.add(member);
         return this;
     }
 
-    public List<Member> getMembers() {
+    public List<BasicMember> getBasicMembers() {
         return members;
     }
 
-    public void setMembers(List<Member> members) {
+    public void setBasicMembers(List<BasicMember> members) {
         this.members = members;
     }
 }

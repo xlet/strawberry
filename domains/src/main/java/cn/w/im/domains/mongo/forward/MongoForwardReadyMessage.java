@@ -41,12 +41,12 @@ public class MongoForwardReadyMessage extends ForwardReadyMessage implements Mon
     }
 
     @Override
-    public ObjectId getId() {
+    public ObjectId getPersistentId() {
         return this.id;
     }
 
     @Override
-    public void setId(ObjectId id) {
+    public void setPersistentId(ObjectId id) {
         this.id = id;
     }
 

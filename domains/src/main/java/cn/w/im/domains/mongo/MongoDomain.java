@@ -11,24 +11,28 @@ public interface MongoDomain {
 
     /**
      * 获取id.
+     *
      * @return id.
      */
-    ObjectId getId();
+    ObjectId getPersistentId();
 
     /**
      * 设置id.
-     * @param id id.
+     *
+     * @param persistentId id.
      */
-    void setId(ObjectId id);
+    void setPersistentId(ObjectId persistentId);
 
     /**
      * 获取持久化时间.
+     *
      * @return 持久化时间.
      */
     long getPersistentDate();
 
     /**
      * 设置持久化时间.
+     *
      * @param persistentDate 持久化时间.
      */
     void setPersistentDate(long persistentDate);

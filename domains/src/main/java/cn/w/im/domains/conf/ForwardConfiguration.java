@@ -7,6 +7,7 @@ public class ForwardConfiguration {
 
     private int serverPort,busPort;
     private String serverHost,busHost;
+    private boolean nettyInnerLoggerEnable;
 
     /**
      * get server port.
@@ -70,5 +71,13 @@ public class ForwardConfiguration {
      */
     public void setBusHost(String busHost) {
         this.busHost = busHost;
+    }
+
+    public boolean isNettyInnerLoggerEnable() {
+        return nettyInnerLoggerEnable;
+    }
+
+    public void setNettyInnerLoggerEnable(boolean nettyInnerLoggerEnable) {
+        this.nettyInnerLoggerEnable = nettyInnerLoggerEnable;
     }
 }
