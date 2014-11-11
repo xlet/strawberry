@@ -25,7 +25,6 @@
     <logger name="org.apache.http" level="ERROR"/>
 
 
-
     <root level="DEBUG">
         <appender-ref ref="rollingFile"/>
         <appender-ref ref="console"/>

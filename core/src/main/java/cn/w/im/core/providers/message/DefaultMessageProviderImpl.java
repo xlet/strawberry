@@ -1,24 +1,25 @@
 package cn.w.im.core.providers.message;
 
-import cn.w.im.core.providers.cache.client.ClientCacheProvider;
-import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.ServerType;
-import cn.w.im.domains.client.Client;
-import cn.w.im.domains.client.ServerClient;
-import cn.w.im.domains.messages.Message;
-import cn.w.im.domains.messages.MustRespondMessage;
-import cn.w.im.domains.messages.client.NormalMessage;
-import cn.w.im.domains.messages.server.ForwardMessage;
-import cn.w.im.exceptions.RegisteredRespondMessageException;
-import cn.w.im.exceptions.RegisteredRespondServerException;
-import cn.w.im.exceptions.ServerInnerException;
-import cn.w.im.persistent.NormalMessageDao;
-import cn.w.im.persistent.PersistentRepositoryFactory;
+import cn.w.im.core.Channel;
+import cn.w.im.core.providers.client.Client;
+import cn.w.im.core.providers.client.ClientProvider;
+import cn.w.im.core.providers.client.ServerAsClient;
+import cn.w.im.core.providers.persistent.NormalMessagePersistentProvider;
+import cn.w.im.core.providers.persistent.PersistentProviderFactory;
+import cn.w.im.core.server.ServerBasic;
+import cn.w.im.core.ServerType;
+import cn.w.im.core.member.BasicMember;
+import cn.w.im.core.message.Message;
+import cn.w.im.core.message.MustRespondMessage;
+import cn.w.im.core.message.client.NormalMessage;
+import cn.w.im.core.message.server.ForwardMessage;
+import cn.w.im.core.exception.RegisteredRespondMessageException;
+import cn.w.im.core.exception.RegisteredRespondServerException;
+import cn.w.im.core.exception.ServerInnerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * default implement {@link cn.w.im.core.providers.message.MessageProvider}
@@ -27,9 +28,9 @@ public class DefaultMessageProviderImpl implements MessageProvider {
 
     private final static Logger LOG = LoggerFactory.getLogger(DefaultMessageProviderImpl.class);
 
-    private NormalMessageDao normalMessageDao;
+    private NormalMessagePersistentProvider normalMessagePersistentProvider;
 
-    private ClientCacheProvider clientCacheProvider;
+    private ClientProvider clientProvider;
 
     private RespondProvider respondProvider;
 
@@ -38,16 +39,16 @@ public class DefaultMessageProviderImpl implements MessageProvider {
     /**
      * constructor.
      *
-     * @param clientCacheProvider client cache provider.
-     * @param respondProvider     respond provider.
-     * @param containerServer     container server basic.
+     * @param clientProvider  client cache provider.
+     * @param respondProvider respond provider.
+     * @param containerServer container server basic.
      */
-    public DefaultMessageProviderImpl(ClientCacheProvider clientCacheProvider, RespondProvider respondProvider, ServerBasic containerServer) {
-        this.clientCacheProvider = clientCacheProvider;
+    public DefaultMessageProviderImpl(ClientProvider clientProvider, RespondProvider respondProvider, ServerBasic containerServer) {
+        this.clientProvider = clientProvider;
         this.respondProvider = respondProvider;
         this.containerServer = containerServer;
         try {
-            normalMessageDao = PersistentRepositoryFactory.getDao(NormalMessageDao.class);
+            normalMessagePersistentProvider = PersistentProviderFactory.getPersistentProvider(NormalMessagePersistentProvider.class);
         } catch (NullPointerException ex) {
             LOG.error("default message provider create error!", ex);
         } catch (ServerInnerException ex) {
@@ -56,25 +57,27 @@ public class DefaultMessageProviderImpl implements MessageProvider {
     }
 
     @Override
-    public List<NormalMessage> getOfflineMessages(String memberId) {
-        LOG.debug("get not received message by to=" + memberId);
-        List<NormalMessage> messages = normalMessageDao.getOfflineMessages(memberId);
+    public Collection<NormalMessage> getOfflineMessages(BasicMember owner) {
+        LOG.debug("get not received message by to=" + owner.getId());
+        Collection<NormalMessage> messages = normalMessagePersistentProvider.getOfflineMessages(owner);
         LOG.debug("get " + messages.size() + " messages!");
         return messages;
     }
 
     @Override
-    public int setMessageForwarded(String memberId) {
-        LOG.debug("set forwarded by to =" + memberId);
-        int updateCount = normalMessageDao.setMessageForwarded(memberId);
-        LOG.debug("set " + updateCount + " messages forwarded.");
-        return updateCount;
+    public void setMessageForwarded(BasicMember owner) {
+        normalMessagePersistentProvider.setMessageForwarded(owner);
+    }
+
+    @Override
+    public void send(Channel channel, Message message) {
+        this.send(channel.currentHost(), channel.currentPort(), message);
     }
 
     @Override
     public void send(String host, int port, Message message) {
         try {
-            Client client = clientCacheProvider.getClient(host, port);
+            Client client = clientProvider.getClient(host, port);
             sendMessage(client, message);
         } catch (ServerInnerException ex) {
             LOG.error(ex.getMessage(), ex);
@@ -84,7 +87,7 @@ public class DefaultMessageProviderImpl implements MessageProvider {
     @Override
     public void send(ServerType serverType, Message message) {
         try {
-            Collection<Client> clients = clientCacheProvider.getClients(serverType);
+            Collection<Client> clients = clientProvider.getClient(serverType);
             for (Client client : clients) {
                 sendMessage(client, message);
             }
@@ -96,7 +99,7 @@ public class DefaultMessageProviderImpl implements MessageProvider {
     @Override
     public void send(ServerBasic serverBasic, Message message) {
         try {
-            Client client = clientCacheProvider.getClient(serverBasic);
+            Client client = clientProvider.getClient(serverBasic);
             sendMessage(client, message);
         } catch (ServerInnerException ex) {
             LOG.error(ex.getMessage(), ex);
@@ -104,9 +107,9 @@ public class DefaultMessageProviderImpl implements MessageProvider {
     }
 
     @Override
-    public void send(String loginId, Message message) {
+    public void send(BasicMember member, Message message) {
         try {
-            Collection<Client> clients = clientCacheProvider.getClients(loginId);
+            Collection<Client> clients = clientProvider.getClient(member);
             for (Client client : clients) {
                 sendMessage(client, message);
             }
@@ -116,28 +119,28 @@ public class DefaultMessageProviderImpl implements MessageProvider {
     }
 
     private void registeredRespond(Client client, Message message) throws RegisteredRespondMessageException, RegisteredRespondServerException {
-        if ((message instanceof MustRespondMessage) && (client instanceof ServerClient)) {
+        if ((message instanceof MustRespondMessage) && (client instanceof ServerAsClient)) {
             MustRespondMessage mustRespondMessage = (MustRespondMessage) message;
-            ServerClient serverClient = (ServerClient) client;
-            LOG.debug("respond register[" + mustRespondMessage.getRespondKey() + ":" + serverClient.getServerBasic().getNodeId() + "]");
-            this.respondProvider.registerResponded(mustRespondMessage.getRespondKey(), serverClient.getServerBasic());
+            ServerAsClient serverClient = (ServerAsClient) client;
+            LOG.debug("respond register[" + mustRespondMessage.getRespondKey() + ":" + serverClient.getBasic().getNodeId() + "]");
+            this.respondProvider.registerResponded(mustRespondMessage.getRespondKey(), serverClient.getBasic());
         }
     }
 
     private void sendMessage(Client client, Message message) throws ServerInnerException {
         registeredRespond(client, message);
-        if ((this.containerServer.getServerType() != ServerType.MessageBus) && (client instanceof ServerClient)) {
-            ServerClient serverClient = (ServerClient) client;
-            LOG.debug("send to core[" + serverClient.getServerBasic().getNodeId() + "]");
-            ForwardMessage forwardMessage = new ForwardMessage(this.containerServer, serverClient.getServerBasic(), message);
-            client.getContext().writeAndFlush(forwardMessage);
+        if ((this.containerServer.getServerType() != ServerType.MessageBus) && (client instanceof ServerAsClient)) {
+            ServerAsClient serverClient = (ServerAsClient) client;
+            LOG.debug("send to core[" + serverClient.getBasic().getNodeId() + "]");
+            ForwardMessage forwardMessage = new ForwardMessage(this.containerServer, serverClient.getBasic(), message);
+            client.send(forwardMessage);
         } else if ((this.containerServer.getServerType() == ServerType.MessageBus) && (message instanceof ForwardMessage)) {
             ForwardMessage forwardMessage = (ForwardMessage) message;
             LOG.debug("send to messageBus");
-            client.getContext().writeAndFlush(forwardMessage.getMessage());
+            client.send(forwardMessage.getMessage());
         } else {
-            LOG.debug("send to client[" + client.getRemoteHost() + ":" + client.getRemotePort() + "]");
-            client.getContext().writeAndFlush(message);
+            LOG.debug("send to client[" + client.host() + ":" + client.port() + "]");
+            client.send(message);
         }
 
         if (message instanceof NormalMessage) {

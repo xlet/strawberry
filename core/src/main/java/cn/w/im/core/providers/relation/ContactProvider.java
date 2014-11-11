@@ -1,9 +1,11 @@
 package cn.w.im.core.providers.relation;
 
-import cn.w.im.domains.member.BasicMember;
-import cn.w.im.domains.messages.client.ProductType;
-import cn.w.im.domains.relation.FriendGroup;
-import cn.w.im.domains.relation.RecentContacts;
+import cn.w.im.core.member.BasicMember;
+import cn.w.im.core.message.client.ProductType;
+import cn.w.im.core.member.relation.FriendGroup;
+import cn.w.im.core.member.relation.RecentContactStatuses;
+import cn.w.im.core.member.MemberStatus;
+import cn.w.im.core.exception.ContactNotExistedException;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,7 +29,7 @@ public interface ContactProvider {
      * @param owner owner member.
      * @return recent contact.
      */
-    RecentContacts getRecentContact(BasicMember owner);
+    RecentContactStatuses getRecentContact(BasicMember owner);
 
     /**
      * get member info.
@@ -36,7 +38,21 @@ public interface ContactProvider {
      * @param memberId    member id.
      * @return member info.
      */
-    BasicMember getMember(String memberId, ProductType productType);
+    BasicMember getContact(String memberId, ProductType productType);
 
+    BasicMember getContact(String memberId) throws ContactNotExistedException;
+
+    /**
+     * @param ids
+     * @return
+     */
     List<BasicMember> getMembers(List<String> ids);
+
+    /**
+     * get contact member statuses.
+     *
+     * @param self owner id.
+     * @return contact member statuses.
+     */
+    Collection<MemberStatus> getContactStatus(BasicMember self);
 }

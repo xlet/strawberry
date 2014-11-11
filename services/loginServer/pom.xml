@@ -17,27 +17,22 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-domains</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>im-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-exceptions</artifactId>
+            <artifactId>im-netty</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-utils</artifactId>
+            <artifactId>im-thirdparty</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-plugins</artifactId>
+            <artifactId>im-persistent</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
@@ -76,7 +71,7 @@
                                       tofile="${project.basedir}/../../bin/login/bootstrap-login.jar"></copy>
                                 <echo>copy dependence to bin</echo>
                                 <copy todir="${project.basedir}/../../bin/login/lib/" overwrite="true">
-                                    <fileset dir="${project.build.directory}/lib/" />
+                                    <fileset dir="${project.build.directory}/lib/"/>
                                 </copy>
                             </tasks>
                         </configuration>

@@ -9,6 +9,7 @@ public interface TokenProvider {
 
     /**
      * create token str.
+     *
      * @return token String.
      */
     String create();

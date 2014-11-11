@@ -1,12 +1,11 @@
 package cn.w.im.core.server;
 
-import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.messages.Message;
-import cn.w.im.domains.messages.forward.ForwardReadyMessage;
-import cn.w.im.domains.messages.forward.ForwardRequestMessage;
-import cn.w.im.domains.messages.forward.ForwardResponseMessage;
-import cn.w.im.utils.netty.IpAddressProvider;
-import io.netty.channel.ChannelHandlerContext;
+import cn.w.im.core.Channel;
+import cn.w.im.core.MessageHandlerContext;
+import cn.w.im.core.message.Message;
+import cn.w.im.core.message.forward.ForwardReadyMessage;
+import cn.w.im.core.message.forward.ForwardRequestMessage;
+import cn.w.im.core.message.forward.ForwardResponseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +31,7 @@ public class ForwardServer {
     /**
      * key host:port.
      */
-    private Map<String, ChannelHandlerContext> contextMap;
+    private Map<String, Channel> contextMap;
     /**
      * key host:port.
      */
@@ -50,7 +49,7 @@ public class ForwardServer {
      */
     public ForwardServer(String busHost, int busPort, String serverHost, int serverPort) {
         this.serverKeys = new ArrayList<String>();
-        this.contextMap = new ConcurrentHashMap<String, ChannelHandlerContext>();
+        this.contextMap = new ConcurrentHashMap<String, Channel>();
         this.connectedServerMap = new ConcurrentHashMap<String, ServerBasic>();
         logger = LoggerFactory.getLogger(this.getClass());
         init(busHost, busPort, serverHost, serverPort);
@@ -96,13 +95,13 @@ public class ForwardServer {
     /**
      * connected one server.
      *
-     * @param ctx current ChannelHandlerContext.
+     * @param channel current channel.
      */
-    public void connected(ChannelHandlerContext ctx) {
-        String key = getKey(ctx);
+    public void connected(Channel channel) {
+        String key = getKey(channel);
         logger.debug("connected core[" + key + "]");
         if (isServerKey(key)) {
-            this.contextMap.put(key, ctx);
+            this.contextMap.put(key, channel);
         }
     }
 
@@ -173,12 +172,12 @@ public class ForwardServer {
     /**
      * request connected server basic.
      *
-     * @param ctx current ChannelHandlerContext.
+     * @param channel current channel.
      */
-    public void requestServerBasic(ChannelHandlerContext ctx) {
+    public void requestServerBasic(Channel channel) {
         logger.debug("request connected core basic.");
         ForwardRequestMessage requestMessage = new ForwardRequestMessage();
-        ctx.writeAndFlush(requestMessage);
+        channel.send(requestMessage);
     }
 
 
@@ -186,19 +185,19 @@ public class ForwardServer {
      * receive connected server response message.
      *
      * @param responseMessage response message.
-     * @param ctx             current ChannelHandlerContext.
+     * @param channel         current channel.
      */
-    public void receivedResponse(ForwardResponseMessage responseMessage, ChannelHandlerContext ctx) {
-        String key = getKey(ctx);
+    public void receivedResponse(ForwardResponseMessage responseMessage, Channel channel) {
+        String key = getKey(channel);
         ServerBasic connectedServerBasic = responseMessage.getFromServer();
         if (this.isServerKey(key)) {
             this.connectedServerMap.put(key, connectedServerBasic);
         }
     }
 
-    private String getKey(ChannelHandlerContext ctx) {
-        String host = IpAddressProvider.getRemoteIpAddress(ctx);
-        int port = IpAddressProvider.getRemotePort(ctx);
+    private String getKey(Channel channel) {
+        String host = channel.currentHost();
+        int port = channel.currentPort();
         return host + ":" + port;
     }
 
@@ -206,15 +205,15 @@ public class ForwardServer {
      * forward message.
      *
      * @param message message.
-     * @param ctx     current ChannelHandlerContext.
+     * @param channel current channel.
      */
-    public void forwardMessage(Message message, ChannelHandlerContext ctx) {
+    public void forwardMessage(Message message, Channel channel) {
         //get remote ip:port
-        String currentKey = getKey(ctx);
+        String currentKey = getKey(channel);
         for (String key : this.contextMap.keySet()) {
             // send to all channel except itself
             if (!key.equals(currentKey)) {
-                this.contextMap.get(key).writeAndFlush(message);
+                this.contextMap.get(key).send(message);
             }
         }
     }
@@ -240,11 +239,11 @@ public class ForwardServer {
     /**
      * forward server ready.
      *
-     * @param ctx current ChannelHandlerContext.
+     * @param channel current channel.
      */
-    public void ready(ChannelHandlerContext ctx) {
+    public void ready(Channel channel) {
         ForwardReadyMessage readyMessage = new ForwardReadyMessage();
-        ctx.writeAndFlush(readyMessage);
+        channel.send(readyMessage);
     }
 
     /**
@@ -260,8 +259,8 @@ public class ForwardServer {
      */
     public void serverStopped() {
         for (String key : this.contextMap.keySet()) {
-            ChannelHandlerContext context = this.contextMap.get(key);
-            context.close();
+            Channel channel = this.contextMap.get(key);
+            channel.close();
         }
         System.exit(0);
     }

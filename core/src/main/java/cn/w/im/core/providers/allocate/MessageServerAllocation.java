@@ -1,7 +1,7 @@
 package cn.w.im.core.providers.allocate;
 
-import cn.w.im.domains.ConnectToken;
-import cn.w.im.domains.ServerBasic;
+import cn.w.im.core.ConnectToken;
+import cn.w.im.core.server.ServerBasic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

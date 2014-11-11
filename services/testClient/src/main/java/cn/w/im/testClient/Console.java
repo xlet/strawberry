@@ -1,8 +1,8 @@
 package cn.w.im.testClient;
 
-import cn.w.im.domains.client.MessageClientType;
-import cn.w.im.domains.messages.client.LogoutMessage;
-import cn.w.im.domains.messages.client.NormalMessage;
+import cn.w.im.core.MessageClientType;
+import cn.w.im.core.message.client.LogoutMessage;
+import cn.w.im.core.message.client.NormalMessage;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Scanner;

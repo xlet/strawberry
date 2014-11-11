@@ -1,12 +1,13 @@
 package cn.w.im.core.providers.message;
 
-import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.ServerType;
-import cn.w.im.domains.member.BasicMember;
-import cn.w.im.domains.messages.Message;
-import cn.w.im.domains.messages.client.NormalMessage;
+import cn.w.im.core.Channel;
+import cn.w.im.core.server.ServerBasic;
+import cn.w.im.core.ServerType;
+import cn.w.im.core.member.BasicMember;
+import cn.w.im.core.message.Message;
+import cn.w.im.core.message.client.NormalMessage;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * message provider.
@@ -16,18 +17,25 @@ public interface MessageProvider {
     /**
      * get member's offline message list.
      *
-     * @param memberId member id.
+     * @param owner owner.
      * @return message list.
      */
-    List<NormalMessage> getOfflineMessages(String memberId);
+    Collection<NormalMessage> getOfflineMessages(BasicMember owner);
 
     /**
      * set message which send to given member id forwarded.
      *
-     * @param memberId member id.
-     * @return update count.
+     * @param owner owner.
      */
-    int setMessageForwarded(String memberId);
+    void setMessageForwarded(BasicMember owner);
+
+    /**
+     * sent message.
+     *
+     * @param channel current  channel.
+     * @param message message.
+     */
+    void send(Channel channel, Message message);
 
     /**
      * send message.
@@ -55,10 +63,10 @@ public interface MessageProvider {
     void send(ServerBasic serverBasic, Message message);
 
     /**
-     * send to logged with login id message client.
+     * send to message client by member.
      *
-     * @param loginId login id.
+     * @param member  member.
      * @param message message.
      */
-    void send(String loginId, Message message);
+    void send(BasicMember member, Message message);
 }

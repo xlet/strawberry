@@ -1,14 +1,24 @@
 package cn.w.im.core.server;
 
-import cn.w.im.core.providers.cache.client.ClientCacheProvider;
-import cn.w.im.core.providers.cache.client.DefaultClientCacheProvider;
+import cn.w.im.core.MessageHandlerContext;
+import cn.w.im.core.providers.client.ClientProvider;
+import cn.w.im.core.providers.client.DefaultClientProvider;
 import cn.w.im.core.providers.message.DefaultRespondProvider;
 import cn.w.im.core.providers.message.RespondProvider;
 import cn.w.im.core.providers.message.DefaultMessageProviderImpl;
 import cn.w.im.core.providers.message.MessageProvider;
-import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.ServerType;
+import cn.w.im.core.providers.persistent.MessagePersistentProvider;
+import cn.w.im.core.providers.persistent.PersistentProviderFactory;
+import cn.w.im.core.message.NonePersistentMessage;
+import cn.w.im.core.ServerType;
+import cn.w.im.core.message.Message;
+import cn.w.im.core.message.forward.ForwardResponseMessage;
+import cn.w.im.core.exception.ServerInnerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 
 /**
@@ -18,11 +28,14 @@ import java.util.Date;
  */
 public abstract class AbstractServer {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractServer.class);
+
     private ServerBasic serverBasic;
 
-    private ClientCacheProvider clientCacheProvider;
+    private ClientProvider clientProvider;
     private MessageProvider messageProvider;
     private RespondProvider respondProvider;
+
 
     /**
      * 构造函数.
@@ -30,7 +43,17 @@ public abstract class AbstractServer {
      * @param serverType 服务类型.
      */
     public AbstractServer(ServerType serverType, int port) {
-        this.serverBasic = new ServerBasic(serverType, port);
+        this.serverBasic = new ServerBasic(serverType, this.getLocalHost(), port);
+    }
+
+    private String getLocalHost() {
+        try {
+            InetAddress localAddress = InetAddress.getLocalHost();
+            return localAddress.getHostAddress().toString();
+        } catch (UnknownHostException e) {
+            LOGGER.warn("get local host error!127.0.0.1 instead!", e);
+            return "127.0.0.1";
+        }
     }
 
     /**
@@ -40,9 +63,9 @@ public abstract class AbstractServer {
         if (!this.serverBasic.isStart()) {
             this.serverBasic.setStart(true);
             this.serverBasic.setStartDateTime(new Date().getTime());
-            this.clientCacheProvider = new DefaultClientCacheProvider();
+            this.clientProvider = new DefaultClientProvider();
             this.respondProvider = new DefaultRespondProvider();
-            this.messageProvider = new DefaultMessageProviderImpl(this.clientCacheProvider, this.respondProvider, this.serverBasic);
+            this.messageProvider = new DefaultMessageProviderImpl(this.clientProvider, this.respondProvider, this.serverBasic);
         }
     }
 
@@ -62,6 +85,47 @@ public abstract class AbstractServer {
      */
     public boolean isStart() {
         return this.serverBasic.isStart();
+    }
+
+    /**
+     * message arrived.
+     *
+     * @param context message handler context.
+     */
+    public final void messageArrived(MessageHandlerContext context) {
+        Message message = context.getMessage();
+        switch (message.getMessageType()) {
+            case ForwardRequest:  //forward service request server basic info  message.
+                this.sendBasic(context.getCurrentHost(), context.getCurrentPort());
+                break;
+            default:
+                handlerMessage(context);
+        }
+        if (!(message instanceof NonePersistentMessage)) {
+            persistentMessage(message);
+        }
+    }
+
+    protected abstract void handlerMessage(MessageHandlerContext context);
+
+    /**
+     * send request client this server basic info.
+     *
+     * @param host client host.
+     * @param port client port.
+     */
+    private void sendBasic(String host, int port) {
+        ForwardResponseMessage responseMessage = new ForwardResponseMessage(this.getServerBasic());
+        this.messageProvider().send(host, port, responseMessage);
+    }
+
+    private void persistentMessage(Message message) {
+        try {
+            MessagePersistentProvider messagePersistentProvider = PersistentProviderFactory.getMessagePersistentProvider(message);
+            messagePersistentProvider.save(message);
+        } catch (ServerInnerException ex) {
+            LOGGER.error("persistent message error", ex);
+        }
     }
 
     /**
@@ -141,8 +205,8 @@ public abstract class AbstractServer {
      *
      * @return client cache provider.
      */
-    public ClientCacheProvider clientCacheProvider() {
-        return clientCacheProvider;
+    public ClientProvider clientProvider() {
+        return clientProvider;
     }
 
     /**

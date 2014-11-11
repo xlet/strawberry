@@ -17,24 +17,25 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-utils</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>im-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-domains</artifactId>
+            <artifactId>im-netty</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-plugins</artifactId>
+            <artifactId>im-persistent</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>im-thirdparty</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -69,10 +70,10 @@
                                 <echo>copy to bin</echo>
                                 <echo>copy jar to bin</echo>
                                 <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
-                                        tofile="${project.basedir}/../../bin/bus/bootstrap.jar"></copy>
+                                      tofile="${project.basedir}/../../bin/bus/bootstrap.jar"></copy>
                                 <echo>copy dependence to bin</echo>
                                 <copy todir="${project.basedir}/../../bin/bus/lib/" overwrite="true">
-                                    <fileset dir="${project.build.directory}/lib/" />
+                                    <fileset dir="${project.build.directory}/lib/"/>
                                 </copy>
                             </tasks>
                         </configuration>

@@ -1,11 +1,11 @@
 package cn.w.im.core.providers.message;
 
-import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.messages.RespondMessage;
-import cn.w.im.exceptions.NotRegisterRespondMessageException;
-import cn.w.im.exceptions.NotRegisterRespondServerException;
-import cn.w.im.exceptions.RegisteredRespondMessageException;
-import cn.w.im.exceptions.RegisteredRespondServerException;
+import cn.w.im.core.server.ServerBasic;
+import cn.w.im.core.message.RespondMessage;
+import cn.w.im.core.exception.NotRegisterRespondMessageException;
+import cn.w.im.core.exception.NotRegisterRespondServerException;
+import cn.w.im.core.exception.RegisteredRespondMessageException;
+import cn.w.im.core.exception.RegisteredRespondServerException;
 
 /**
  * Creator: JackieHan.
@@ -47,8 +47,8 @@ public interface RespondProvider {
      * interrupt waiting for reply.
      *
      * @param respondKey message respond key.
-     * @throws cn.w.im.core.providers.message.RespondInterruptException          respond interrupt exception.
-     * @throws NotRegisterRespondMessageException message dit not register exception.
+     * @throws cn.w.im.core.providers.message.RespondInterruptException respond interrupt exception.
+     * @throws NotRegisterRespondMessageException                       message dit not register exception.
      */
     void interrupt(String respondKey) throws RespondInterruptException, NotRegisterRespondMessageException;
 }

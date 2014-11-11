@@ -1,10 +1,10 @@
 package cn.w.im.core.providers.allocate;
 
-import cn.w.im.domains.ConnectToken;
-import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.client.MessageClientBasic;
-import cn.w.im.domains.client.MessageClientType;
-import cn.w.im.domains.member.BasicMember;
+import cn.w.im.core.ConnectToken;
+import cn.w.im.core.server.ServerBasic;
+import cn.w.im.core.MessageClientType;
+import cn.w.im.core.member.BasicMember;
+import cn.w.im.core.exception.LoggedInException;
 
 /**
  * Creator: JackieHan.
@@ -27,11 +27,12 @@ public interface MessageServerAllocateProvider {
      * <p/>
      * if message client allocated return this allocation.
      *
-     * @param member   member id.
+     * @param member     member id.
      * @param clientHost client host.
+     * @param clientType client type.
      * @return ConnectToken.
      */
-    ConnectToken allocate(BasicMember member, String clientHost);
+    ConnectToken allocate(BasicMember member, String clientHost, MessageClientType clientType) throws LoggedInException;
 
     /**
      * sync other login server allocation.
@@ -44,10 +45,12 @@ public interface MessageServerAllocateProvider {
      * message client connected message sever.
      *
      * @param connectToken           token string.
-     * @param messageClientBasic     message client basic.
+     * @param memberId               member id.
+     * @param clientHost             client host.
+     * @param clientType             client type.
      * @param allocatedMessageServer allocated message server basic.
      */
-    void connected(String connectToken, MessageClientBasic messageClientBasic, ServerBasic allocatedMessageServer);
+    void connected(String connectToken, String memberId, String clientHost, MessageClientType clientType, ServerBasic allocatedMessageServer);
 
     /**
      * message client disconnected message server.

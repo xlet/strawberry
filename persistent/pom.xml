@@ -17,12 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-domains</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>im-exceptions</artifactId>
+            <artifactId>im-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

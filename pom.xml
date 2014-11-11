@@ -50,12 +50,10 @@
     </properties>
 
     <modules>
-        <module>plugins</module>
-        <module>utils</module>
-        <module>domains</module>
-        <module>exceptions</module>
-        <module>persistent</module>
         <module>core</module>
+        <module>persistent</module>
+        <module>thirdparty</module>
+        <module>netty</module>
         <module>services</module>
     </modules>
 
@@ -198,6 +196,13 @@
                 <groupId>org.easymock</groupId>
                 <artifactId>easymockclassextension</artifactId>
                 <version>${easymock.version}</version>
+                <scope>test</scope>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>1.7.0</version>
                 <scope>test</scope>
                 <optional>true</optional>
             </dependency>

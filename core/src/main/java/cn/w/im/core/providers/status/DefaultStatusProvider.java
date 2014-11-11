@@ -1,11 +1,13 @@
 package cn.w.im.core.providers.status;
 
-import cn.w.im.domains.Status;
-import cn.w.im.exceptions.NotSupportedDataStoreException;
-import cn.w.im.persistent.OnlineMemberStatusDao;
-import cn.w.im.persistent.PersistentRepositoryFactory;
+import cn.w.im.core.Status;
+import cn.w.im.core.member.BasicMember;
+import cn.w.im.core.member.MemberStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * default implement of {@link cn.w.im.core.providers.status.StatusProvider}.
@@ -13,20 +15,38 @@ import org.slf4j.LoggerFactory;
 public class DefaultStatusProvider implements StatusProvider {
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private OnlineMemberStatusDao memberStatusDao;
+    private Map<String, MemberStatus> memberStatusMap;
+
 
     public DefaultStatusProvider() {
-        try {
-            this.memberStatusDao = PersistentRepositoryFactory.getDao(OnlineMemberStatusDao.class);
-        } catch (NotSupportedDataStoreException e) {
-            log.error(e.getMessage(), e);
+        this.memberStatusMap = new ConcurrentHashMap<String, MemberStatus>();
+    }
+
+    @Override
+    public MemberStatus status(BasicMember member) {
+        if (this.memberStatusMap.containsKey(member.getId())) {
+            return this.memberStatusMap.get(member.getId());
+        }
+        return new MemberStatus(member, Status.Offline);
+    }
+
+    @Override
+    public void change(BasicMember member, Status status) {
+        if (status.getValue() == Status.Offline.getValue()) {
+            this.memberStatusMap.remove(member.getId());
+        }
+        if (this.memberStatusMap.containsKey(member.getId())) {
+            MemberStatus memberStatus = this.status(member);
+            memberStatus.setStatus(status);
+        } else {
+            MemberStatus memberStatus = new MemberStatus(member, status);
+            this.memberStatusMap.put(member.getId(), memberStatus);
         }
     }
 
     @Override
-    public Status status(String memberId) {
-        return memberStatusDao.get(memberId).getStatus();
+    public boolean online(BasicMember member) {
+        MemberStatus status = this.status(member);
+        return !status.getStatus().equals(Status.Offline);
     }
-
-
 }

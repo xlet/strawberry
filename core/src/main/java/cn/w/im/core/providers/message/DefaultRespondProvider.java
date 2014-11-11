@@ -1,12 +1,12 @@
 package cn.w.im.core.providers.message;
 
-import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.messages.RespondMessage;
-import cn.w.im.domains.messages.server.ServerToServerMessage;
-import cn.w.im.exceptions.NotRegisterRespondMessageException;
-import cn.w.im.exceptions.NotRegisterRespondServerException;
-import cn.w.im.exceptions.RegisteredRespondMessageException;
-import cn.w.im.exceptions.RegisteredRespondServerException;
+import cn.w.im.core.server.ServerBasic;
+import cn.w.im.core.message.RespondMessage;
+import cn.w.im.core.message.server.ServerToServerMessage;
+import cn.w.im.core.exception.NotRegisterRespondMessageException;
+import cn.w.im.core.exception.NotRegisterRespondServerException;
+import cn.w.im.core.exception.RegisteredRespondMessageException;
+import cn.w.im.core.exception.RegisteredRespondServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

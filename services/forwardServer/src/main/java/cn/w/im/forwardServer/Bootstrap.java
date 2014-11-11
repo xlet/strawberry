@@ -1,8 +1,8 @@
 package cn.w.im.forwardServer;
 
-import cn.w.im.domains.conf.ForwardConfiguration;
+import cn.w.im.core.config.ForwardConfiguration;
 import cn.w.im.core.server.ForwardServer;
-import cn.w.im.utils.spring.SpringContext;
+import cn.w.im.core.spring.SpringContext;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;

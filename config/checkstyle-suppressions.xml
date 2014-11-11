@@ -18,8 +18,8 @@
    under the License.
 -->
 <!DOCTYPE suppressions PUBLIC
-    "-//Puppy Crawl//DTD Suppressions 1.0//EN"
-    "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd">
+        "-//Puppy Crawl//DTD Suppressions 1.0//EN"
+        "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd">
 
 <suppressions>
     <!-- File Length -->
@@ -36,23 +36,23 @@
     <suppress checks="JavadocMethod" files="SessionMap.java"/>
 
     <!-- Javadoc Style -->
-    <suppress checks="JavadocStyle" files="Form.java"            lines="1225"/>
-    <suppress checks="JavadocStyle" files="Menu.java"            lines="1025"/>
-    <suppress checks="JavadocStyle" files="CheckList.java"       lines="635"/>
-    <suppress checks="JavadocStyle" files="Tree.java"            lines="489"/>
-    <suppress checks="JavadocStyle" files="ColorPicker.java"     lines="193"/>
+    <suppress checks="JavadocStyle" files="Form.java" lines="1225"/>
+    <suppress checks="JavadocStyle" files="Menu.java" lines="1025"/>
+    <suppress checks="JavadocStyle" files="CheckList.java" lines="635"/>
+    <suppress checks="JavadocStyle" files="Tree.java" lines="489"/>
+    <suppress checks="JavadocStyle" files="ColorPicker.java" lines="193"/>
     <suppress checks="JavadocStyle" files="VirtualKeyboard.java" lines="116"/>
 
     <!-- Line Length -->
-    <suppress checks="LineLength" files="DateField.java"       lines="96,97,98"/>
+    <suppress checks="LineLength" files="DateField.java" lines="96,97,98"/>
     <suppress checks="LineLength" files="CreditCardField.java" lines="164,176"/>
-    <suppress checks="LineLength" files="RegexField.java"      lines="91,103"/>
-    <suppress checks="LineLength" files="EmailField.java"      lines="68,80"/>
-    <suppress checks="LineLength" files="ColorPicker.java"     lines="87,88"/>
-    <suppress checks="LineLength" files="ClickServlet.java"    lines="797"/>
-    <suppress checks="LineLength" files="TabbedPanel.java"     lines="117"/>
-    <suppress checks="LineLength" files="Table.java"           lines="148"/>
-    <suppress checks="LineLength" files="IntegerField.java"    lines="94"/>
+    <suppress checks="LineLength" files="RegexField.java" lines="91,103"/>
+    <suppress checks="LineLength" files="EmailField.java" lines="68,80"/>
+    <suppress checks="LineLength" files="ColorPicker.java" lines="87,88"/>
+    <suppress checks="LineLength" files="ClickServlet.java" lines="797"/>
+    <suppress checks="LineLength" files="TabbedPanel.java" lines="117"/>
+    <suppress checks="LineLength" files="Table.java" lines="148"/>
+    <suppress checks="LineLength" files="IntegerField.java" lines="94"/>
     <suppress checks="LineLength" files="FieldSet.java"/>
     <suppress checks="LineLength" files="ErrorReport.java"/>
     <suppress checks="LineLength" files="ClickUtils.java"/>
@@ -60,16 +60,16 @@
     <suppress checks="LineLength" files="Tree.java"/>
 
     <!-- Method Length -->
-    <suppress checks="MethodLength" files="ErrorReport.java"  lines="186"/>
+    <suppress checks="MethodLength" files="ErrorReport.java" lines="186"/>
     <suppress checks="MethodLength" files="ClickServlet.java" lines="476"/>
-    <suppress checks="MethodLength" files="Form.java"         lines="2490"/>
-    <suppress checks="MethodLength" files="FieldSet.java"     lines="1097"/>
+    <suppress checks="MethodLength" files="Form.java" lines="2490"/>
+    <suppress checks="MethodLength" files="FieldSet.java" lines="1097"/>
 
     <!-- Static Variable Name -->
-    <suppress checks="StaticVariableName" files="MenuFactory.java"  lines="118,121"/>
+    <suppress checks="StaticVariableName" files="MenuFactory.java" lines="118,121"/>
     <suppress checks="StaticVariableName" files="MockResponse.java" lines="56,59"/>
-    <suppress checks="StaticVariableName" files="MockRequest.java"  lines="68"/>
-    
+    <suppress checks="StaticVariableName" files="MockRequest.java" lines="68"/>
+
     <suppress checks="Header" files="DeployUtils.java"/>
 </suppressions>
 

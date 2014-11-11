@@ -1,8 +1,7 @@
 package cn.w.im.testClient;
 
-import cn.w.im.domains.ConnectToken;
-import cn.w.im.domains.client.MessageClientType;
-import cn.w.im.domains.messages.client.*;
+import cn.w.im.core.MessageClientType;
+import cn.w.im.core.message.client.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;

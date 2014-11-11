@@ -20,7 +20,6 @@
         <module>messageServer</module>
         <module>forwardServer</module>
         <module>testClient</module>
-        <module>web</module>
     </modules>
 
 </project>

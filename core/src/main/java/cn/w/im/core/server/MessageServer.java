@@ -1,12 +1,14 @@
 package cn.w.im.core.server;
 
-import cn.w.im.core.providers.relation.ContactProvider;
-import cn.w.im.core.providers.relation.DefaultContactProviderImpl;
-import cn.w.im.core.providers.status.DefaultStatusProvider;
-import cn.w.im.core.providers.status.StatusProvider;
-import cn.w.im.domains.*;
-import cn.w.im.exceptions.TokenErrorException;
-import cn.w.im.exceptions.TokenNotExistedException;
+import cn.w.im.core.ConnectToken;
+import cn.w.im.core.MessageHandlerContext;
+import cn.w.im.core.ServerType;
+import cn.w.im.core.providers.status.DefaultMemberProviderImpl;
+import cn.w.im.core.providers.status.MemberProvider;
+import cn.w.im.core.message.Message;
+import cn.w.im.core.message.server.ReadyMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,16 +18,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * DateTime: 13-11-15 下午1:59.
  * Summary:消息服务器信息.
  */
-public class MessageServer extends AbstractServer {
+public class MessageServer extends ScalableServer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageServer.class);
 
     /**
      * key:token String.
      */
     private Map<String, ConnectToken> tokens;
 
-    private ContactProvider linkmanProvider;
-
-    private StatusProvider statusProvider;
+    private MemberProvider memberProvider;
 
     /**
      * 构造函数.
@@ -35,64 +37,38 @@ public class MessageServer extends AbstractServer {
     public MessageServer(int port) {
         super(ServerType.MessageServer, port);
         this.tokens = new ConcurrentHashMap<String, ConnectToken>();
-        this.linkmanProvider = new DefaultContactProviderImpl();
-        this.statusProvider = new DefaultStatusProvider();
     }
 
-    /**
-     * 添加登陆token.
-     *
-     * @param token token信息.
-     */
-    public void addToken(ConnectToken token) {
-        this.tokens.put(token.getToken(), token);
+    @Override
+    public void start() {
+        super.start();
+        this.memberProvider = new DefaultMemberProviderImpl(this.messageProvider());
     }
 
-    /**
-     * get token.
-     *
-     * @param token token string.
-     * @return Connected Token.
-     */
-    public ConnectToken getToken(String token) {
-        return this.tokens.get(token);
-    }
-
-    /**
-     * connect.
-     *
-     * @param token    message client's token.
-     * @param memberId message client's member id.
-     * @param host     message client's host.
-     * @throws TokenNotExistedException token is not existed.
-     * @throws TokenErrorException      token info is different with cached token.
-     */
-    public void connect(String token, String memberId, String host) throws TokenNotExistedException, TokenErrorException {
-        if (!this.tokens.containsKey(token)) {
-            throw new TokenNotExistedException(token);
-        }
-        ConnectToken connectToken = this.tokens.get(token);
-        if ((!connectToken.getMember().getId().equals(memberId)) || (!connectToken.getClientHost().equals(host))) {
-            throw new TokenErrorException(connectToken.getMember().getId(), connectToken.getClientHost(), memberId, host);
+    @Override
+    public void handlerMessage(MessageHandlerContext context) {
+        super.handlerMessage(context);
+        Message message = context.getMessage();
+        switch (message.getMessageType()) {
+            case Connected:
+            case ConnectedResponse:
+            case Connect:
+            case Normal:
+            case Token:
+            case Logout:
+                this.memberProvider.handlerMessage(context);
+                break;
+            default:
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("message[{}] is ignored!", message.getMessageType());
+                }
+                break;
         }
     }
 
-    /**
-     * connected. remove cached token.
-     *
-     * @param token token string.
-     */
-    public void connected(String token) {
-        if (this.tokens.containsKey(token)) {
-            this.tokens.remove(token);
-        }
-    }
-
-    public StatusProvider statusProvider() {
-        return this.statusProvider;
-    }
-
-    public ContactProvider ContactProvider() {
-        return this.linkmanProvider;
+    @Override
+    protected void registeredAfter(MessageHandlerContext context) {
+        ReadyMessage readyMessage = new ReadyMessage(this.getServerBasic());
+        this.messageProvider().send(ServerType.LoginServer, readyMessage);
     }
 }

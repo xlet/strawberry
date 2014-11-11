@@ -17,22 +17,22 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-domains</artifactId>
+            <artifactId>im-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-utils</artifactId>
+            <artifactId>im-netty</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-plugins</artifactId>
+            <artifactId>im-persistent</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-exceptions</artifactId>
+            <artifactId>im-thirdparty</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

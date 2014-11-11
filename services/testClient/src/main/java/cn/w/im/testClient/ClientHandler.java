@@ -1,8 +1,11 @@
 package cn.w.im.testClient;
 
-import cn.w.im.core.plugins.PluginContext;
-import cn.w.im.domains.client.MessageClientType;
-import cn.w.im.domains.messages.client.*;
+import cn.w.im.core.Channel;
+import cn.w.im.core.MessageHandlerContext;
+import cn.w.im.core.MessageClientType;
+import cn.w.im.core.message.client.*;
+import cn.w.im.netty.IpAddressProvider;
+import cn.w.im.netty.NettyChannel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
@@ -100,7 +103,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof LoginResponseMessage) {
             LoginResponseMessage message = (LoginResponseMessage) msg;
-            PluginContext handlerContext = new PluginContext(message, ctx, null);
+            Channel channel = new NettyChannel(ctx);
+            MessageHandlerContext handlerContext = new MessageHandlerContext(message, channel, null);
             ctx.close();
             for (HandlerListener listener : listeners) {
                 listener.operationComplete(handlerContext);

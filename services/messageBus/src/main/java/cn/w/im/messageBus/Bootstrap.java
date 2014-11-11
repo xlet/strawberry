@@ -1,8 +1,8 @@
 package cn.w.im.messageBus;
 
-import cn.w.im.domains.conf.Configuration;
-import cn.w.im.core.server.MessageBus;
-import cn.w.im.utils.spring.SpringContext;
+import cn.w.im.core.server.BusServer;
+import cn.w.im.core.config.Configuration;
+import cn.w.im.core.spring.SpringContext;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -57,11 +57,11 @@ public final class Bootstrap {
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
     private Configuration configuration;
-    private MessageBus messageBus;
+    private BusServer messageBus;
 
     private Bootstrap() {
         configuration = (Configuration) SpringContext.context().getBean("serverConfig");
-        this.messageBus = new MessageBus(configuration.getPort());
+        this.messageBus = new BusServer(configuration.getPort());
     }
 
     private void startServer() throws Exception {

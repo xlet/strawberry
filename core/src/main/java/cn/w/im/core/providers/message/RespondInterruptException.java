@@ -1,12 +1,12 @@
 package cn.w.im.core.providers.message;
 
-import cn.w.im.exceptions.ServerInnerException;
+import cn.w.im.core.exception.ServerInnerException;
 
 /**
  * Creator: JackieHan.
  * DateTime: 14-3-25 下午2:23.
  * Summary: respond interrupt exception.
- *
+ * <p/>
  * when a server respond error response message,throw this.
  */
 public class RespondInterruptException extends ServerInnerException {
@@ -24,6 +24,7 @@ public class RespondInterruptException extends ServerInnerException {
 
     /**
      * get respond key.
+     *
      * @return respond key.
      */
     public String getRespondKey() {

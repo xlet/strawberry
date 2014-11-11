@@ -1,13 +1,11 @@
 package cn.w.im.forwardServer;
 
-import cn.w.im.core.handlers.ForwardServerHandler;
-import cn.w.im.core.handlers.HeartbeatReqHandler;
-import cn.w.im.core.handlers.JsonMessageDecoder;
-import cn.w.im.core.handlers.JsonMessageEncoder;
+import cn.w.im.netty.handlers.ForwardServerHandler;
+import cn.w.im.netty.handlers.JsonMessageDecoder;
+import cn.w.im.netty.handlers.JsonMessageEncoder;
 import cn.w.im.core.server.ForwardServer;
-import cn.w.im.domains.conf.Configuration;
-import cn.w.im.domains.conf.ForwardConfiguration;
-import cn.w.im.utils.spring.SpringContext;
+import cn.w.im.core.config.ForwardConfiguration;
+import cn.w.im.core.spring.SpringContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;

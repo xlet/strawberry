@@ -1,12 +1,11 @@
 package cn.w.im.testClient;
 
-import cn.w.im.core.handlers.JsonMessageDecoder;
-import cn.w.im.core.handlers.JsonMessageEncoder;
-import cn.w.im.core.plugins.PluginContext;
-import cn.w.im.domains.ConnectToken;
-import cn.w.im.domains.client.MessageClientType;
-import cn.w.im.domains.messages.client.LoginResponseMessage;
-import cn.w.im.domains.messages.client.ProductType;
+import cn.w.im.core.MessageHandlerContext;
+import cn.w.im.netty.handlers.JsonMessageDecoder;
+import cn.w.im.netty.handlers.JsonMessageEncoder;
+import cn.w.im.core.MessageClientType;
+import cn.w.im.core.message.client.LoginResponseMessage;
+import cn.w.im.core.message.client.ProductType;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
@@ -75,7 +74,7 @@ public class Login {
 
     private HandlerListener loginListener = new HandlerListener() {
         @Override
-        public void operationComplete(PluginContext context) {
+        public void operationComplete(MessageHandlerContext context) {
             if (context.getMessage() instanceof LoginResponseMessage) {
                 LoginResponseMessage loginResponseMessage = (LoginResponseMessage) context.getMessage();
                 loginGroup.shutdownGracefully();

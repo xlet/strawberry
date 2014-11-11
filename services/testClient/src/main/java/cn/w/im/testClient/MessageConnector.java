@@ -1,10 +1,10 @@
 package cn.w.im.testClient;
 
-import cn.w.im.core.handlers.JsonMessageDecoder;
-import cn.w.im.core.handlers.JsonMessageEncoder;
-import cn.w.im.domains.ServerBasic;
-import cn.w.im.domains.client.MessageClientType;
-import cn.w.im.domains.messages.client.ProductType;
+import cn.w.im.netty.handlers.JsonMessageDecoder;
+import cn.w.im.netty.handlers.JsonMessageEncoder;
+import cn.w.im.core.server.ServerBasic;
+import cn.w.im.core.MessageClientType;
+import cn.w.im.core.message.client.ProductType;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
