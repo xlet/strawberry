@@ -2,6 +2,8 @@ package cn.w.im.core.providers.status;
 
 import cn.w.im.core.member.BasicMember;
 import cn.w.im.core.member.relation.RecentContactStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +32,7 @@ public class CacheRecentContactStatusCollection {
     }
 
     public void statusChanged(BasicMember owner, BasicMember contact, long lastContactTime, String lastMessageContent) {
+
         if (this.isCached(owner, contact)) {
             CacheRecentContactStatus existedCachedStatus = this.getCachedStatus(owner, contact);
             existedCachedStatus.setLastContactTime(lastContactTime);

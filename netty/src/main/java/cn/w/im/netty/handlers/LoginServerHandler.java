@@ -34,7 +34,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         LOGGER.debug("client linked in");
         Channel channel = new NettyChannel(ctx);
-        this.currentServer.clientProvider().registerClient(channel);
+        this.currentServer.clientProvider().registerClient(channel, this.currentServer);
 
         super.channelActive(ctx);
     }
@@ -50,17 +50,18 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //TODO: channel inactive process.
-        LOGGER.debug("client channel inactive,remove cached client info.");
         Channel channel = new NettyChannel(ctx);
         this.currentServer.clientProvider().removeClient(channel);
+
+        LOGGER.debug("client channel[host:{},port:{}] inactive,remove cached client info.", channel.currentHost(), channel.currentPort());
         super.channelInactive(ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        String ip = IpAddressProvider.getRemoteIpAddress(ctx);
-        int port = IpAddressProvider.getRemotePort(ctx);
-        LOGGER.error("client[" + ip + ":" + port + "] error !", cause);
+        Channel channel = new NettyChannel(ctx);
+        this.currentServer.clientProvider().removeClient(channel);
+        LOGGER.error("client[" + channel.currentHost() + ":" + channel.currentPort() + "] error !", cause);
         //TODO: not cached exception process.
         ctx.close();
 

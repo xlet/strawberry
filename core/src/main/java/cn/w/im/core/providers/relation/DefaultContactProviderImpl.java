@@ -26,7 +26,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class DefaultContactProviderImpl implements ContactProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultContactProviderImpl.class);
 
-
     /**
      * member friend group cached map.
      * key:memberId.
@@ -62,6 +61,7 @@ public class DefaultContactProviderImpl implements ContactProvider {
 
         //get custom group.
         //TODO:jackie custom group
+
         // add  to cache.
         if (!this.memberFriendGroupMap.containsKey(owner.getId())) {
             List<FriendGroup> cachedMemberFriendGroup = new CopyOnWriteArrayList<FriendGroup>(friendGroups);
@@ -72,39 +72,11 @@ public class DefaultContactProviderImpl implements ContactProvider {
 
 
     @Override
-    public RecentContactStatuses getRecentContact(BasicMember owner) {
-        return this.recentContactProvider.get(owner);
-    }
-
-    @Override
-    public BasicMember getContact(String memberId, ProductType productType) {
-        return null;
-    }
-
-    @Override
     public BasicMember getContact(String memberId) throws ContactNotExistedException {
         try {
             return this.memberProvider.getFromCache(memberId);
         } catch (MemberNotCachedException ex) {
             throw new ContactNotExistedException(ex);
         }
-    }
-
-    @Override
-    public List<BasicMember> getMembers(List<String> ids) {
-        return null;
-    }
-
-    @Override
-    public Collection<MemberStatus> getContactStatus(BasicMember owner) {
-        Collection<MemberStatus> memberStatuses = new ArrayList<MemberStatus>();
-        Collection<FriendGroup> friendGroups = this.getFriendGroup(owner);
-        for (FriendGroup friendGroup : friendGroups) {
-            for (BasicMember member : friendGroup.getContacts()) {
-                MemberStatus memberStatus = this.statusProvider.status(member);
-                memberStatuses.add(memberStatus);
-            }
-        }
-        return memberStatuses;
     }
 }

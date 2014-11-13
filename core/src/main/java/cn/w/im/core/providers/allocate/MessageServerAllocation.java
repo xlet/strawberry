@@ -1,15 +1,14 @@
 package cn.w.im.core.providers.allocate;
 
 import cn.w.im.core.ConnectToken;
+import cn.w.im.core.MessageClientType;
+import cn.w.im.core.exception.LoggedInException;
 import cn.w.im.core.server.ServerBasic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Creator: JackieHan.
@@ -26,6 +25,8 @@ public class MessageServerAllocation {
 
     private int allocateCount = 0;
 
+    private Map<String, Map<MessageClientType, MemberConnectedStatus>> memberConnectedStatusMap;
+
     /**
      * token.
      */
@@ -34,7 +35,7 @@ public class MessageServerAllocation {
     /**
      * key memberId
      */
-    private Map<String, List<ConnectToken>> loginIdConnectingTokenMap;
+    private Map<String, Map<MessageClientType, ConnectToken>> loginIdConnectingTokenMap;
 
 
     /**
@@ -45,7 +46,8 @@ public class MessageServerAllocation {
     public MessageServerAllocation(ServerBasic messageServer) {
         this.messageServer = messageServer;
         this.tokenConnectingTokenMap = new ConcurrentHashMap<String, ConnectToken>();
-        this.loginIdConnectingTokenMap = new ConcurrentHashMap<String, List<ConnectToken>>();
+        this.loginIdConnectingTokenMap = new ConcurrentHashMap<String, Map<MessageClientType, ConnectToken>>();
+        this.memberConnectedStatusMap = new ConcurrentHashMap<String, Map<MessageClientType, MemberConnectedStatus>>();
     }
 
     /**
@@ -89,45 +91,120 @@ public class MessageServerAllocation {
      *
      * @param token login token.
      */
-    public synchronized void allocate(ConnectToken token) {
+    public synchronized void allocate(ConnectToken token) throws ConnectingTokenExistedException {
         this.allocateCount += 1;
-
-        if (!tokenConnectingTokenMap.containsKey(token.getToken())) {
-            this.tokenConnectingTokenMap.put(token.getToken(), token);
-        }
-        if (!loginIdConnectingTokenMap.containsKey(token.getClientHost())) {
-            List<ConnectToken> loginIdTokens = new CopyOnWriteArrayList<ConnectToken>();
-            loginIdTokens.add(token);
-            loginIdConnectingTokenMap.put(token.getMember().getId(), loginIdTokens);
-        } else {
-            List<ConnectToken> loginIdTokens = this.loginIdConnectingTokenMap.get(token.getMember().getId());
-            loginIdTokens.add(token);
-        }
+        this.addConnectingToken(token);
     }
 
     /**
      * message client connected message server.
      * remove cached login token.
      *
-     * @param token connected token.
+     * @param token      connected token.
+     * @param clientHost client host.
      */
-    public synchronized void connected(String token) {
-        LOGGER.debug("adding to connecting list, token = " + token);
-        this.linkedClientCount += 1;
-        ConnectToken connectToken = this.tokenConnectingTokenMap.get(token);
-        this.tokenConnectingTokenMap.remove(token);
+    public synchronized void connected(String token, String memberId, MessageClientType clientType, String clientHost) throws ConnectingTokenNotExistedException, ConnectedStatusExistedException {
 
-        List<ConnectToken> loginIdTokens = this.loginIdConnectingTokenMap.get(connectToken.getMember().getId());
-        loginIdTokens.remove(connectToken);
+        if (this.tokenConnectingTokenMap.containsKey(token)) {
+            ConnectToken connectToken = this.tokenConnectingTokenMap.get(token);
+            this.linkedClientCount += 1;
+            this.removeConnectingCache(connectToken);
+            this.addConnectedStatus(memberId, clientType, clientHost);
+        } else {
+            throw new ConnectingTokenNotExistedException(token, memberId, clientType);
+        }
+
+    }
+
+    private void addConnectedStatus(String memberId, MessageClientType clientType, String clientHost) throws ConnectedStatusExistedException {
+        if (this.memberConnectedStatusMap.containsKey(memberId)) {
+            Map<MessageClientType, MemberConnectedStatus> connectedStatuses = this.memberConnectedStatusMap.get(memberId);
+            if (connectedStatuses.containsKey(clientType)) {
+                throw new ConnectedStatusExistedException(memberId, clientType);
+            } else {
+                MemberConnectedStatus connectedStatus = new MemberConnectedStatus(memberId, clientType, clientHost);
+                connectedStatuses.put(clientType, connectedStatus);
+            }
+        } else {
+            MemberConnectedStatus connectedStatus = new MemberConnectedStatus(memberId, clientType, clientHost);
+            Map<MessageClientType, MemberConnectedStatus> clientTypeStatusMap = new ConcurrentHashMap<MessageClientType, MemberConnectedStatus>();
+            clientTypeStatusMap.put(clientType, connectedStatus);
+            this.memberConnectedStatusMap.put(memberId, clientTypeStatusMap);
+        }
+    }
+
+    private void removeConnectedStatus(String memberId, MessageClientType clientType, String clientHost) throws ConnectedStatusNotExistedException {
+        if (this.memberConnectedStatusMap.containsKey(memberId)) {
+            Map<MessageClientType, MemberConnectedStatus> connectedStatusMap = this.memberConnectedStatusMap.get(memberId);
+            if (connectedStatusMap.containsKey(clientType)) {
+                connectedStatusMap.remove(clientType);
+            } else {
+                throw new ConnectedStatusNotExistedException(memberId, clientType, clientHost);
+            }
+        } else {
+            throw new ConnectedStatusNotExistedException(memberId, clientType, clientHost);
+        }
+    }
+
+    private void addConnectingToken(ConnectToken connectToken) throws ConnectingTokenExistedException {
+        String token = connectToken.getToken();
+        String memberId = connectToken.getMember().getId();
+        MessageClientType clientType = connectToken.getClientType();
+
+        if (!this.tokenConnectingTokenMap.containsKey(token)) {
+            this.tokenConnectingTokenMap.put(token, connectToken);
+        } else {
+            throw new ConnectingTokenExistedException(token, memberId, clientType);
+        }
+
+        if (this.loginIdConnectingTokenMap.containsKey(memberId)) {
+            Map<MessageClientType, ConnectToken> clientTypeConnectingMap = this.loginIdConnectingTokenMap.get(memberId);
+            if (clientTypeConnectingMap.containsKey(clientType)) {
+                throw new ConnectingTokenExistedException(token, memberId, clientType);
+            } else {
+                clientTypeConnectingMap.put(clientType, connectToken);
+            }
+        } else {
+            Map<MessageClientType, ConnectToken> clientTypeConnectTokenMap = new ConcurrentHashMap<MessageClientType, ConnectToken>();
+            clientTypeConnectTokenMap.put(clientType, connectToken);
+            this.loginIdConnectingTokenMap.put(memberId, clientTypeConnectTokenMap);
+        }
+    }
+
+    private void removeConnectingCache(ConnectToken connectToken) throws ConnectingTokenNotExistedException {
+        String token = connectToken.getToken();
+        String memberId = connectToken.getMember().getId();
+        MessageClientType clientType = connectToken.getClientType();
+
+        if (this.tokenConnectingTokenMap.containsKey(token)) {
+            this.tokenConnectingTokenMap.remove(connectToken.getToken());
+        } else {
+            throw new ConnectingTokenNotExistedException(token, memberId, clientType);
+        }
+
+        if (this.loginIdConnectingTokenMap.containsKey(memberId)) {
+            Map<MessageClientType, ConnectToken> clientTypeConnectingMap = this.loginIdConnectingTokenMap.get(memberId);
+            if (clientTypeConnectingMap.containsKey(clientType)) {
+                clientTypeConnectingMap.remove(clientType);
+                if (clientTypeConnectingMap.isEmpty()) {
+                    this.loginIdConnectingTokenMap.remove(memberId);
+                }
+            } else {
+                throw new ConnectingTokenNotExistedException(token, memberId, clientType);
+            }
+        } else {
+            throw new ConnectingTokenNotExistedException(token, memberId, clientType);
+        }
     }
 
     /**
      * message client disconnected message server.
      *
-     * @param loginId    login id.
+     * @param memberId   member id.
      * @param clientHost client host.
      */
-    public synchronized void disconnected(String loginId, String clientHost) {
+    public synchronized void disconnected(String memberId, MessageClientType clientType, String clientHost) throws ConnectedStatusNotExistedException {
+        this.removeConnectedStatus(memberId, clientType, clientHost);
         this.linkedClientCount -= 1;
     }
 
@@ -136,25 +213,55 @@ public class MessageServerAllocation {
      * <p/>
      * if not matched return null.
      *
-     * @param memberId login id.
-     * @param host     message client host.
+     * @param memberId   login id.
+     * @param clientType client type.
+     * @param clientHost message client host.
      * @return created ConnectToken.
      */
-    public ConnectToken getLoginToken(String memberId, String host) {
-        List<ConnectToken> loginIdTokens = this.loginIdConnectingTokenMap.get(memberId);
-        if (loginIdTokens == null) {
-            LOGGER.debug("get allocate token by memberId:{},host:{},return null", memberId, host);
-            return null;
-        }
-        Iterator<ConnectToken> loginIdTokenIterator = loginIdTokens.iterator();
-        while (loginIdTokenIterator.hasNext()) {
-            ConnectToken connectToken = loginIdTokenIterator.next();
-            if (connectToken.getClientHost().equals(host)) {
-                LOGGER.debug("get allocate token by memberId:{},host:{},return token", memberId, host);
-                return connectToken;
+    public ConnectToken getLoginToken(String memberId, MessageClientType clientType, String clientHost) throws LoggedInException {
+        if (this.loginIdConnectingTokenMap.containsKey(memberId)) {
+            Map<MessageClientType, ConnectToken> clientTypeConnectTokenMap = this.loginIdConnectingTokenMap.get(memberId);
+            if (clientTypeConnectTokenMap.containsKey(clientType)) {
+                ConnectToken token = clientTypeConnectTokenMap.get(clientType);
+                if (token.getClientHost().equals(clientHost)) {
+                    return token;
+                } else {
+                    throw new LoggedInException(token.getClientHost());
+                }
             }
         }
-        LOGGER.debug("get allocate token by memberId:{},host:{},return null", memberId, host);
+
         return null;
+    }
+
+    public boolean isConnected(String memberId, MessageClientType clientType) {
+        if (this.memberConnectedStatusMap.containsKey(memberId)) {
+            Map<MessageClientType, MemberConnectedStatus> clientTypeStatusMap = this.memberConnectedStatusMap.get(memberId);
+            if (clientTypeStatusMap.containsKey(clientType)) {
+                //todo:jackie has check client host?
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public MemberConnectedStatus getConnectedStatus(String memberId, MessageClientType clientType) {
+        if (this.memberConnectedStatusMap.containsKey(memberId)) {
+            Map<MessageClientType, MemberConnectedStatus> clientTypeStatusMap = this.memberConnectedStatusMap.get(memberId);
+            if (clientTypeStatusMap.containsKey(clientType)) {
+                return clientTypeStatusMap.get(clientType);
+            }
+        }
+        return null;
+    }
+
+    public boolean isAllocated(String memberId, MessageClientType clientType) {
+        if (this.loginIdConnectingTokenMap.containsKey(memberId)) {
+            Map<MessageClientType, ConnectToken> clientTypeConnectTokenMap = this.loginIdConnectingTokenMap.get(memberId);
+            if (clientTypeConnectTokenMap.containsKey(clientType)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

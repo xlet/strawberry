@@ -6,6 +6,8 @@ import cn.w.im.core.member.BasicMember;
 import cn.w.im.core.member.relation.RecentContactStatus;
 import cn.w.im.core.member.relation.RecentContactStatuses;
 import cn.w.im.core.spring.SpringContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -14,6 +16,7 @@ import java.util.*;
  */
 public class DefaultRecentContactProviderImpl implements RecentContactProvider {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultRecentContactProviderImpl.class);
 
     /**
      * recent contact limit keep number.
@@ -65,6 +68,9 @@ public class DefaultRecentContactProviderImpl implements RecentContactProvider {
 
     @Override
     public void change(BasicMember owner, BasicMember contact, String messageContent) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("member[{}] <-> member[{}] status change! lastContent is {}.", owner.getId(), contact.getId(), messageContent);
+        }
         this.cacheRecentContactStatus.statusChanged(owner, contact, System.currentTimeMillis(), messageContent);
     }
 
@@ -80,6 +86,7 @@ public class DefaultRecentContactProviderImpl implements RecentContactProvider {
         }
         this.persistentProvider.save(hasPersistentItems);
     }
+
 
     private Comparator<RecentContactStatus> recentContactItemComparator = new Comparator<RecentContactStatus>() {
         @Override

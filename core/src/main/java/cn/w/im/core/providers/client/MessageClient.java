@@ -3,6 +3,7 @@ package cn.w.im.core.providers.client;
 import cn.w.im.core.Channel;
 import cn.w.im.core.MessageClientType;
 import cn.w.im.core.member.BasicMember;
+import cn.w.im.core.server.ServerBasic;
 
 /**
  * message client.
@@ -13,8 +14,8 @@ public class MessageClient extends AbstractClient {
 
     private MessageClientType clientType;
 
-    public MessageClient(Channel channel, BasicMember member, MessageClientType clientType) {
-        super(channel);
+    public MessageClient(Channel channel, ServerBasic connectedServer, BasicMember member, MessageClientType clientType) {
+        super(channel, connectedServer);
         this.member = member;
         this.clientType = clientType;
     }

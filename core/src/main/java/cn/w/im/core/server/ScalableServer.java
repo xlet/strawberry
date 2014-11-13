@@ -34,20 +34,26 @@ public abstract class ScalableServer extends AbstractServer {
         switch (message.getMessageType()) {
             case ForwardReady: //forward server ready then register self to bus server.
                 this.registerToBus(context.getCurrentHost(), context.getCurrentPort());
-                break;
+                return;
             case ServerRegisterResponse:
                 this.registered(context);
-                break;
+                return;
+            //todo:jackie refactor this implement to remove child class again switch.
         }
     }
 
     private void registered(MessageHandlerContext context) {
         try {
-            ServerRegisterResponseMessage responseMessage = (ServerRegisterResponseMessage) context.getMessage();
+            String host = context.getCurrentHost();
+            int port = context.getCurrentPort();
+            ServerRegisterResponseMessage
+                    responseMessage = (ServerRegisterResponseMessage) context.getMessage();
             if (responseMessage.isSuccess()) {
+                ServerBasic serverBasic = responseMessage.getFromServer();
+                this.clientProvider().registerClient(host, port, serverBasic);
                 Collection<ServerBasic> startedServers = responseMessage.getStartedServers();
                 for (ServerBasic startedServer : startedServers) {
-                    this.clientProvider().registerClient(context.getChannel(), startedServer);
+                    this.clientProvider().registerClient(host, port, startedServer);
                 }
                 this.registeredAfter(context);
             } else {

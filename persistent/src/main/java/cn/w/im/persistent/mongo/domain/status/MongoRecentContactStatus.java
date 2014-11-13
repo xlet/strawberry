@@ -2,11 +2,13 @@ package cn.w.im.persistent.mongo.domain.status;
 
 import cn.w.im.persistent.mongo.domain.MongoDomain;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 /**
  * mongo recent contact status defined.
  */
+@Entity("recentContactStatus")
 public class MongoRecentContactStatus implements MongoDomain {
 
     @Id

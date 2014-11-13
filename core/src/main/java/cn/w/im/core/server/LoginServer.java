@@ -2,6 +2,8 @@ package cn.w.im.core.server;
 
 
 import cn.w.im.core.*;
+import cn.w.im.core.exception.*;
+import cn.w.im.core.message.client.ConnectResponseMessage;
 import cn.w.im.core.providers.allocate.DefaultMessageServerAllocateProvider;
 import cn.w.im.core.providers.allocate.MessageServerAllocateProvider;
 import cn.w.im.core.providers.member.DefaultMemberInfoProviderImpl;
@@ -11,9 +13,6 @@ import cn.w.im.core.message.Message;
 import cn.w.im.core.message.client.LoginMessage;
 import cn.w.im.core.message.client.LoginResponseMessage;
 import cn.w.im.core.message.server.*;
-import cn.w.im.core.exception.IdPasswordException;
-import cn.w.im.core.exception.LoggedInException;
-import cn.w.im.core.exception.ServerInnerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,10 +58,6 @@ public class LoginServer extends ScalableServer {
                 LoginMessage loginMessage = (LoginMessage) message;
                 this.login(loginMessage, context.getChannel(), loginMessage.getClientType());
                 break;
-            case Token:
-                TokenMessage tokenMessage = (TokenMessage) message;
-                this.allocateProvider().syncAllocation(tokenMessage.getToken());
-                break;
             case TokenResponse:
                 TokenResponseMessage tokenResponseMessage = (TokenResponseMessage) message;
                 this.loginSuccess(tokenResponseMessage);
@@ -70,6 +65,10 @@ public class LoginServer extends ScalableServer {
             case Connected:
                 ConnectedMessage connectedMessage = (ConnectedMessage) message;
                 this.connected(connectedMessage);
+                break;
+            case MemberLogout:
+                MemberLogoutMessage memberLogoutMessage = (MemberLogoutMessage) message;
+                this.memberLogout(memberLogoutMessage);
                 break;
             default:
                 if (LOGGER.isDebugEnabled()) {
@@ -79,14 +78,32 @@ public class LoginServer extends ScalableServer {
         }
     }
 
-    private void connected(ConnectedMessage message) {
-        this.allocateProvider().connected(message.getToken(), message.getMemberId(),
-                message.getClientHost(), message.getClientType(), message.getFromServer());
+    private void memberLogout(MemberLogoutMessage message) {
+        try {
+            String memberId = message.getMemberId();
+            String clientHost = message.getClientHost();
+            MessageClientType clientType = message.getClientType();
+            ServerBasic serverBasic = message.getServerBasic();
+            this.allocateProvider().disconnected(memberId, clientType, clientHost, serverBasic);
+        } catch (ServerInnerException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
 
-        ConnectedResponseMessage connectedResponseMessage = new ConnectedResponseMessage(message.getMemberId(), message.getClientHost(),
-                message.getClientType(), message.getToken(),
-                this.getServerBasic(), message.getRespondKey());
-        this.messageProvider().send(message.getFromServer(), connectedResponseMessage);
+    private void connected(ConnectedMessage message) {
+        try {
+            this.allocateProvider().connected(message.getToken(), message.getMemberId(), message.getClientType(),
+                    message.getClientHost(), message.getFromServer());
+
+            ConnectedResponseMessage connectedResponseMessage = new ConnectedResponseMessage(message.getMemberId(), message.getClientHost(),
+                    message.getClientType(), message.getToken(),
+                    this.getServerBasic(), message.getRespondKey());
+            this.messageProvider().send(message.getFromServer(), connectedResponseMessage);
+        } catch (ServerInnerException e) {
+            LOGGER.error(e.getMessage(), e);
+            ConnectResponseMessage responseMessage = new ConnectResponseMessage(e.getErrorCode(), e.getMessage());
+            this.messageProvider().send(message.getFromServer(), responseMessage);
+        }
     }
 
     private void loginSuccess(TokenResponseMessage message) {
@@ -108,19 +125,14 @@ public class LoginServer extends ScalableServer {
             BasicMember member = this.memberProvider().verify(loginId, password, message.getProductType());
 
             //re-register this client and mark this client and member relation.
-            this.clientProvider().registerClient(channel, member, clientType);
+            this.clientProvider().registerClient(channel.currentHost(), channel.currentPort(), member, clientType);
 
             //try allocate a message server to client to connect.
-            ConnectToken token = this.allocateProvider().allocate(member, channel.currentHost(), clientType);
+            ConnectToken token = this.allocateProvider().allocate(member, clientType, channel.currentHost());
 
             //send this token to message who allocated
             TokenMessage tokenMessage = new TokenMessage(token, this.getServerBasic());
             this.messageProvider().send(token.getAllocatedMessageServer(), tokenMessage);
-
-            //notify other started login server that this has allocated a message server to login client.
-            this.messageProvider().send(ServerType.LoginServer, tokenMessage);
-
-            //todo:jackie waite the allocated message server and other login server response token received has any necessary!!!
 
         } catch (IdPasswordException idPasswordException) {
 
@@ -140,13 +152,14 @@ public class LoginServer extends ScalableServer {
 
 
     private void messageServerReady(Channel channel, ReadyMessage readyMessage) {
+        ServerBasic readyMessageServer = readyMessage.getMessageServer();
+        this.allocateProvider().messageServerReady(readyMessageServer);
+
         try {
-            ServerBasic readyMessageServer = readyMessage.getMessageServer();
-            //todo:jackie has duplicate registered.
-            this.clientProvider().registerClient(channel, readyMessageServer);
-            this.allocateProvider().messageServerReady(readyMessageServer);
-        } catch (ServerInnerException ex) {
-            LOGGER.error(ex.getMessage(), ex);
+            this.clientProvider().registerClient(channel.currentHost(), channel.currentPort(), readyMessageServer);
+        } catch (ServerInnerException e) {
+            LOGGER.error("register ready message server[node:{}] error!", readyMessageServer.getNodeId());
+            LOGGER.error(e.getMessage(), e);
         }
     }
 

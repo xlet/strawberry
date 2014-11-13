@@ -4,6 +4,7 @@ import cn.w.im.core.MessageType;
 import cn.w.im.core.message.Message;
 import cn.w.im.core.member.relation.RecentContactStatus;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -13,15 +14,19 @@ import java.util.Collection;
  */
 public class RecentContactsMessage extends Message implements ServerToClientMessage {
 
-    private Collection<RecentContactStatus> recentContacts;
+    private Collection<RecentContactStatusSummary> recentContacts;
 
     public RecentContactsMessage() {
         super(MessageType.RecentContacts);
+        this.recentContacts = new ArrayList<RecentContactStatusSummary>();
     }
 
     public RecentContactsMessage(Collection<RecentContactStatus> recentContacts) {
         this();
-        this.recentContacts = recentContacts;
+        for (RecentContactStatus recentContactStatus : recentContacts) {
+            RecentContactStatusSummary summary = new RecentContactStatusSummary(recentContactStatus);
+            this.recentContacts.add(summary);
+        }
     }
 
     /**
@@ -29,7 +34,7 @@ public class RecentContactsMessage extends Message implements ServerToClientMess
      *
      * @return recent contacts.
      */
-    public Collection<RecentContactStatus> getRecentContacts() {
+    public Collection<RecentContactStatusSummary> getRecentContacts() {
         return recentContacts;
     }
 
@@ -38,7 +43,7 @@ public class RecentContactsMessage extends Message implements ServerToClientMess
      *
      * @param recentContacts recent contacts.
      */
-    public void setRecentContacts(Collection<RecentContactStatus> recentContacts) {
+    public void setRecentContacts(Collection<RecentContactStatusSummary> recentContacts) {
         this.recentContacts = recentContacts;
     }
 }

@@ -28,54 +28,49 @@ public interface MessageServerAllocateProvider {
      * if message client allocated return this allocation.
      *
      * @param member     member id.
-     * @param clientHost client host.
      * @param clientType client type.
+     * @param clientHost client host.
      * @return ConnectToken.
      */
-    ConnectToken allocate(BasicMember member, String clientHost, MessageClientType clientType) throws LoggedInException;
-
-    /**
-     * sync other login server allocation.
-     *
-     * @param connectToken ConnectToken.
-     */
-    void syncAllocation(ConnectToken connectToken);
+    ConnectToken allocate(BasicMember member, MessageClientType clientType, String clientHost) throws LoggedInException, ConnectingTokenExistedException;
 
     /**
      * message client connected message sever.
      *
      * @param connectToken           token string.
      * @param memberId               member id.
-     * @param clientHost             client host.
      * @param clientType             client type.
+     * @param clientHost             client host.
      * @param allocatedMessageServer allocated message server basic.
      */
-    void connected(String connectToken, String memberId, String clientHost, MessageClientType clientType, ServerBasic allocatedMessageServer);
+    void connected(String connectToken, String memberId, MessageClientType clientType, String clientHost, ServerBasic allocatedMessageServer) throws ConnectingTokenNotExistedException, ConnectedStatusExistedException;
 
     /**
      * message client disconnected message server.
      *
      * @param memberId      member id.
+     * @param clientType    client type.
      * @param clientHost    client host.
      * @param messageServer the disconnected message server.
+     * @
      */
-    void disconnected(String memberId, String clientHost, ServerBasic messageServer);
+    void disconnected(String memberId, MessageClientType clientType, String clientHost, ServerBasic messageServer) throws ConnectedStatusNotExistedException;
 
     /**
      * check if the client was connected
      *
      * @param memberId   member id.
-     * @param clientHost client host.
+     * @param clientType client type.
      * @return true:connected.
      */
-    boolean isConnected(String memberId, String clientHost);
+    boolean isConnected(String memberId, MessageClientType clientType);
 
     /**
      * check if client was allocated.
      *
      * @param memberId   member id.
-     * @param clientHost client host.
+     * @param clientType client type.
      * @return true:allocated.
      */
-    boolean isAllocated(String memberId, String clientHost);
+    boolean isAllocated(String memberId, MessageClientType clientType);
 }

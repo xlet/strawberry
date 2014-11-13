@@ -1,6 +1,8 @@
 package cn.w.im.core.providers.client;
 
+import cn.w.im.core.Channel;
 import cn.w.im.core.message.Message;
+import cn.w.im.core.server.ServerBasic;
 
 /**
  * client interface.
@@ -40,5 +42,18 @@ public interface Client {
      */
     void close();
 
+    /**
+     * connected server basic.
+     *
+     * @return connected server basic.
+     */
+    ServerBasic connectedServer();
+
+    /**
+     * get channel.
+     *
+     * @return channel.
+     */
+    Channel channel();
 
 }

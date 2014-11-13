@@ -2,36 +2,35 @@ package cn.w.im.core.providers.client;
 
 import cn.w.im.core.Channel;
 import cn.w.im.core.message.Message;
+import cn.w.im.core.server.ServerBasic;
 
 /**
  * client default implement.
  */
 public abstract class AbstractClient implements Client {
 
-    private String host;
-    private int port;
-
     private Channel channel;
 
-    public AbstractClient(Channel channel) {
-        this.host = channel.currentHost();
-        this.port = channel.currentPort();
+    private ServerBasic connectedServer;
+
+    public AbstractClient(Channel channel, ServerBasic connectedServer) {
         this.channel = channel;
+        this.connectedServer = connectedServer;
     }
 
     @Override
     public final String host() {
-        return this.host;
+        return this.channel.currentHost();
     }
 
     @Override
     public final int port() {
-        return this.port;
+        return this.channel.currentPort();
     }
 
     @Override
     public final String key() {
-        return this.host + "@@" + this.port;
+        return this.host() + "@@" + this.port();
     }
 
     @Override
@@ -42,5 +41,15 @@ public abstract class AbstractClient implements Client {
     @Override
     public final void close() {
         channel.close();
+    }
+
+    @Override
+    public final ServerBasic connectedServer() {
+        return this.connectedServer;
+    }
+
+    @Override
+    public final Channel channel() {
+        return this.channel;
     }
 }

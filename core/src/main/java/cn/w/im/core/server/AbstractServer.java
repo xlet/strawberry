@@ -100,6 +100,7 @@ public abstract class AbstractServer {
                 break;
             default:
                 handlerMessage(context);
+                break;
         }
         if (!(message instanceof NonePersistentMessage)) {
             persistentMessage(message);

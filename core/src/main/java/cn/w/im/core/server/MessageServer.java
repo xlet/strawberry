@@ -1,6 +1,5 @@
 package cn.w.im.core.server;
 
-import cn.w.im.core.ConnectToken;
 import cn.w.im.core.MessageHandlerContext;
 import cn.w.im.core.ServerType;
 import cn.w.im.core.providers.status.DefaultMemberProviderImpl;
@@ -10,8 +9,6 @@ import cn.w.im.core.message.server.ReadyMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Creator: JackieHan.
@@ -22,11 +19,6 @@ public class MessageServer extends ScalableServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageServer.class);
 
-    /**
-     * key:token String.
-     */
-    private Map<String, ConnectToken> tokens;
-
     private MemberProvider memberProvider;
 
     /**
@@ -36,13 +28,12 @@ public class MessageServer extends ScalableServer {
      */
     public MessageServer(int port) {
         super(ServerType.MessageServer, port);
-        this.tokens = new ConcurrentHashMap<String, ConnectToken>();
     }
 
     @Override
     public void start() {
         super.start();
-        this.memberProvider = new DefaultMemberProviderImpl(this.messageProvider());
+        this.memberProvider = new DefaultMemberProviderImpl(this.messageProvider(), this.clientProvider());
     }
 
     @Override

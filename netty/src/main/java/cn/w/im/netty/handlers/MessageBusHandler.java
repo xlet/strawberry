@@ -33,7 +33,7 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = new NettyChannel(ctx);
-        this.currentServer.clientProvider().registerClient(channel);
+        this.currentServer.clientProvider().registerClient(channel, this.currentServer);
         LOGGER.debug("client linked in");
         super.channelActive(ctx);
     }
@@ -48,20 +48,18 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        String remoteIp = IpAddressProvider.getRemoteIpAddress(ctx);
-        int remotePort = IpAddressProvider.getRemotePort(ctx);
         //TODO:jackie 处理退出, tell all server.
-        LOGGER.debug("client[" + remoteIp + ":" + remotePort + "] disconnected!");
         Channel channel = new NettyChannel(ctx);
         this.currentServer.clientProvider().removeClient(channel);
+        LOGGER.debug("client channel[host:{},port{}] disconnected!", channel.currentHost(), channel.currentHost());
         super.channelInactive(ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        String remoteIp = IpAddressProvider.getRemoteIpAddress(ctx);
-        int remotePort = IpAddressProvider.getRemotePort(ctx);
+        Channel channel = new NettyChannel(ctx);
+        this.currentServer.clientProvider().removeClient(channel);
         //TODO: 容错处理
-        LOGGER.error("client[" + remoteIp + ":" + remotePort + "] crashed!", cause);
+        LOGGER.error("client[" + channel.currentHost() + ":" + channel.currentPort() + "] crashed!", cause);
     }
 }

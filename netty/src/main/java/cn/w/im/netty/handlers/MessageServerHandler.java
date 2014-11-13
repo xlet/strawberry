@@ -38,7 +38,7 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //TODO:jackie 拒绝链接
         Channel channel = new NettyChannel(ctx);
-        this.currentServer.clientProvider().registerClient(channel);
+        this.currentServer.clientProvider().registerClient(channel, this.currentServer);
         //TODO:if host has registered
         super.channelActive(ctx);
     }
@@ -55,16 +55,16 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //TODO:jackie 退出处理
         Channel channel = new NettyChannel(ctx);
+        LOGGER.debug("client[host:{},port{}] inactive!", channel.currentHost(), channel.currentPort());
         this.currentServer.clientProvider().removeClient(channel);
         super.channelInactive(ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        InetSocketAddress remoteAddress = (InetSocketAddress) ctx.channel().remoteAddress();
-        String ipAddress = remoteAddress.getHostString();
-        int port = remoteAddress.getPort();
+        Channel channel = new NettyChannel(ctx);
+        this.currentServer.clientProvider().removeClient(channel);
         //TODO:jackie 异常处理.
-        LOGGER.error("client[" + ipAddress + ":" + port + "] error !", cause);
+        LOGGER.error("client[" + channel.currentHost() + ":" + channel.currentPort() + "] error !", cause);
     }
 }

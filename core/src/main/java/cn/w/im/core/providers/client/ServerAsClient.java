@@ -10,8 +10,8 @@ public class ServerAsClient extends AbstractClient {
 
     private ServerBasic basic;
 
-    public ServerAsClient(Channel channel, ServerBasic basic) {
-        super(channel);
+    public ServerAsClient(Channel channel, ServerBasic connectedServer, ServerBasic basic) {
+        super(channel, connectedServer);
         this.basic = basic;
     }
 

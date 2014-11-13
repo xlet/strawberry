@@ -52,8 +52,8 @@ public class DefaultMemberInfoProviderImpl implements MemberInfoProvider {
         //try get from outer system. if not null then add to cache.
         OuterMemberProvider outerMemberProvider = this.getOuterMemberProvider(productType);
         BasicMember member = outerMemberProvider.get(memberId);
-        if ((member != null) && (!this.memberCacheMap.containsKey(key))) {
-            this.memberCacheMap.put(key, member);
+        if (member != null) {
+            this.addMember(member);
         }
         return member;
     }
@@ -79,7 +79,15 @@ public class DefaultMemberInfoProviderImpl implements MemberInfoProvider {
         try {
             if (owner.getMemberSource() == MemberSourceType.OA) {
                 OuterMemberProvider outerMemberProvider = this.getOuterMemberProvider(ProductType.OA);
-                return outerMemberProvider.getSystemGroup(owner);
+                Collection<FriendGroup> friendGroups = outerMemberProvider.getSystemGroup(owner);
+                for (FriendGroup friendGroup : friendGroups) {
+                    for (BasicMember member : friendGroup.getContacts()) {
+                        if (member != null) {
+                            this.addMember(member);
+                        }
+                    }
+                }
+                return friendGroups;
             }
         } catch (GetMemberErrorException e) {
             LOGGER.error("get owner[memberId:{}] system friend group error.", owner.getId());

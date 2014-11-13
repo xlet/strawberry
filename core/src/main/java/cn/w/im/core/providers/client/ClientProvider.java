@@ -2,6 +2,7 @@ package cn.w.im.core.providers.client;
 
 import cn.w.im.core.Channel;
 import cn.w.im.core.MessageClientType;
+import cn.w.im.core.server.AbstractServer;
 import cn.w.im.core.server.ServerBasic;
 import cn.w.im.core.ServerType;
 import cn.w.im.core.exception.*;
@@ -13,43 +14,62 @@ import java.util.Collection;
  * client manage provider.
  */
 public interface ClientProvider {
+
     /**
      * register client.
      *
-     * @param channel current channel.
+     * @param channel         current channel.
+     * @param connectedServer client connected server.
      * @throws cn.w.im.core.exception.ClientRegisteredException client has registered exception.
      */
-    void registerClient(Channel channel) throws ClientRegisteredException;
+    void registerClient(Channel channel, AbstractServer connectedServer) throws ClientRegisteredException;
 
     /**
      * register message client.
      *
-     * @param channel    current channel.
+     * @param host       host.
+     * @param port       port.
      * @param member     member.
      * @param clientType client type.
      * @throws cn.w.im.core.exception.MessageClientRegisteredException message client has registered exception.
      * @throws cn.w.im.core.exception.ClientNotRegisterException       client dit not register exception.
      */
-    void registerClient(Channel channel, BasicMember member, MessageClientType clientType) throws MessageClientRegisteredException, ClientNotRegisterException;
+    void registerClient(String host, int port, BasicMember member, MessageClientType clientType) throws MessageClientRegisteredException, ClientNotRegisterException;
 
     /**
      * register server.
      *
-     * @param channel     current channel.
+     * @param host        host.
+     * @param port        port.
      * @param serverBasic server basic.
-     * @throws ClientNotRegisterException client dit not register exception.
-     * @throws cn.w.im.core.exception.ServerRegisteredException  server has registered exception.
+     * @throws ClientNotRegisterException                       client dit not register exception.
+     * @throws cn.w.im.core.exception.ServerRegisteredException server has registered exception.
      */
-    void registerClient(Channel channel, ServerBasic serverBasic) throws ServerRegisteredException, ClientNotRegisterException;
+    void registerClient(String host, int port, ServerBasic serverBasic) throws ServerRegisteredException, ClientNotRegisterException;
 
     /**
      * remove a registered client.
      *
-     * @param channel channel.
+     * @param channel current channel.
      * @throws ClientNotRegisterException client dit not register exception.
-     * @throws ServerNotRegisterException server dit not register exception.
      */
-    void removeClient(Channel channel) throws ServerNotRegisterException, ClientNotRegisterException;
+    void removeClient(Channel channel) throws ClientNotRegisterException;
+
+    /**
+     * remove a registered client.
+     *
+     * @param host host.
+     * @param port port.
+     * @throws ClientNotRegisterException client dit not register exception.
+     */
+    void removeClient(String host, int port) throws ClientNotRegisterException;
+
+    /**
+     * add client remove listener.
+     *
+     * @param clientRemoveListener listener.
+     */
+    void registerClientRemoveListener(ClientRemoveListener clientRemoveListener);
 
 
     /**

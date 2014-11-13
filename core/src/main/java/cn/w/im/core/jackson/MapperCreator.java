@@ -61,6 +61,7 @@ public class MapperCreator {
                 new NamedType(ForwardRequestMessage.class, "ForwardRequest"),
                 new NamedType(ForwardResponseMessage.class, "ForwardResponse"),
                 //server message register.
+                new NamedType(MemberLogoutMessage.class, "MemberLogout"),
                 new NamedType(ConnectedMessage.class, "Connected"),
                 new NamedType(ConnectedResponseMessage.class, "ConnectedResponse"),
                 new NamedType(ForwardMessage.class, "Forward"),

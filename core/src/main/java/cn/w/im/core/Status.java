@@ -63,10 +63,18 @@ public enum Status {
      */
     public static Status valueOf(int value) {
         switch (value) {
-            case 1:
+            case 0x01:
                 return Status.Online;
-            case 2:
+            case 0x02:
                 return Status.Offline;
+            case 0x04:
+                return Status.Leave;
+            case 0x08:
+                return Status.Busy;
+            case 0x10:
+                return Status.DonotDisturb;
+            case 0x20:
+                return Status.Hiding;
             default:
                 return Status.Offline;
         }

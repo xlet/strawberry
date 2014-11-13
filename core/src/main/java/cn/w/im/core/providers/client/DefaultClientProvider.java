@@ -2,6 +2,7 @@ package cn.w.im.core.providers.client;
 
 import cn.w.im.core.Channel;
 import cn.w.im.core.MessageClientType;
+import cn.w.im.core.server.AbstractServer;
 import cn.w.im.core.server.ServerBasic;
 import cn.w.im.core.ServerType;
 import cn.w.im.core.exception.*;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * default implement of client provider.
@@ -20,6 +23,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DefaultClientProvider implements ClientProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultClientProvider.class);
+
+    private AtomicInteger cachedClients = new AtomicInteger(0);
+
+    private Collection<ClientRemoveListener> clientRemoveListeners;
 
     /**
      * all clients.
@@ -48,11 +55,11 @@ public class DefaultClientProvider implements ClientProvider {
         this.clientMap = new ConcurrentHashMap<String, Map<Integer, Client>>();
         this.serverClientMap = new ConcurrentHashMap<String, Client>();
         this.messageClientMap = new ConcurrentHashMap<String, Map<MessageClientType, Client>>();
+        this.clientRemoveListeners = new CopyOnWriteArrayList<ClientRemoveListener>();
     }
 
-
     @Override
-    public final void registerClient(Channel channel) throws ClientRegisteredException {
+    public final void registerClient(Channel channel, AbstractServer connectedServer) throws ClientRegisteredException {
 
         if (channel == null) {
             throw new IllegalArgumentException("channel is null");
@@ -67,7 +74,7 @@ public class DefaultClientProvider implements ClientProvider {
 
         this.printAllClients();
 
-        Client client = new NoTypeClient(channel);
+        Client client = new NoTypeClient(channel, connectedServer.getServerBasic());
         this.registerClient(host, port, client);
 
         if (LOGGER.isDebugEnabled()) {
@@ -77,7 +84,113 @@ public class DefaultClientProvider implements ClientProvider {
         this.printAllClients();
     }
 
+    @Override
+    public final void registerClient(String host, int port, BasicMember member, MessageClientType clientType)
+            throws MessageClientRegisteredException, ClientNotRegisterException {
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("try to register message client[host:{},port:{},memberId:{},clientType:{}]",
+                    host, port, member.getId(), clientType);
+        }
+
+        this.printAllClients();
+
+        // check basic client has registered.
+        if (!this.basicClientExists(host, port)) {
+            throw new ClientNotRegisterException(host, port);
+        }
+        //check message client has registered.
+        if (this.messageClientExists(member, clientType)) {
+            throw new MessageClientRegisteredException(clientType, member.getId());
+        }
+        try {
+
+            Client client = this.createMessageClient(host, port, member, clientType);
+            //change basic client instance.
+            this.changeBasic(host, port, client);
+            //add client to message client map.
+            if (this.messageClientMap.containsKey(member.getId())) {
+                Map<MessageClientType, Client> clientTypeMap = this.messageClientMap.get(member.getId());
+                clientTypeMap.put(clientType, client);
+            } else {
+                Map<MessageClientType, Client> clientTypeMap = new ConcurrentHashMap<MessageClientType, Client>();
+                clientTypeMap.put(clientType, client);
+                this.messageClientMap.put(member.getId(), clientTypeMap);
+            }
+
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("message client[memberId:{},clientType:{}] registered.", member.getId(), clientType);
+            }
+        } catch (ClientNotFoundException e) {
+            throw new ClientNotRegisterException(host, port, e);
+        }
+
+        this.printAllClients();
+    }
+
+    @Override
+    public final void registerClient(String host, int port, ServerBasic serverBasic)
+            throws ServerRegisteredException, ClientNotRegisterException {
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("try to register server client[host:{},port:{},server:{}]",
+                    host, port, serverBasic.getNodeId());
+        }
+
+        this.printAllClients();
+
+        // check basic client has registered.
+        if (!this.basicClientExists(host, port)) {
+            throw new ClientNotRegisterException(host, port);
+        }
+        //check server client has registered.
+        if (this.serverClientExists(serverBasic)) {
+            throw new ServerRegisteredException(serverBasic);
+        }
+
+        try {
+
+            Client client = this.createServerAsClient(host, port, serverBasic);
+            //change basic client instance.
+            this.changeBasic(host, port, client);
+            //add client to message client map.
+            if (!this.serverClientMap.containsKey(serverBasic.getNodeId())) {
+                this.serverClientMap.put(serverBasic.getNodeId(), client);
+            }
+
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("server client[server:{}] registered.", serverBasic.getNodeId());
+            }
+        } catch (ClientNotFoundException e) {
+            throw new ClientNotRegisterException(host, port, e);
+        }
+
+        this.printAllClients();
+    }
+
+    private ServerAsClient createServerAsClient(String host, int port, ServerBasic serverBasic) throws ClientNotFoundException {
+        Client noTypeClient = this.getClient(host, port);
+        ServerBasic connectedServer = noTypeClient.connectedServer();
+        Channel channel = noTypeClient.channel();
+        ServerAsClient client = new ServerAsClient(channel, connectedServer, serverBasic);
+        return client;
+    }
+
+    private MessageClient createMessageClient(String host, int port, BasicMember member, MessageClientType clientType)
+            throws ClientNotFoundException {
+        Client noTypeClient = this.getClient(host, port);
+        ServerBasic connectedServer = noTypeClient.connectedServer();
+        Channel channel = noTypeClient.channel();
+        MessageClient client = new MessageClient(channel, connectedServer, member, clientType);
+        return client;
+    }
+
     private void registerClient(String host, int port, Client client) throws ClientRegisteredException {
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("try re-register client[host:{},port:{},client:{}", host, port, client);
+        }
+
         if (this.clientMap.containsKey(host)) {
             Map<Integer, Client> portClientMap = this.clientMap.get(host);
             if (portClientMap.containsKey(port)) {
@@ -89,6 +202,8 @@ public class DefaultClientProvider implements ClientProvider {
             portClientMap.put(port, client);
             this.clientMap.put(host, portClientMap);
         }
+
+        this.cachedClients.getAndIncrement();
     }
 
     private boolean basicClientExists(String host, int port) {
@@ -110,51 +225,6 @@ public class DefaultClientProvider implements ClientProvider {
         }
     }
 
-    @Override
-    public final void registerClient(Channel channel, BasicMember member, MessageClientType clientType)
-            throws MessageClientRegisteredException, ClientNotRegisterException {
-
-        if (channel == null) {
-            throw new IllegalArgumentException("channel is null.");
-        }
-
-        int port = channel.currentPort();
-        String host = channel.currentHost();
-
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("try to register message client[memberId:{},clientType:{}]", member.getId(), clientType);
-        }
-
-        this.printAllClients();
-
-        // check basic client has registered.
-        if (!this.basicClientExists(host, port)) {
-            throw new ClientNotRegisterException(host, port);
-        }
-        //check message client has registered.
-        if (this.messageClientExists(member, clientType)) {
-            throw new MessageClientRegisteredException(clientType, member.getId());
-        }
-
-        Client client = new MessageClient(channel, member, clientType);
-        //change basic client instance.
-        this.changeBasic(host, port, client);
-        //add client to message client map.
-        if (this.messageClientMap.containsKey(member.getId())) {
-            Map<MessageClientType, Client> clientTypeMap = this.messageClientMap.get(member.getId());
-            clientTypeMap.put(clientType, client);
-        } else {
-            Map<MessageClientType, Client> clientTypeMap = new ConcurrentHashMap<MessageClientType, Client>();
-            clientTypeMap.put(clientType, client);
-            this.messageClientMap.put(member.getId(), clientTypeMap);
-        }
-
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("message client[memberId:{},clientType:{}] registered.", member.getId(), clientType);
-        }
-
-        this.printAllClients();
-    }
 
     private boolean messageClientExists(BasicMember member, MessageClientType clientType) {
         try {
@@ -163,47 +233,6 @@ public class DefaultClientProvider implements ClientProvider {
         } catch (ClientNotFoundException ex) {
             return false;
         }
-    }
-
-    @Override
-    public final void registerClient(Channel channel, ServerBasic serverBasic)
-            throws ServerRegisteredException, ClientNotRegisterException {
-
-        if (channel == null) {
-            throw new IllegalArgumentException("channel is null.");
-        }
-
-        String host = channel.currentHost();
-        int port = channel.currentPort();
-
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("try to register message client[server:{}]", serverBasic.getNodeId());
-        }
-
-        this.printAllClients();
-
-        // check basic client has registered.
-        if (!this.basicClientExists(host, port)) {
-            throw new ClientNotRegisterException(host, port);
-        }
-        //check server client has registered.
-        if (this.serverClientExists(serverBasic)) {
-            throw new ServerRegisteredException(serverBasic);
-        }
-
-        Client client = new ServerAsClient(channel, serverBasic);
-        //change basic client instance.
-        this.changeBasic(host, port, client);
-        //add client to message client map.
-        if (!this.serverClientMap.containsKey(serverBasic.getNodeId())) {
-            this.serverClientMap.put(serverBasic.getNodeId(), client);
-        }
-
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("message client[server:{}] registered.", serverBasic.getNodeId());
-        }
-
-        this.printAllClients();
     }
 
 
@@ -217,7 +246,7 @@ public class DefaultClientProvider implements ClientProvider {
     }
 
     @Override
-    public final void removeClient(Channel channel) throws ServerNotRegisterException, ClientNotRegisterException {
+    public final void removeClient(Channel channel) throws ClientNotRegisterException {
 
         if (channel == null) {
             throw new IllegalArgumentException("channel is null.");
@@ -225,11 +254,12 @@ public class DefaultClientProvider implements ClientProvider {
 
         String host = channel.currentHost();
         int port = channel.currentPort();
-
+        this.removeClient(host, port);
 
     }
 
-    private void removeClient(String host, int port) throws ClientNotRegisterException {
+    @Override
+    public void removeClient(String host, int port) throws ClientNotRegisterException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("try to remove client[host:{},port:{}", host, port);
         }
@@ -238,6 +268,9 @@ public class DefaultClientProvider implements ClientProvider {
 
         try {
             Client client = this.getClient(host, port);
+
+            this.fireClientRemove(client);
+
             this.removeBasicClient(client);
             if (client instanceof MessageClient) {
                 MessageClient messageClient = (MessageClient) client;
@@ -255,7 +288,22 @@ public class DefaultClientProvider implements ClientProvider {
             LOGGER.debug("client[host:{},port,{}] removed.", host, port);
         }
 
+        this.cachedClients.getAndDecrement();
+
         this.printAllClients();
+    }
+
+    public void fireClientRemove(Client client) {
+        for (ClientRemoveListener listener : this.clientRemoveListeners) {
+            listener.onClientRemove(client);
+        }
+    }
+
+    @Override
+    public void registerClientRemoveListener(ClientRemoveListener clientRemoveListener) {
+        if (!this.clientRemoveListeners.contains(clientRemoveListener)) {
+            this.clientRemoveListeners.add(clientRemoveListener);
+        }
     }
 
     private void removeBasicClient(Client client) {
@@ -377,14 +425,18 @@ public class DefaultClientProvider implements ClientProvider {
 
     private void printAllClients() {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("now cached client:");
+            LOGGER.debug("now cached client:{} clients", this.cachedClients.intValue());
+            StringBuilder allClientString = new StringBuilder();
+            allClientString.append(NEWLINE).append("now cached client:" + this.cachedClients.intValue() + " clients").append(NEWLINE);
             for (Map.Entry<String, Map<Integer, Client>> portEntry : clientMap.entrySet()) {
-                printMap(portEntry.getKey(), portEntry.getValue());
+                StringBuilder sb = build(portEntry.getKey(), portEntry.getValue());
+                allClientString.append(sb);
             }
+            LOGGER.debug(allClientString.toString());
         }
     }
 
-    private <K, V> void printMap(String keyName, Map<K, V> map) {
+    private <K, V> StringBuilder build(String keyName, Map<K, V> map) {
         StringBuilder sb = new StringBuilder();
         sb.append(NEWLINE).append("+----------------------------------+");
         sb.append(NEWLINE).append("            " + keyName);
@@ -393,6 +445,6 @@ public class DefaultClientProvider implements ClientProvider {
             sb.append(NEWLINE).append("|\t").append(entry.getKey()).append("\t|\t").append(entry.getValue()).append("\t|");
         }
         sb.append(NEWLINE).append("+---------+-------------------------+");
-        LOGGER.debug(sb.toString());
+        return sb;
     }
 }

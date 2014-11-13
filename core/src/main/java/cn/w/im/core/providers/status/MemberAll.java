@@ -1,28 +1,27 @@
 package cn.w.im.core.providers.status;
 
+import cn.w.im.core.*;
+import cn.w.im.core.exception.*;
+import cn.w.im.core.message.server.MemberLogoutMessage;
+import cn.w.im.core.providers.client.Client;
+import cn.w.im.core.providers.client.ClientProvider;
 import cn.w.im.core.providers.member.MemberInfoProvider;
 import cn.w.im.core.providers.message.MessageProvider;
 import cn.w.im.core.providers.relation.ContactProvider;
-import cn.w.im.core.ConnectToken;
 import cn.w.im.core.server.ServerBasic;
-import cn.w.im.core.ServerType;
-import cn.w.im.core.Status;
-import cn.w.im.core.MessageClientType;
 import cn.w.im.core.member.BasicMember;
 import cn.w.im.core.message.client.*;
 import cn.w.im.core.message.server.ConnectedMessage;
 import cn.w.im.core.member.relation.FriendGroup;
 import cn.w.im.core.member.relation.RecentContactStatuses;
 import cn.w.im.core.member.MemberStatus;
-import cn.w.im.core.exception.ContactNotExistedException;
-import cn.w.im.core.exception.TokenErrorException;
-import cn.w.im.core.exception.TokenNotExistedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * member all in this.
@@ -36,25 +35,30 @@ public class MemberAll {
     private RecentContactProvider recentContactProvider;
     private MemberInfoProvider memberInfoProvider;
     private MessageProvider messageProvider;
+    private ClientProvider clientProvider;
 
     private Map<MessageClientType, ConnectToken> connectTokenMap;
 
     private BasicMember self;
+
+    private Collection<MessageClientType> connectedClientTypes;
 
     public MemberAll(BasicMember self,
                      MemberInfoProvider memberInfoProvider,
                      StatusProvider statusProvider,
                      ContactProvider contactProvider,
                      RecentContactProvider recentContactProvider,
-                     MessageProvider messageProvider) {
+                     MessageProvider messageProvider, ClientProvider clientProvider) {
         this.memberInfoProvider = memberInfoProvider;
         this.statusProvider = statusProvider;
         this.contactProvider = contactProvider;
         this.recentContactProvider = recentContactProvider;
         this.messageProvider = messageProvider;
+        this.clientProvider = clientProvider;
         this.self = self;
         this.memberInfoProvider.addMember(self);
         this.connectTokenMap = new ConcurrentHashMap<MessageClientType, ConnectToken>();
+        this.connectedClientTypes = new CopyOnWriteArrayList<MessageClientType>();
     }
 
     public BasicMember self() {
@@ -73,9 +77,15 @@ public class MemberAll {
         return this.recentContactProvider.get(this.self);
     }
 
-    public void connected(MessageClientType clientType) {
+    public Collection<Client> connectedClients() {
+        return this.clientProvider.getClient(this.self);
+    }
+
+    public void connected(MessageClientType clientType) throws ClientTypeConnectedException {
 
         this.removeToken(clientType);
+
+        this.markConnected(clientType);
 
         this.online();
 
@@ -86,6 +96,29 @@ public class MemberAll {
         this.sendContactAndStatus();
         this.sendRecentContactStatus();
         this.sendOfflineMessageAddSetForward();
+    }
+
+    private boolean isConnected(MessageClientType clientType) {
+        return this.connectedClientTypes.contains(clientType);
+    }
+
+    private void markConnected(MessageClientType clientType) throws ClientTypeConnectedException {
+        if (!this.connectedClientTypes.contains(clientType)) {
+            this.connectedClientTypes.add(clientType);
+        } else {
+            Client client = this.getConnectedClient(clientType);
+            if (client != null) {
+                throw new ClientTypeConnectedException(this.self, clientType, client.host(), client.port());
+            } else {
+                LOGGER.error("status error! member[{}] client[{}] connected,but not active client.", this.self.getId(), clientType);
+            }
+        }
+    }
+
+    private void markDisconnect(MessageClientType clientType) {
+        if (this.connectedClientTypes.contains(clientType)) {
+            this.connectedClientTypes.remove(clientType);
+        }
     }
 
     private void removeToken(MessageClientType clientType) {
@@ -102,7 +135,7 @@ public class MemberAll {
      *
      * @param status status.
      */
-    private void statusChange(Status status) {
+    public void statusChange(Status status) {
         this.statusProvider.change(this.self, status);
         MemberStatusMessage memberStatusMessage = new MemberStatusMessage(this.self.getId(), status.getValue());
         for (FriendGroup friendGroup : this.friendGroups()) {
@@ -190,22 +223,30 @@ public class MemberAll {
         }
     }
 
-    public void connect(String token, String clientHost, int clientPort,
-                        MessageClientType clientType, ProductType productType, ServerBasic connectServerBasic) {
+    public void connect(String token, Channel channel, MessageClientType clientType, ServerBasic connectServerBasic) {
+
         try {
+            //check token correct.
+            String clientHost = channel.currentHost();
             this.checkToken(token, clientHost, clientType);
 
-            ConnectedMessage connectedMessage = new ConnectedMessage(token, this.self.getId(), clientHost, clientType, connectServerBasic);
+            //re-register to mark memberId and client relation.
+            this.clientProvider.registerClient(channel.currentHost(), channel.currentPort(), this.self, clientType);
 
+            //notify login server member connected.
+            ConnectedMessage connectedMessage = new ConnectedMessage(token, this.self.getId(), clientHost, clientType, connectServerBasic);
             this.messageProvider.send(ServerType.LoginServer, connectedMessage);
-        } catch (TokenNotExistedException ex) {
-            LOGGER.info(ex.getMessage(), ex);
-            ConnectResponseMessage errorResponse = new ConnectResponseMessage(ex.getErrorCode(), ex.getMessage());
-            this.messageProvider.send(this.self, errorResponse);
-        } catch (TokenErrorException ex) {
-            LOGGER.info(ex.getInnerMessage(), ex);
-            ConnectResponseMessage errorResponse = new ConnectResponseMessage(ex.getErrorCode(), ex.getMessage());
-            this.messageProvider.send(this.self, errorResponse);
+        } catch (TokenNotExistedException e) {
+            LOGGER.info(e.getMessage(), e);
+            ConnectResponseMessage errorResponse = new ConnectResponseMessage(e.getErrorCode(), e.getMessage());
+            this.messageProvider.send(channel, errorResponse);
+        } catch (TokenErrorException e) {
+            LOGGER.info(e.getInnerMessage(), e);
+            ConnectResponseMessage errorResponse = new ConnectResponseMessage(e.getErrorCode(), e.getMessage());
+            this.messageProvider.send(channel, errorResponse);
+        } catch (ServerInnerException e) {
+            LOGGER.error("re-register message client error");
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
@@ -236,16 +277,37 @@ public class MemberAll {
         return this.contactProvider.getContact(toMemberId);
     }
 
-    public void logout(MessageClientType messageClientType) {
+    public void logout(MessageClientType clientType) {
 
+        Client client = this.getConnectedClient(clientType);
+        if (client == null) return;
+
+        //notify recent contact provider member logout.
         this.recentContactProvider.onMemberLogout(this.self);
 
-        LogoutResponseMessage logoutResponseMessage = new LogoutResponseMessage(true);
         //send to login server to notify that member logout.
-        this.messageProvider.send(ServerType.LoginServer, logoutResponseMessage);
+        ServerBasic connectedServer = client.connectedServer();
+        MemberLogoutMessage message = new MemberLogoutMessage(this.self.getId(), client.host(), clientType, connectedServer);
+        this.messageProvider.send(ServerType.LoginServer, message);
 
         //response to client
+        LogoutResponseMessage logoutResponseMessage = new LogoutResponseMessage(true);
         this.messageProvider.send(this.self, logoutResponseMessage);
 
+        this.markDisconnect(clientType);
+    }
+
+    private Client getConnectedClient(MessageClientType clientType) {
+        try {
+            return this.clientProvider.getClient(this.self, clientType);
+        } catch (ClientNotFoundException e) {
+            LOGGER.error("get member[{}] client[{}] error!", this.self.getId(), clientType);
+            LOGGER.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    public boolean isLogout(MessageClientType clientType) {
+        return this.isConnected(clientType);
     }
 }

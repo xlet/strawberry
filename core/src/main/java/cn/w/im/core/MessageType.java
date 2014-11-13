@@ -139,7 +139,11 @@ public enum MessageType {
     /**
      * custom message.
      */
-    Custom(0x23);
+    Custom(0x23),
+    /**
+     * member logout.
+     */
+    MemberLogout(0x24);
 
     /**
      * 构造函数.

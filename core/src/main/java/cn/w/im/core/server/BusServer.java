@@ -51,9 +51,11 @@ public class BusServer extends AbstractServer {
     private void sendRegisteredServers(MessageHandlerContext context) {
         ServerRegisterMessage registerMessage = (ServerRegisterMessage) context.getMessage();
         ServerBasic registerServer = registerMessage.getServerBasic();
+        String host = context.getCurrentHost();
+        int port = context.getCurrentPort();
         try {
             //re-register this client to mark register server and client relation.
-            this.clientProvider().registerClient(context.getChannel(), registerServer);
+            this.clientProvider().registerClient(host, port, registerServer);
 
             //send registered server to register server.
             List<ServerBasic> startedServers = new ArrayList<ServerBasic>();

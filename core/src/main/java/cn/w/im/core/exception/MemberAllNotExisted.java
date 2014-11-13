@@ -9,6 +9,7 @@ public class MemberAllNotExisted extends ServerInnerException {
 
     public MemberAllNotExisted(String memberId) {
         super("the memberAll[" + memberId + "] is not existed!");
+        this.memberId = memberId;
     }
 
     public String getMemberId() {
