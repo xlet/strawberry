@@ -38,7 +38,6 @@ public class MessageServer extends ScalableServer {
 
     @Override
     public void handlerMessage(MessageHandlerContext context) {
-        super.handlerMessage(context);
         Message message = context.getMessage();
         switch (message.getMessageType()) {
             case Connected:
@@ -50,9 +49,7 @@ public class MessageServer extends ScalableServer {
                 this.memberProvider.handlerMessage(context);
                 break;
             default:
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("message[{}] is ignored!", message.getMessageType());
-                }
+                super.handlerMessage(context);
                 break;
         }
     }

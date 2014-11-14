@@ -13,8 +13,6 @@ import cn.w.im.core.exception.LoggedInException;
  */
 public interface MessageServerAllocateProvider {
 
-    //TODO MessageClientType
-
     /**
      * add ready message server to cache.
      *

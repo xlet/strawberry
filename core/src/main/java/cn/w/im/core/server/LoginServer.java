@@ -47,7 +47,7 @@ public class LoginServer extends ScalableServer {
 
     @Override
     public void handlerMessage(MessageHandlerContext context) {
-        super.handlerMessage(context);
+
         Message message = context.getMessage();
         switch (message.getMessageType()) {
             case Ready:
@@ -71,9 +71,7 @@ public class LoginServer extends ScalableServer {
                 this.memberLogout(memberLogoutMessage);
                 break;
             default:
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("message[{}] is ignore!", message.getMessageType());
-                }
+                super.handlerMessage(context);
                 break;
         }
     }
@@ -165,7 +163,7 @@ public class LoginServer extends ScalableServer {
 
     @Override
     protected void registeredAfter(MessageHandlerContext context) {
-        //todo:jackie register to message server and request message server linked clients count.
+        //todo:jackie if login message has multi,must sync login allocation status from other login server.
     }
 
     /**

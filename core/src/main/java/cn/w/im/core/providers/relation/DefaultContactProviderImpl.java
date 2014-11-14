@@ -33,16 +33,12 @@ public class DefaultContactProviderImpl implements ContactProvider {
     private Map<String, List<FriendGroup>> memberFriendGroupMap;
 
     private MemberInfoProvider memberProvider;
-    private RecentContactProvider recentContactProvider;
-    private StatusProvider statusProvider;
 
     //TODO:jackie custom member contact persistent.
 
-    public DefaultContactProviderImpl() {
-        this.memberProvider = new DefaultMemberInfoProviderImpl();
+    public DefaultContactProviderImpl(MemberInfoProvider memberProvider) {
+        this.memberProvider = memberProvider;
         this.memberFriendGroupMap = new ConcurrentHashMap<String, List<FriendGroup>>();
-        this.recentContactProvider = new DefaultRecentContactProviderImpl();
-        this.statusProvider = new DefaultStatusProvider();
     }
 
 

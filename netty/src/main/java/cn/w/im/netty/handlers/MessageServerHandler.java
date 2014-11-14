@@ -6,13 +6,10 @@ import cn.w.im.core.server.AbstractServer;
 import cn.w.im.core.message.Message;
 import cn.w.im.core.server.MessageServer;
 import cn.w.im.netty.NettyChannel;
-import cn.w.im.netty.IpAddressProvider;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.InetSocketAddress;
 
 /**
  * Creator: JackieHan.
@@ -36,10 +33,9 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        //TODO:jackie 拒绝链接
+        //TODO:jackie refuse message client connect.
         Channel channel = new NettyChannel(ctx);
         this.currentServer.clientProvider().registerClient(channel, this.currentServer);
-        //TODO:if host has registered
         super.channelActive(ctx);
     }
 
@@ -53,7 +49,6 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        //TODO:jackie 退出处理
         Channel channel = new NettyChannel(ctx);
         LOGGER.debug("client[host:{},port{}] inactive!", channel.currentHost(), channel.currentPort());
         this.currentServer.clientProvider().removeClient(channel);
@@ -64,7 +59,6 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = new NettyChannel(ctx);
         this.currentServer.clientProvider().removeClient(channel);
-        //TODO:jackie 异常处理.
         LOGGER.error("client[" + channel.currentHost() + ":" + channel.currentPort() + "] error !", cause);
     }
 }

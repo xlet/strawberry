@@ -48,10 +48,10 @@ public class DefaultMemberProviderImpl implements MemberProvider {
     private Map<String, MemberAll> memberMap;
 
     public DefaultMemberProviderImpl(MessageProvider messageProvider, ClientProvider clientProvider) {
-        this.statusProvider = new DefaultStatusProvider();
-        this.contactProvider = new DefaultContactProviderImpl();
-        this.recentContactProvider = new DefaultRecentContactProviderImpl();
         this.memberInfoProvider = new DefaultMemberInfoProviderImpl();
+        this.statusProvider = new DefaultStatusProvider();
+        this.contactProvider = new DefaultContactProviderImpl(this.memberInfoProvider);
+        this.recentContactProvider = new DefaultRecentContactProviderImpl();
         this.memberMap = new ConcurrentHashMap<String, MemberAll>();
         this.messageProvider = messageProvider;
         this.clientProvider = clientProvider;

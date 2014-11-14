@@ -49,7 +49,6 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        //TODO: channel inactive process.
         Channel channel = new NettyChannel(ctx);
         this.currentServer.clientProvider().removeClient(channel);
 
@@ -62,8 +61,6 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
         Channel channel = new NettyChannel(ctx);
         this.currentServer.clientProvider().removeClient(channel);
         LOGGER.error("client[" + channel.currentHost() + ":" + channel.currentPort() + "] error !", cause);
-        //TODO: not cached exception process.
         ctx.close();
-
     }
 }

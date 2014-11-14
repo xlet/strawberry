@@ -48,7 +48,6 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        //TODO:jackie 处理退出, tell all server.
         Channel channel = new NettyChannel(ctx);
         this.currentServer.clientProvider().removeClient(channel);
         LOGGER.debug("client channel[host:{},port{}] disconnected!", channel.currentHost(), channel.currentHost());
@@ -59,7 +58,6 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = new NettyChannel(ctx);
         this.currentServer.clientProvider().removeClient(channel);
-        //TODO: 容错处理
         LOGGER.error("client[" + channel.currentHost() + ":" + channel.currentPort() + "] crashed!", cause);
     }
 }

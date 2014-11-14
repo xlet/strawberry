@@ -34,11 +34,15 @@ public abstract class ScalableServer extends AbstractServer {
         switch (message.getMessageType()) {
             case ForwardReady: //forward server ready then register self to bus server.
                 this.registerToBus(context.getCurrentHost(), context.getCurrentPort());
-                return;
+                break;
             case ServerRegisterResponse:
                 this.registered(context);
-                return;
-            //todo:jackie refactor this implement to remove child class again switch.
+                break;
+            default:
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("message[{}] is ignore!", message.getMessageType());
+                }
+                break;
         }
     }
 

@@ -24,8 +24,6 @@ public class PersistentProviderFactory {
         return configuration;
     }
 
-    //TODO:jackie remove mongo judge
-
     public static <TMessage extends Message> MessagePersistentProvider getMessagePersistentProvider(TMessage message)
             throws NotSupportedDataStoreException, NotSupportMessageTypeException {
         String dataStoreType = getConfiguration().getDataStoreType();
