@@ -11,6 +11,7 @@ import cn.w.im.core.exception.ServerInnerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +25,7 @@ public class BusServer extends AbstractServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BusServer.class);
 
-    public BusServer(int port) {
+    public BusServer(int port) throws UnknownHostException {
         super(ServerType.MessageBus, port);
     }
 

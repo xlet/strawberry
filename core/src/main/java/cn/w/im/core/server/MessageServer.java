@@ -8,6 +8,8 @@ import cn.w.im.core.message.server.ReadyMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.UnknownHostException;
+
 
 /**
  * Creator: JackieHan.
@@ -25,7 +27,7 @@ public class MessageServer extends ScalableServer {
      *
      * @param port port.
      */
-    public MessageServer(int port) {
+    public MessageServer(int port) throws UnknownHostException {
         super(ServerType.MessageServer, port);
     }
 

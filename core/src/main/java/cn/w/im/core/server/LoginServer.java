@@ -20,6 +20,8 @@ import cn.w.im.core.message.server.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.UnknownHostException;
+
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-8 下午3:16.
@@ -37,7 +39,7 @@ public class LoginServer extends ScalableServer {
      *
      * @param port port.
      */
-    public LoginServer(int port) {
+    public LoginServer(int port) throws UnknownHostException {
         super(ServerType.LoginServer, port);
     }
 

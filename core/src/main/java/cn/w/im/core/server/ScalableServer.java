@@ -8,6 +8,7 @@ import cn.w.im.core.exception.ServerInnerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.UnknownHostException;
 import java.util.Collection;
 
 /**
@@ -23,7 +24,7 @@ public abstract class ScalableServer extends AbstractServer {
      * @param serverType 服务类型.
      * @param port
      */
-    public ScalableServer(ServerType serverType, int port) {
+    public ScalableServer(ServerType serverType, int port) throws UnknownHostException {
         super(serverType, port);
     }
 

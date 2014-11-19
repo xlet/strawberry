@@ -17,6 +17,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.UnknownHostException;
+
 import static org.assertj.core.api.Assertions.*;
 
 /**
@@ -26,19 +28,23 @@ public class ClientProviderTester {
 
     private static final int PORT = 13444;
 
-    private static final AbstractServer THIS_SERVER = new MessageServer(PORT);
+    private AbstractServer thisServer;
 
-    private static final AbstractServer LOGIN_SERVER = new LoginServer(PORT);
+    private AbstractServer loginServer;
+
+    public ClientProviderTester() throws UnknownHostException {
+        this.thisServer = new MessageServer(PORT);
+        this.loginServer = new LoginServer(PORT);
+    }
 
     private static final Channel channel = new Channel() {
 
         private final Logger LOGGER = LoggerFactory.getLogger("tempChannel");
         private final ObjectMapper mapper = new ObjectMapper();
-        private final ServerBasic serverBasic = THIS_SERVER.getServerBasic();
 
         @Override
         public String host() {
-            return serverBasic.getHost();
+            return "host";
         }
 
         @Override
@@ -66,20 +72,20 @@ public class ClientProviderTester {
     public void test_register_no_type_client() throws ClientRegisteredException {
 
         ClientProvider clientProvider = new DefaultClientProvider();
-        clientProvider.registerClient(channel, THIS_SERVER);
+        clientProvider.registerClient(channel, thisServer);
     }
 
     @Test(expected = ClientRegisteredException.class)
     public void test_register_no_type_client_with_register_exception() throws ClientRegisteredException {
         ClientProvider clientProvider = new DefaultClientProvider();
-        clientProvider.registerClient(channel, THIS_SERVER);
-        clientProvider.registerClient(channel, THIS_SERVER);
+        clientProvider.registerClient(channel, thisServer);
+        clientProvider.registerClient(channel, thisServer);
     }
 
     @Test
     public void test_get_client() throws ClientRegisteredException, ClientNotFoundException {
         ClientProvider clientProvider = new DefaultClientProvider();
-        clientProvider.registerClient(channel, THIS_SERVER);
+        clientProvider.registerClient(channel, thisServer);
 
         Client client = clientProvider.getClient(channel);
         assertThat(client).isInstanceOf(NoTypeClient.class);
@@ -90,7 +96,7 @@ public class ClientProviderTester {
             throws ClientRegisteredException, ClientNotRegisterException,
             MessageClientRegisteredException, ClientNotFoundException {
         ClientProvider clientProvider = new DefaultClientProvider();
-        clientProvider.registerClient(channel, THIS_SERVER);
+        clientProvider.registerClient(channel, thisServer);
 
         Client basicClient = clientProvider.getClient(channel);
         assertThat(basicClient).isInstanceOf(NoTypeClient.class);
@@ -121,7 +127,7 @@ public class ClientProviderTester {
             throws ClientRegisteredException, ClientNotRegisterException, MessageClientRegisteredException {
         ClientProvider clientProvider = new DefaultClientProvider();
 
-        clientProvider.registerClient(channel, THIS_SERVER);
+        clientProvider.registerClient(channel, thisServer);
 
         BasicMember member = new TempMember();
         member.setId("wdemo1:admin");
@@ -136,12 +142,12 @@ public class ClientProviderTester {
     @Test
     public void test_register_server_as_client() throws ClientRegisteredException, ClientNotFoundException, ServerRegisteredException, ClientNotRegisterException {
         ClientProvider clientProvider = new DefaultClientProvider();
-        clientProvider.registerClient(channel, THIS_SERVER);
+        clientProvider.registerClient(channel, thisServer);
 
         Client basicClient = clientProvider.getClient(channel);
         assertThat(basicClient).isInstanceOf(NoTypeClient.class);
 
-        ServerBasic serverBasic = THIS_SERVER.getServerBasic();
+        ServerBasic serverBasic = thisServer.getServerBasic();
 
         clientProvider.registerClient(channel.host(), channel.port(), serverBasic);
         Client client = clientProvider.getClient(serverBasic);
@@ -156,7 +162,7 @@ public class ClientProviderTester {
     public void test_register_server_as_client_with_clientNotRegister_error() throws ServerRegisteredException, ClientNotRegisterException {
         ClientProvider clientProvider = new DefaultClientProvider();
 
-        ServerBasic serverBasic = LOGIN_SERVER.getServerBasic();
+        ServerBasic serverBasic = loginServer.getServerBasic();
         clientProvider.registerClient(channel.host(), channel.port(), serverBasic);
     }
 
@@ -164,9 +170,9 @@ public class ClientProviderTester {
     public void test_register_server_as_client_with_clientRegistered_error() throws ClientRegisteredException, ServerRegisteredException, ClientNotRegisterException {
         ClientProvider clientProvider = new DefaultClientProvider();
 
-        clientProvider.registerClient(channel, THIS_SERVER);
+        clientProvider.registerClient(channel, thisServer);
 
-        ServerBasic serverBasic = LOGIN_SERVER.getServerBasic();
+        ServerBasic serverBasic = loginServer.getServerBasic();
         clientProvider.registerClient(channel.host(), channel.port(), serverBasic);
 
         clientProvider.registerClient(channel.host(), channel.port(), serverBasic);

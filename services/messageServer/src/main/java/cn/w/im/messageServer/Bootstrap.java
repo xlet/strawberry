@@ -12,6 +12,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.UnknownHostException;
+
 /**
  * User: JackieHan.
  * Date: 13-11-15 上午11:23.
@@ -55,7 +57,7 @@ public class Bootstrap {
     private Configuration configuration;
     private MessageServer messageServer;
 
-    private Bootstrap() {
+    private Bootstrap() throws UnknownHostException {
         configuration = SpringContext.context().getBean(Configuration.class);
         this.messageServer = new MessageServer(configuration.getPort());
     }

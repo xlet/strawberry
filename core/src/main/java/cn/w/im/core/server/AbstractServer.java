@@ -17,8 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.Enumeration;
 
 /**
  * Creator: JackieHan.
@@ -41,17 +43,40 @@ public abstract class AbstractServer {
      *
      * @param serverType 服务类型.
      */
-    public AbstractServer(ServerType serverType, int port) {
-        this.serverBasic = new ServerBasic(serverType, this.getLocalHost(), port);
+    public AbstractServer(ServerType serverType, int port) throws UnknownHostException {
+        InetAddress localAddress = getLocalHostLANAddress();
+        this.serverBasic = new ServerBasic(serverType, localAddress.getHostAddress(), port);
     }
 
-    private String getLocalHost() {
+    private InetAddress getLocalHostLANAddress() throws UnknownHostException {
         try {
-            InetAddress localAddress = InetAddress.getLocalHost();
-            return localAddress.getHostAddress().toString();
-        } catch (UnknownHostException e) {
-            LOGGER.warn("get local host error!127.0.0.1 instead!", e);
-            return "127.0.0.1";
+            InetAddress candidateAddress = null;
+            for (Enumeration interfaces = NetworkInterface.getNetworkInterfaces(); interfaces.hasMoreElements(); ) {
+                NetworkInterface anInterface = (NetworkInterface) interfaces.nextElement();
+                for (Enumeration addresses = anInterface.getInetAddresses(); addresses.hasMoreElements(); ) {
+                    InetAddress inetAddress = (InetAddress) addresses.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                        if (inetAddress.isSiteLocalAddress()) {
+                            return inetAddress;
+                        } else if (candidateAddress == null) {
+                            candidateAddress = inetAddress;
+                        }
+                    }
+                }
+            }
+            if (candidateAddress != null) {
+                return candidateAddress;
+            }
+
+            InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
+            if (jdkSuppliedAddress == null) {
+                throw new UnknownHostException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
+            }
+            return jdkSuppliedAddress;
+        } catch (Exception e) {
+            UnknownHostException unknownHostException = new UnknownHostException("Failed to determine LAN address:" + e);
+            unknownHostException.initCause(e);
+            throw unknownHostException;
         }
     }
 
