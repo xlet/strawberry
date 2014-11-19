@@ -1,6 +1,8 @@
 package cn.w.im.core.status.recentContact;
 
 import cn.w.im.core.member.BasicMember;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +14,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * cached recent contract status collection.
  */
 public class CacheRecentContactStatusCollection {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CacheRecentContactStatusCollection.class);
 
     private Map<String, CacheRecentContactStatus> recentContactStatusMap;
 
@@ -29,12 +33,17 @@ public class CacheRecentContactStatusCollection {
     }
 
     public void statusChanged(BasicMember owner, BasicMember contact, long lastContactTime, String lastMessageContent) {
-
         if (this.isCached(owner, contact)) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("recent contact status[{}<->{}] exists,update!", owner.getId(), contact.getId());
+            }
             CacheRecentContactStatus existedCachedStatus = this.getCachedStatus(owner, contact);
             existedCachedStatus.setLastContactTime(lastContactTime);
             existedCachedStatus.setLastMessageContent(lastMessageContent);
         } else {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("recent contact status[{}<->{}] not exists,create!", owner.getId(), contact.getId());
+            }
             this.add(owner, contact, lastContactTime, lastMessageContent);
         }
     }
@@ -60,9 +69,6 @@ public class CacheRecentContactStatusCollection {
         this.recentContactStatusMap.remove(key);
     }
 
-    public boolean cached(BasicMember owner) {
-        return this.ownerStatusMap.containsKey(owner.getId());
-    }
 
     private void removeOwnerMap(BasicMember owner, CacheRecentContactStatus cachedStatus) {
         if (this.ownerStatusMap.containsKey(owner.getId())) {
@@ -107,16 +113,17 @@ public class CacheRecentContactStatusCollection {
 
     private boolean isCached(BasicMember owner, BasicMember contact) {
         String key = this.getKey(owner, contact);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("recent contact status key:{}", key);
+        }
         return this.recentContactStatusMap.containsKey(key);
     }
 
     private String getKey(BasicMember owner, BasicMember contact) {
         if (owner.getId().compareTo(contact.getId()) >= 0) {
-            return String.format("{}-{}", owner.getId(), contact.getId());
+            return owner.getId() + "<->" + contact.getId();
         } else {
-            return String.format("{}-{}", contact.getId(), owner.getId());
+            return contact.getId() + "<->" + owner.getId();
         }
     }
-
-
 }

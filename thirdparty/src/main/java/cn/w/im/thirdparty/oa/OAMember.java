@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * oa member.
  */
-@JsonTypeName("oaMember")
 public class OAMember extends BasicMember {
 
     private String post;

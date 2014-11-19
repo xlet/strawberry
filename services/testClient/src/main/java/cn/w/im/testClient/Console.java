@@ -3,6 +3,8 @@ package cn.w.im.testClient;
 import cn.w.im.core.client.MessageClientType;
 import cn.w.im.core.message.client.LogoutMessage;
 import cn.w.im.core.message.client.NormalMessage;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Scanner;
@@ -62,7 +64,14 @@ public class Console {
      */
     public void logout() {
         LogoutMessage logoutMessage = new LogoutMessage(this.clientType, this.selfId);
-        ctx.writeAndFlush(logoutMessage);
+        ChannelFuture logoutFuture = ctx.writeAndFlush(logoutMessage);
+        logoutFuture.addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                future.channel().close();
+                System.exit(1);
+            }
+        });
     }
 
     /**

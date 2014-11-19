@@ -10,6 +10,8 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,8 @@ import java.util.Collection;
 @Component("mongoRecentContactStatusPersistentProvider")
 public class MongoRecentContactDao extends BasicDAO<MongoRecentContactStatus, ObjectId> implements RecentContactStatusPersistentProvider {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MongoRecentContactDao.class);
+
     @Autowired
     protected MongoRecentContactDao(@Qualifier("dataStore") Datastore ds) {
         super(ds);
@@ -33,10 +37,27 @@ public class MongoRecentContactDao extends BasicDAO<MongoRecentContactStatus, Ob
     @Override
     public void save(Collection<RecentContactStatus> statuses) {
         for (RecentContactStatus status : statuses) {
+
+            String ownerId = status.getOwner().getId();
+            String contactId = status.getContact().getId();
+
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("save recent contact status[{}<->{}]", ownerId, contactId);
+            }
+
             if (!this.exists(status)) {
+
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("recent contact status[{}<->{}] not exists,create!", ownerId, contactId);
+                }
+
                 MongoRecentContactStatus mongoStatus = this.create(status);
                 this.save(mongoStatus);
             } else {
+
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("recent contact status[{}<->{}] exists,update!", ownerId, contactId);
+                }
                 this.update(status);
             }
         }

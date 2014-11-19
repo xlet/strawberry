@@ -286,6 +286,9 @@ public class MemberAll {
     }
 
     public void logout(MessageClientType clientType) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("member:{},clientType:{} logout.", this.self.getId(), clientType);
+        }
 
         Client client = this.getConnectedClient(clientType);
         if (client == null) return;

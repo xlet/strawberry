@@ -39,9 +39,9 @@ public class DefaultRecentContactProviderImpl implements RecentContactProvider {
     @Override
     public RecentContactStatuses get(BasicMember owner) {
 
-        if (this.cacheRecentContactStatus.cached(owner)) {
-            return this.initCachedStatus(owner);
-        }
+        //get stored status from db and init status cache.
+        this.initCachedStatus(owner);
+
         SortedSet<RecentContactStatus> sortedRecentContactItems = this.getCachedSortedRecentContactItems(owner);
         if (sortedRecentContactItems.size() <= RECENT_CONTACT_MAX_LIMIT) {
             return new RecentContactStatuses(owner, sortedRecentContactItems);
@@ -58,10 +58,9 @@ public class DefaultRecentContactProviderImpl implements RecentContactProvider {
         return new RecentContactStatuses(owner, new ArrayList<RecentContactStatus>());
     }
 
-    private RecentContactStatuses initCachedStatus(BasicMember owner) {
+    private void initCachedStatus(BasicMember owner) {
         Collection<RecentContactStatus> statuses = this.persistentProvider.get(owner, RECENT_CONTACT_MAX_LIMIT);
         this.cacheRecentContactStatus.initOwnerCachedStatus(statuses);
-        return new RecentContactStatuses(owner, statuses);
     }
 
 
@@ -82,6 +81,10 @@ public class DefaultRecentContactProviderImpl implements RecentContactProvider {
                 hasPersistentItems.add(item);
                 this.cacheRecentContactStatus.remove(item);
             }
+        }
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("get {} recent contact status who has persistent.", hasPersistentItems.size());
         }
         this.persistentProvider.save(hasPersistentItems);
     }
