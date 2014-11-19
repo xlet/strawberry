@@ -1,8 +1,8 @@
 package cn.w.im.core.message.client;
 
-import cn.w.im.core.MessageType;
+import cn.w.im.core.message.MessageType;
 import cn.w.im.core.message.Message;
-import cn.w.im.core.member.relation.RecentContactStatus;
+import cn.w.im.core.status.recentContact.RecentContactStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;

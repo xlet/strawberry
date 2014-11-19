@@ -1,6 +1,6 @@
 package cn.w.im.core.message.client;
 
-import cn.w.im.core.member.relation.RecentContactStatus;
+import cn.w.im.core.status.recentContact.RecentContactStatus;
 
 /**
  * {@link RecentContactStatus} summary.

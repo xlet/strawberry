@@ -1,6 +1,6 @@
 package cn.w.im.core.message.client;
 
-import cn.w.im.core.MessageType;
+import cn.w.im.core.message.MessageType;
 import cn.w.im.core.member.BasicMember;
 import cn.w.im.core.message.ResponseMessage;
 

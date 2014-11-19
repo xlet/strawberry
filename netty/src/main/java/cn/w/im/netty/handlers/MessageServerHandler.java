@@ -50,7 +50,9 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = new NettyChannel(ctx);
-        LOGGER.debug("client[host:{},port{}] inactive!", channel.currentHost(), channel.currentPort());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("client[host:{},port{}] inactive!", channel.host(), channel.port());
+        }
         this.currentServer.clientProvider().removeClient(channel);
         super.channelInactive(ctx);
     }
@@ -58,7 +60,7 @@ public class MessageServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = new NettyChannel(ctx);
-        this.currentServer.clientProvider().removeClient(channel);
-        LOGGER.error("client[" + channel.currentHost() + ":" + channel.currentPort() + "] error !", cause);
+
+        LOGGER.error("client[" + channel.host() + ":" + channel.port() + "] error !", cause);
     }
 }

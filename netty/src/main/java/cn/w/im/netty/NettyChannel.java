@@ -16,12 +16,12 @@ public class NettyChannel implements Channel {
     }
 
     @Override
-    public String currentHost() {
+    public String host() {
         return IpAddressProvider.getRemoteIpAddress(this.context);
     }
 
     @Override
-    public int currentPort() {
+    public int port() {
         return IpAddressProvider.getRemotePort(context);
     }
 

@@ -1,7 +1,6 @@
 package cn.w.im.core.server;
 
 import cn.w.im.core.Channel;
-import cn.w.im.core.MessageHandlerContext;
 import cn.w.im.core.message.Message;
 import cn.w.im.core.message.forward.ForwardReadyMessage;
 import cn.w.im.core.message.forward.ForwardRequestMessage;
@@ -196,8 +195,8 @@ public class ForwardServer {
     }
 
     private String getKey(Channel channel) {
-        String host = channel.currentHost();
-        int port = channel.currentPort();
+        String host = channel.host();
+        int port = channel.port();
         return host + ":" + port;
     }
 

@@ -1,6 +1,6 @@
 package cn.w.im.persistent.mongo.dao.message.server;
 
-import cn.w.im.core.providers.persistent.MessagePersistentProvider;
+import cn.w.im.core.message.persistent.MessagePersistentProvider;
 import cn.w.im.core.message.server.ServerRegisterMessage;
 import cn.w.im.persistent.mongo.domain.message.server.MongoServerRegisterMessage;
 import org.bson.types.ObjectId;

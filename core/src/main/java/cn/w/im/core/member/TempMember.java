@@ -1,7 +1,5 @@
 package cn.w.im.core.member;
 
-import cn.w.im.core.MemberSourceType;
-
 /**
  * temp member.
  */

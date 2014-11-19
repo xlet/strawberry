@@ -1,11 +1,10 @@
 package cn.w.im.core.test;
 
-import cn.w.im.core.MessageClientType;
+import cn.w.im.core.client.MessageClientType;
 import org.junit.Test;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -32,8 +31,10 @@ public class NormalTest {
 
     @Test
     public void test_get_local_ip_address() throws UnknownHostException {
+        InetAddress address = InetAddress.getLocalHost();
+        String localHost = InetAddress.getLocalHost().getHostAddress().toString();
         InetAddress localAddress = this.getLocalHostLANAddress();
-        assertThat(localAddress.toString()).isEqualTo("10.0.40.38");
+        assertThat(localAddress.getHostAddress()).isEqualTo("10.0.40.38");
     }
 
     private InetAddress getLocalHostLANAddress() throws UnknownHostException {

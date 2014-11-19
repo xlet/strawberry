@@ -5,7 +5,6 @@ import cn.w.im.core.MessageHandlerContext;
 import cn.w.im.core.server.AbstractServer;
 import cn.w.im.core.message.Message;
 import cn.w.im.core.server.LoginServer;
-import cn.w.im.netty.IpAddressProvider;
 import cn.w.im.netty.NettyChannel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -50,17 +49,19 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = new NettyChannel(ctx);
-        this.currentServer.clientProvider().removeClient(channel);
 
-        LOGGER.debug("client channel[host:{},port:{}] inactive,remove cached client info.", channel.currentHost(), channel.currentPort());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("client channel[host:{},port:{}] inactive,remove cached client info.", channel.host(), channel.port());
+        }
+
+        this.currentServer.clientProvider().removeClient(channel);
         super.channelInactive(ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = new NettyChannel(ctx);
-        this.currentServer.clientProvider().removeClient(channel);
-        LOGGER.error("client[" + channel.currentHost() + ":" + channel.currentPort() + "] error !", cause);
-        ctx.close();
+
+        LOGGER.error("client[" + channel.host() + ":" + channel.port() + "] error !", cause);
     }
 }

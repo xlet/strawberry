@@ -1,14 +1,14 @@
 package cn.w.im.core.test.provider;
 
 import cn.w.im.core.Channel;
-import cn.w.im.core.exception.*;
+import cn.w.im.core.client.provider.*;
 import cn.w.im.core.member.TempMember;
-import cn.w.im.core.providers.client.*;
+import cn.w.im.core.client.*;
 import cn.w.im.core.server.AbstractServer;
 import cn.w.im.core.server.LoginServer;
 import cn.w.im.core.server.MessageServer;
 import cn.w.im.core.server.ServerBasic;
-import cn.w.im.core.MessageClientType;
+import cn.w.im.core.client.MessageClientType;
 import cn.w.im.core.member.BasicMember;
 import cn.w.im.core.message.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,12 +37,12 @@ public class ClientProviderTester {
         private final ServerBasic serverBasic = THIS_SERVER.getServerBasic();
 
         @Override
-        public String currentHost() {
+        public String host() {
             return serverBasic.getHost();
         }
 
         @Override
-        public int currentPort() {
+        public int port() {
             return PORT;
         }
 
@@ -97,7 +97,7 @@ public class ClientProviderTester {
 
         BasicMember member = new TempMember();
         member.setId("wdemo1:admin");
-        clientProvider.registerClient(channel.currentHost(), channel.currentPort(), member, MessageClientType.WinForm);
+        clientProvider.registerClient(channel.host(), channel.port(), member, MessageClientType.WinForm);
 
         Client client = clientProvider.getClient(member, MessageClientType.WinForm);
         assertThat(client).isInstanceOf(MessageClient.class);
@@ -113,7 +113,7 @@ public class ClientProviderTester {
 
         BasicMember member = new TempMember();
         member.setId("wdemo1:admin");
-        clientProvider.registerClient(channel.currentHost(), channel.currentPort(), member, MessageClientType.WinForm);
+        clientProvider.registerClient(channel.host(), channel.port(), member, MessageClientType.WinForm);
     }
 
     @Test(expected = MessageClientRegisteredException.class)
@@ -126,10 +126,10 @@ public class ClientProviderTester {
         BasicMember member = new TempMember();
         member.setId("wdemo1:admin");
         //register success.
-        clientProvider.registerClient(channel.currentHost(), channel.currentPort(), member, MessageClientType.WinForm);
+        clientProvider.registerClient(channel.host(), channel.port(), member, MessageClientType.WinForm);
 
         //register again error.
-        clientProvider.registerClient(channel.currentHost(), channel.currentPort(), member, MessageClientType.WinForm);
+        clientProvider.registerClient(channel.host(), channel.port(), member, MessageClientType.WinForm);
 
     }
 
@@ -143,7 +143,7 @@ public class ClientProviderTester {
 
         ServerBasic serverBasic = THIS_SERVER.getServerBasic();
 
-        clientProvider.registerClient(channel.currentHost(), channel.currentPort(), serverBasic);
+        clientProvider.registerClient(channel.host(), channel.port(), serverBasic);
         Client client = clientProvider.getClient(serverBasic);
 
         assertThat(client).isInstanceOf(ServerAsClient.class);
@@ -157,7 +157,7 @@ public class ClientProviderTester {
         ClientProvider clientProvider = new DefaultClientProvider();
 
         ServerBasic serverBasic = LOGIN_SERVER.getServerBasic();
-        clientProvider.registerClient(channel.currentHost(), channel.currentPort(), serverBasic);
+        clientProvider.registerClient(channel.host(), channel.port(), serverBasic);
     }
 
     @Test(expected = ServerRegisteredException.class)
@@ -167,8 +167,8 @@ public class ClientProviderTester {
         clientProvider.registerClient(channel, THIS_SERVER);
 
         ServerBasic serverBasic = LOGIN_SERVER.getServerBasic();
-        clientProvider.registerClient(channel.currentHost(), channel.currentPort(), serverBasic);
+        clientProvider.registerClient(channel.host(), channel.port(), serverBasic);
 
-        clientProvider.registerClient(channel.currentHost(), channel.currentPort(), serverBasic);
+        clientProvider.registerClient(channel.host(), channel.port(), serverBasic);
     }
 }

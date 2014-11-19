@@ -2,12 +2,16 @@ package cn.w.im.core.server;
 
 
 import cn.w.im.core.*;
+import cn.w.im.core.allocate.ConnectToken;
+import cn.w.im.core.client.MessageClientType;
 import cn.w.im.core.exception.*;
 import cn.w.im.core.message.client.ConnectResponseMessage;
-import cn.w.im.core.providers.allocate.DefaultMessageServerAllocateProvider;
-import cn.w.im.core.providers.allocate.MessageServerAllocateProvider;
-import cn.w.im.core.providers.member.DefaultMemberInfoProviderImpl;
-import cn.w.im.core.providers.member.MemberInfoProvider;
+import cn.w.im.core.allocate.provider.DefaultMessageServerAllocateProvider;
+import cn.w.im.core.allocate.provider.LoggedInException;
+import cn.w.im.core.allocate.provider.MessageServerAllocateProvider;
+import cn.w.im.core.member.provider.DefaultMemberInfoProviderImpl;
+import cn.w.im.core.member.provider.IdPasswordException;
+import cn.w.im.core.member.provider.MemberInfoProvider;
 import cn.w.im.core.member.BasicMember;
 import cn.w.im.core.message.Message;
 import cn.w.im.core.message.client.LoginMessage;
@@ -123,10 +127,10 @@ public class LoginServer extends ScalableServer {
             BasicMember member = this.memberProvider().verify(loginId, password, message.getProductType());
 
             //re-register this client and mark this client and member relation.
-            this.clientProvider().registerClient(channel.currentHost(), channel.currentPort(), member, clientType);
+            this.clientProvider().registerClient(channel.host(), channel.port(), member, clientType);
 
             //try allocate a message server to client to connect.
-            ConnectToken token = this.allocateProvider().allocate(member, clientType, channel.currentHost());
+            ConnectToken token = this.allocateProvider().allocate(member, clientType, channel.host());
 
             //send this token to message who allocated
             TokenMessage tokenMessage = new TokenMessage(token, this.getServerBasic());
@@ -154,7 +158,7 @@ public class LoginServer extends ScalableServer {
         this.allocateProvider().messageServerReady(readyMessageServer);
 
         try {
-            this.clientProvider().registerClient(channel.currentHost(), channel.currentPort(), readyMessageServer);
+            this.clientProvider().registerClient(channel.host(), channel.port(), readyMessageServer);
         } catch (ServerInnerException e) {
             LOGGER.error("register ready message server[node:{}] error!", readyMessageServer.getNodeId());
             LOGGER.error(e.getMessage(), e);

@@ -1,6 +1,6 @@
 package cn.w.im.netty.heartbeat;
 
-import cn.w.im.core.MessageType;
+import cn.w.im.core.message.MessageType;
 import cn.w.im.core.message.NonePersistentMessage;
 import cn.w.im.core.message.Message;
 

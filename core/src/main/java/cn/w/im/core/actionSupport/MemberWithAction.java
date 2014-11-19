@@ -1,6 +1,5 @@
 package cn.w.im.core.actionSupport;
 
-import cn.w.im.core.ActionType;
 import cn.w.im.core.member.BasicMember;
 
 /**

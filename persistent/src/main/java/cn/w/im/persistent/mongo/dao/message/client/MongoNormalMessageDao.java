@@ -1,6 +1,6 @@
 package cn.w.im.persistent.mongo.dao.message.client;
 
-import cn.w.im.core.providers.persistent.NormalMessagePersistentProvider;
+import cn.w.im.core.message.persistent.NormalMessagePersistentProvider;
 import cn.w.im.core.member.BasicMember;
 import cn.w.im.core.message.client.NormalMessage;
 import cn.w.im.persistent.mongo.domain.message.client.MongoNormalMessage;

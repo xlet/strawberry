@@ -18,8 +18,9 @@ import java.util.List;
  */
 public class JsonMessageDecoder extends MessageToMessageDecoder<String> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonMessageDecoder.class);
+
     private final MapperCreator mapperCreator;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public JsonMessageDecoder() {
         this.mapperCreator = SpringContext.context().getBean(MapperCreator.class);
@@ -29,8 +30,10 @@ public class JsonMessageDecoder extends MessageToMessageDecoder<String> {
     protected void decode(ChannelHandlerContext channelHandlerContext, String message, List<Object> objects) throws Exception {
         Message messageObj = this.mapperCreator.mapper().readValue(message, Message.class);
         messageObj.setReceivedTime(System.currentTimeMillis());
-        logger.debug("receive message <= " + channelHandlerContext.channel().remoteAddress().toString() + ":");
-        logger.debug(this.mapperCreator.mapper().writerWithDefaultPrettyPrinter().writeValueAsString(messageObj));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("receive message <= " + channelHandlerContext.channel().remoteAddress().toString() + ":");
+            LOGGER.debug(this.mapperCreator.mapper().writerWithDefaultPrettyPrinter().writeValueAsString(messageObj));
+        }
         objects.add(messageObj);
     }
 }

@@ -1,7 +1,5 @@
 package cn.w.im.core.message;
 
-import cn.w.im.core.BaseDomain;
-import cn.w.im.core.MessageType;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
@@ -10,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * Summary:所有消息的父类.
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
-public abstract class Message implements BaseDomain {
+public abstract class Message {
     /**
      * 消息类型.
      */

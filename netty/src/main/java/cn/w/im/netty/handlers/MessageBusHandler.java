@@ -5,7 +5,6 @@ import cn.w.im.core.MessageHandlerContext;
 import cn.w.im.core.server.AbstractServer;
 import cn.w.im.core.server.BusServer;
 import cn.w.im.core.message.Message;
-import cn.w.im.netty.IpAddressProvider;
 import cn.w.im.netty.NettyChannel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -49,15 +48,18 @@ public class MessageBusHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = new NettyChannel(ctx);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("client channel[host:{},port{}] disconnected!", channel.host(), channel.host());
+        }
+
         this.currentServer.clientProvider().removeClient(channel);
-        LOGGER.debug("client channel[host:{},port{}] disconnected!", channel.currentHost(), channel.currentHost());
         super.channelInactive(ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = new NettyChannel(ctx);
-        this.currentServer.clientProvider().removeClient(channel);
-        LOGGER.error("client[" + channel.currentHost() + ":" + channel.currentPort() + "] crashed!", cause);
+
+        LOGGER.error("client[" + channel.host() + ":" + channel.port() + "] crashed!", cause);
     }
 }

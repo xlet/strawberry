@@ -1,14 +1,14 @@
 package cn.w.im.core.test.json;
 
-import cn.w.im.core.ErrorCodeDefine;
+import cn.w.im.core.ProductType;
+import cn.w.im.core.exception.ErrorCodeDefine;
 import cn.w.im.core.jackson.MapperCreator;
 import cn.w.im.core.message.Message;
 import cn.w.im.core.message.forward.ForwardRequestMessage;
 import cn.w.im.core.server.ServerBasic;
-import cn.w.im.core.ServerType;
-import cn.w.im.core.MessageClientType;
+import cn.w.im.core.server.ServerType;
+import cn.w.im.core.client.MessageClientType;
 import cn.w.im.core.message.client.*;
-import cn.w.im.core.spring.SpringContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -88,7 +88,7 @@ public class MessageTest extends AbstractJUnit4SpringContextTests {
         loginSuccessResponseMessage.setAllocateServer(serverBasic);
         loginSuccessResponseMessage.setMemberId("11223344");
         loginSuccessResponseMessage.setToken("dddddddddddd");
-        LoginResponseMessage loginFailResponseMessage = new LoginResponseMessage(ErrorCodeDefine.IDPASSWORDERRORCODE, "IDPASSWORDERRORCODE");
+        LoginResponseMessage loginFailResponseMessage = new LoginResponseMessage(ErrorCodeDefine.ID_PASSWORD_ERROR_CODE, "ID_PASSWORD_ERROR_CODE");
         print(loginMessage);
         print(loginSuccessResponseMessage);
         print(loginFailResponseMessage);
@@ -101,20 +101,9 @@ public class MessageTest extends AbstractJUnit4SpringContextTests {
         print(connectMessage);
         ConnectResponseMessage connectResponseMessage = new ConnectResponseMessage();
         // connectResponseMessage.setSelf();
-        ConnectResponseMessage connectFailResponse = new ConnectResponseMessage(ErrorCodeDefine.TOKENERROR, "TOKENERROR");
+        ConnectResponseMessage connectFailResponse = new ConnectResponseMessage(ErrorCodeDefine.TOKEN_ERROR_CODE, "TOKEN_ERROR_CODE");
         print(connectResponseMessage, connectFailResponse);
     }
-
-
-    @Test
-    public void gen_logout_message() {
-        LogoutMessage logoutMessage = new LogoutMessage(CLIENT_TYPE, "11223344");
-        print(logoutMessage);
-        LogoutResponseMessage logoutResponseMessage = new LogoutResponseMessage(true);
-        LogoutResponseMessage logoutFailResponseMessage = new LogoutResponseMessage(false);
-        print(logoutResponseMessage, logoutFailResponseMessage);
-    }
-
 
     @Test
     public void gen_normal_message() {

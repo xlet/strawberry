@@ -1,7 +1,7 @@
 package cn.w.im.core.message.server;
 
-import cn.w.im.core.ConnectToken;
-import cn.w.im.core.MessageType;
+import cn.w.im.core.allocate.ConnectToken;
+import cn.w.im.core.message.MessageType;
 import cn.w.im.core.server.ServerBasic;
 import cn.w.im.core.message.RespondMessage;
 import cn.w.im.core.message.ResponseMessage;

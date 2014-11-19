@@ -1,0 +1,14 @@
+package cn.w.im.core.client;
+
+/**
+ * client remove listener interface.
+ */
+public interface ClientRemoveListener {
+
+    /**
+     * invoked when client removed.
+     *
+     * @param client will remove client.
+     */
+    void onClientRemove(Client client);
+}

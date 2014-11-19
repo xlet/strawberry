@@ -1,7 +1,7 @@
 package cn.w.im.persistent.mongo.domain.message.server;
 
-import cn.w.im.core.MessageClientType;
-import cn.w.im.core.MessageType;
+import cn.w.im.core.client.MessageClientType;
+import cn.w.im.core.message.MessageType;
 import cn.w.im.core.message.server.MemberLogoutMessage;
 import cn.w.im.persistent.mongo.domain.MongoDomain;
 import org.bson.types.ObjectId;

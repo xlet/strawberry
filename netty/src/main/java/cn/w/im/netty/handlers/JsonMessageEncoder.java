@@ -18,8 +18,9 @@ import java.util.List;
  */
 public class JsonMessageEncoder extends MessageToMessageEncoder<Message> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonMessageEncoder.class);
+
     private final MapperCreator mapperCreator;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public JsonMessageEncoder() {
         this.mapperCreator = SpringContext.context().getBean(MapperCreator.class);
@@ -28,9 +29,11 @@ public class JsonMessageEncoder extends MessageToMessageEncoder<Message> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Message message, List<Object> objects) throws Exception {
         String messageStr = this.mapperCreator.mapper().writeValueAsString(message);
-        String prettyMessageStr = this.mapperCreator.mapper().writerWithDefaultPrettyPrinter().writeValueAsString(message);
-        logger.debug("send message => " + channelHandlerContext.channel().remoteAddress().toString() + ":");
-        logger.debug(prettyMessageStr);
+        if (LOGGER.isDebugEnabled()) {
+            String prettyMessageJsonStr = this.mapperCreator.mapper().writerWithDefaultPrettyPrinter().writeValueAsString(message);
+            LOGGER.debug("send message => " + channelHandlerContext.channel().remoteAddress().toString() + ":");
+            LOGGER.debug(prettyMessageJsonStr);
+        }
         objects.add(messageStr);
     }
 }

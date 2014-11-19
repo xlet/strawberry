@@ -1,6 +1,7 @@
 package cn.w.im.testClient;
 
-import cn.w.im.core.MessageClientType;
+import cn.w.im.core.ProductType;
+import cn.w.im.core.client.MessageClientType;
 import cn.w.im.core.message.client.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -77,14 +78,6 @@ public class ConnectHandler extends ChannelInboundHandlerAdapter {
             System.out.println("SendDate:" + normalMessage.getSendTime());
             System.out.println("ReceiveDate" + new Date().toString());
             System.out.println("message:" + normalMessage.getContent());
-        } else if (msg instanceof LogoutResponseMessage) {
-            LogoutResponseMessage logoutResponseMessage = (LogoutResponseMessage) msg;
-            if (logoutResponseMessage.isSuccess()) {
-                System.out.println("登出成功!");
-                ctx.close();
-            } else {
-                System.out.println("登出失败!");
-            }
         }
     }
 

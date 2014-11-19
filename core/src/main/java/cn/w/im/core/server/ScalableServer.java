@@ -1,7 +1,6 @@
 package cn.w.im.core.server;
 
 import cn.w.im.core.MessageHandlerContext;
-import cn.w.im.core.ServerType;
 import cn.w.im.core.message.Message;
 import cn.w.im.core.message.server.ServerRegisterMessage;
 import cn.w.im.core.message.server.ServerRegisterResponseMessage;
@@ -33,7 +32,7 @@ public abstract class ScalableServer extends AbstractServer {
         Message message = context.getMessage();
         switch (message.getMessageType()) {
             case ForwardReady: //forward server ready then register self to bus server.
-                this.registerToBus(context.getCurrentHost(), context.getCurrentPort());
+                this.registerToBus(context.getHost(), context.getPort());
                 break;
             case ServerRegisterResponse:
                 this.registered(context);
@@ -48,8 +47,8 @@ public abstract class ScalableServer extends AbstractServer {
 
     private void registered(MessageHandlerContext context) {
         try {
-            String host = context.getCurrentHost();
-            int port = context.getCurrentPort();
+            String host = context.getHost();
+            int port = context.getPort();
             ServerRegisterResponseMessage
                     responseMessage = (ServerRegisterResponseMessage) context.getMessage();
             if (responseMessage.isSuccess()) {

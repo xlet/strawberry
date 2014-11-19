@@ -1,7 +1,5 @@
 package cn.w.im.core.server;
 
-import cn.w.im.core.ServerType;
-
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-9 下午4:34.

@@ -3,11 +3,11 @@ package cn.w.im.thirdparty.wcn;
 import cn.w.im.core.member.BasicMember;
 import cn.w.im.core.member.SexType;
 import cn.w.im.core.member.relation.FriendGroup;
-import cn.w.im.core.message.client.ProductType;
-import cn.w.im.core.exception.GetMemberErrorException;
-import cn.w.im.core.exception.IdPasswordException;
-import cn.w.im.core.exception.MemberNotExistedException;
-import cn.w.im.core.providers.member.OuterMemberProvider;
+import cn.w.im.core.ProductType;
+import cn.w.im.core.member.provider.GetMemberErrorException;
+import cn.w.im.core.member.provider.IdPasswordException;
+import cn.w.im.core.member.provider.MemberNotExistedException;
+import cn.w.im.core.member.provider.OuterMemberProvider;
 import cn.w.im.thirdparty.wcn.sdk.UserCenterException;
 import cn.w.im.thirdparty.wcn.sdk.WcnMemberService;
 import cn.w.im.thirdparty.wcn.sdk.model.Account;
@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * wcn api wrapper.

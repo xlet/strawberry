@@ -1,9 +1,8 @@
 package cn.w.im.core.server;
 
 import cn.w.im.core.MessageHandlerContext;
-import cn.w.im.core.ServerType;
-import cn.w.im.core.providers.client.Client;
-import cn.w.im.core.providers.client.ServerAsClient;
+import cn.w.im.core.client.Client;
+import cn.w.im.core.client.ServerAsClient;
 import cn.w.im.core.message.Message;
 import cn.w.im.core.message.server.ForwardMessage;
 import cn.w.im.core.message.server.ServerRegisterMessage;
@@ -51,8 +50,8 @@ public class BusServer extends AbstractServer {
     private void sendRegisteredServers(MessageHandlerContext context) {
         ServerRegisterMessage registerMessage = (ServerRegisterMessage) context.getMessage();
         ServerBasic registerServer = registerMessage.getServerBasic();
-        String host = context.getCurrentHost();
-        int port = context.getCurrentPort();
+        String host = context.getHost();
+        int port = context.getPort();
         try {
             //re-register this client to mark register server and client relation.
             this.clientProvider().registerClient(host, port, registerServer);

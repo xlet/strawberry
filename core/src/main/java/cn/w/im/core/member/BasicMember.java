@@ -1,6 +1,5 @@
 package cn.w.im.core.member;
 
-import cn.w.im.core.MemberSourceType;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**

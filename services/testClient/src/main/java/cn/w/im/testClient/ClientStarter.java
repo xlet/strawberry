@@ -1,8 +1,8 @@
 package cn.w.im.testClient;
 
 import cn.w.im.core.server.ServerBasic;
-import cn.w.im.core.MessageClientType;
-import cn.w.im.core.message.client.ProductType;
+import cn.w.im.core.client.MessageClientType;
+import cn.w.im.core.ProductType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

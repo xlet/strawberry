@@ -1,16 +1,15 @@
 package cn.w.im.core.server;
 
 import cn.w.im.core.MessageHandlerContext;
-import cn.w.im.core.providers.client.ClientProvider;
-import cn.w.im.core.providers.client.DefaultClientProvider;
-import cn.w.im.core.providers.message.DefaultRespondProvider;
-import cn.w.im.core.providers.message.RespondProvider;
-import cn.w.im.core.providers.message.DefaultMessageProviderImpl;
-import cn.w.im.core.providers.message.MessageProvider;
-import cn.w.im.core.providers.persistent.MessagePersistentProvider;
-import cn.w.im.core.providers.persistent.PersistentProviderFactory;
+import cn.w.im.core.client.provider.ClientProvider;
+import cn.w.im.core.client.provider.DefaultClientProvider;
+import cn.w.im.core.message.provider.DefaultRespondProvider;
+import cn.w.im.core.message.provider.RespondProvider;
+import cn.w.im.core.message.provider.DefaultMessageProviderImpl;
+import cn.w.im.core.message.provider.MessageProvider;
+import cn.w.im.core.message.persistent.MessagePersistentProvider;
+import cn.w.im.core.persistent.PersistentProviderFactory;
 import cn.w.im.core.message.NonePersistentMessage;
-import cn.w.im.core.ServerType;
 import cn.w.im.core.message.Message;
 import cn.w.im.core.message.forward.ForwardResponseMessage;
 import cn.w.im.core.exception.ServerInnerException;
@@ -96,7 +95,7 @@ public abstract class AbstractServer {
         Message message = context.getMessage();
         switch (message.getMessageType()) {
             case ForwardRequest:  //forward service request server basic info  message.
-                this.sendBasic(context.getCurrentHost(), context.getCurrentPort());
+                this.sendBasic(context.getHost(), context.getPort());
                 break;
             default:
                 handlerMessage(context);

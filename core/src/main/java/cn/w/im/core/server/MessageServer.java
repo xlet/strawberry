@@ -1,9 +1,8 @@
 package cn.w.im.core.server;
 
 import cn.w.im.core.MessageHandlerContext;
-import cn.w.im.core.ServerType;
-import cn.w.im.core.providers.status.DefaultMemberProviderImpl;
-import cn.w.im.core.providers.status.MemberProvider;
+import cn.w.im.core.status.memberAll.DefaultMemberAllProviderImpl;
+import cn.w.im.core.status.memberAll.MemberAllProvider;
 import cn.w.im.core.message.Message;
 import cn.w.im.core.message.server.ReadyMessage;
 import org.slf4j.Logger;
@@ -19,7 +18,7 @@ public class MessageServer extends ScalableServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageServer.class);
 
-    private MemberProvider memberProvider;
+    private MemberAllProvider memberProvider;
 
     /**
      * 构造函数.
@@ -33,7 +32,7 @@ public class MessageServer extends ScalableServer {
     @Override
     public void start() {
         super.start();
-        this.memberProvider = new DefaultMemberProviderImpl(this.messageProvider(), this.clientProvider());
+        this.memberProvider = new DefaultMemberAllProviderImpl(this.messageProvider(), this.clientProvider());
     }
 
     @Override

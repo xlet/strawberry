@@ -7,9 +7,9 @@ import cn.w.im.core.message.Message;
  */
 public interface Channel {
 
-    String currentHost();
+    String host();
 
-    int currentPort();
+    int port();
 
     void send(Message message);
 

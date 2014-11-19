@@ -1,10 +1,10 @@
 package cn.w.im.persistent.mongo.dao.status;
 
-import cn.w.im.core.providers.persistent.RecentContactStatusPersistentProvider;
+import cn.w.im.core.status.recentContact.RecentContactStatusPersistentProvider;
 import cn.w.im.core.member.BasicMember;
 import cn.w.im.core.member.NotInitMember;
 import cn.w.im.persistent.mongo.domain.status.MongoRecentContactStatus;
-import cn.w.im.core.member.relation.RecentContactStatus;
+import cn.w.im.core.status.recentContact.RecentContactStatus;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;

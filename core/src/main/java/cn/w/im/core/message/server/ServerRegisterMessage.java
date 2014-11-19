@@ -1,7 +1,7 @@
 package cn.w.im.core.message.server;
 
+import cn.w.im.core.message.MessageType;
 import cn.w.im.core.server.ServerBasic;
-import cn.w.im.core.MessageType;
 import cn.w.im.core.message.Message;
 import cn.w.im.core.message.MustRespondMessage;
 import com.fasterxml.jackson.annotation.JsonIgnore;

@@ -1,7 +1,7 @@
 package cn.w.im.core.test.json;
 
-import cn.w.im.core.MessageType;
 import cn.w.im.core.message.Message;
+import cn.w.im.core.message.MessageType;
 
 /**
  * test message.

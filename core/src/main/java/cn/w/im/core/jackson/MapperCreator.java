@@ -51,7 +51,6 @@ public class MapperCreator {
                 new NamedType(LoginMessage.class, "Login"),
                 new NamedType(LoginResponseMessage.class, "LoginResponse"),
                 new NamedType(LogoutMessage.class, "Logout"),
-                new NamedType(LogoutResponseMessage.class, "LogoutResponse"),
                 new NamedType(MemberStatusMessage.class, "Status"),
                 new NamedType(NormalMessage.class, "Normal"),
                 new NamedType(OfflineMessage.class, "Offline"),

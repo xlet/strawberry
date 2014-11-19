@@ -1,7 +1,5 @@
 package cn.w.im.core.exception;
 
-import cn.w.im.core.ErrorCodeDefine;
-
 /**
  * Creator: JackieHan.
  * DateTime: 14-3-25 下午1:49.
@@ -18,7 +16,7 @@ public abstract class ServerInnerException extends Exception {
      */
     public ServerInnerException(String errorMessage) {
         super(errorMessage);
-        this.errorCode = ErrorCodeDefine.SERVERINNERERROR;
+        this.errorCode = ErrorCodeDefine.SERVER_INNER_ERROR_CODE;
     }
 
     /**
@@ -29,7 +27,7 @@ public abstract class ServerInnerException extends Exception {
      */
     public ServerInnerException(String errorMessage, Throwable throwable) {
         super(errorMessage, throwable);
-        this.errorCode = ErrorCodeDefine.SERVERINNERERROR;
+        this.errorCode = ErrorCodeDefine.SERVER_INNER_ERROR_CODE;
     }
 
     /**

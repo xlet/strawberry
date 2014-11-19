@@ -1,6 +1,6 @@
 package cn.w.im.persistent.mongo.dao.message.client;
 
-import cn.w.im.core.providers.persistent.MessagePersistentProvider;
+import cn.w.im.core.message.persistent.MessagePersistentProvider;
 import cn.w.im.core.message.client.LoginResponseMessage;
 import cn.w.im.persistent.mongo.domain.message.client.MongoLoginResponseMessage;
 import org.bson.types.ObjectId;

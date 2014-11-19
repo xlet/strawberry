@@ -1,6 +1,6 @@
 package cn.w.im.thirdparty.wcn;
 
-import cn.w.im.core.MemberSourceType;
+import cn.w.im.core.member.MemberSourceType;
 import cn.w.im.core.member.BasicMember;
 
 /**

@@ -30,11 +30,11 @@ public class MessageHandlerContext {
         return server;
     }
 
-    public String getCurrentHost() {
-        return this.channel.currentHost();
+    public String getHost() {
+        return this.channel.host();
     }
 
-    public int getCurrentPort() {
-        return this.channel.currentPort();
+    public int getPort() {
+        return this.channel.port();
     }
 }

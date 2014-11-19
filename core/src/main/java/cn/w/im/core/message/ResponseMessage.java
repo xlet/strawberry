@@ -1,7 +1,5 @@
 package cn.w.im.core.message;
 
-import cn.w.im.core.MessageType;
-
 /**
  * Creator: JackieHan.
  * DateTime: 14-1-10 下午2:40.

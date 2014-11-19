@@ -1,6 +1,6 @@
 package cn.w.im.persistent.mongo.dao.message.forward;
 
-import cn.w.im.core.providers.persistent.MessagePersistentProvider;
+import cn.w.im.core.message.persistent.MessagePersistentProvider;
 import cn.w.im.core.message.forward.ForwardReadyMessage;
 import cn.w.im.persistent.mongo.domain.message.forward.MongoForwardReadyMessage;
 import org.bson.types.ObjectId;
