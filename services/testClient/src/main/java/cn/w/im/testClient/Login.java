@@ -83,7 +83,9 @@ public class Login {
                     LoginResponseMessage responseMessage = (LoginResponseMessage) context.getMessage();
                     String token = responseMessage.getToken();
                     String memberId = responseMessage.getMemberId();
-                    clientStarter.loginSuccess(token, memberId, responseMessage.getAllocateServer());
+                    String messageHost = responseMessage.getMessageHost();
+                    int messagePort = responseMessage.getMessagePort();
+                    clientStarter.loginSuccess(token, memberId, messageHost, messagePort);
                 } else {
                     clientStarter.loginError();
                 }

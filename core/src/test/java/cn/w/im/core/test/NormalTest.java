@@ -1,6 +1,7 @@
 package cn.w.im.core.test;
 
 import cn.w.im.core.client.MessageClientType;
+import cn.w.im.core.util.IpUtils;
 import org.junit.Test;
 
 import java.net.InetAddress;
@@ -9,6 +10,8 @@ import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -30,42 +33,16 @@ public class NormalTest {
     }
 
     @Test
-    public void test_get_local_ip_address() throws UnknownHostException {
-        InetAddress address = InetAddress.getLocalHost();
-        String localHost = InetAddress.getLocalHost().getHostAddress().toString();
-        InetAddress localAddress = this.getLocalHostLANAddress();
-        assertThat(localAddress.getHostAddress()).isEqualTo("10.0.40.38");
-    }
+    public void test_move_position() {
+        long a = (long) (192. * 256 * 256 * 256 + 168 * 256 * 256 + 40 * 256 + 18);
+        System.out.println(a);
 
-    private InetAddress getLocalHostLANAddress() throws UnknownHostException {
-        try {
-            InetAddress candidateAddress = null;
-            for (Enumeration ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements(); ) {
-                NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
-                for (Enumeration inetAddresses = iface.getInetAddresses(); inetAddresses.hasMoreElements(); ) {
-                    InetAddress inetAddress = (InetAddress) inetAddresses.nextElement();
-                    if (!inetAddress.isLoopbackAddress()) {
-                        if (inetAddress.isSiteLocalAddress()) {
-                            return inetAddress;
-                        } else if (candidateAddress == null) {
-                            candidateAddress = inetAddress;
-                        }
-                    }
-                }
-            }
-            if (candidateAddress != null) {
-                return candidateAddress;
-            }
+        long c = 192L;
+        long d = 168L;
 
-            InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
-            if (jdkSuppliedAddress == null) {
-                throw new UnknownHostException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
-            }
-            return jdkSuppliedAddress;
-        } catch (Exception e) {
-            UnknownHostException unknownHostException = new UnknownHostException("Failed to determine LAN address:" + e);
-            unknownHostException.initCause(e);
-            throw unknownHostException;
-        }
+        long b = (192L << 24) + (168L << 16) + (40L << 8) + 18L;
+        System.out.println(b);
+
+        assertThat(a).isEqualTo(b);
     }
 }

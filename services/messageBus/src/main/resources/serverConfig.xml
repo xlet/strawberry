@@ -9,6 +9,7 @@
         <property name="dataStoreType" value="${message.repository.type}"/>
         <property name="bind" value="${server.bind}"/>
         <property name="port" value="${server.listen.port}"/>
+        <property name="outerHost" value="${server.host.outer}"/>
     </bean>
 
 </beans>

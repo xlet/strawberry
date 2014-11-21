@@ -21,11 +21,13 @@ public abstract class ScalableServer extends AbstractServer {
     /**
      * 构造函数.
      *
-     * @param serverType 服务类型.
-     * @param port
+     * @param serverType server type.
+     * @param outerHost  outer host.
+     * @param port       listening port.
+     * @throws UnknownHostException can not get lan ip,throw this exception.
      */
-    public ScalableServer(ServerType serverType, int port) throws UnknownHostException {
-        super(serverType, port);
+    public ScalableServer(ServerType serverType, String outerHost, int port) throws UnknownHostException {
+        super(serverType, outerHost, port);
     }
 
     @Override

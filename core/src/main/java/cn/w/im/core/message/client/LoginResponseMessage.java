@@ -20,7 +20,9 @@ public class LoginResponseMessage extends ResponseMessage implements ServerToCli
 
     private String memberId;
 
-    private ServerBasic allocateServer;
+    private String messageHost;
+
+    private int messagePort;
 
     private String loggedOtherPlace;
 
@@ -61,21 +63,39 @@ public class LoginResponseMessage extends ResponseMessage implements ServerToCli
     }
 
     /**
-     * get allocate server.
+     * get message host.
      *
-     * @return allocate server.
+     * @return message host.
      */
-    public ServerBasic getAllocateServer() {
-        return allocateServer;
+    public String getMessageHost() {
+        return messageHost;
     }
 
     /**
-     * set allocate server.
+     * set message host.
      *
-     * @param allocateServer allocate server.
+     * @param messageHost message host.
      */
-    public void setAllocateServer(ServerBasic allocateServer) {
-        this.allocateServer = allocateServer;
+    public void setMessageHost(String messageHost) {
+        this.messageHost = messageHost;
+    }
+
+    /**
+     * get message port.
+     *
+     * @return message port.
+     */
+    public int getMessagePort() {
+        return messagePort;
+    }
+
+    /**
+     * set message port.
+     *
+     * @param messagePort message port.
+     */
+    public void setMessagePort(int messagePort) {
+        this.messagePort = messagePort;
     }
 
     /**
@@ -106,13 +126,17 @@ public class LoginResponseMessage extends ResponseMessage implements ServerToCli
     /**
      * 构造函数.
      *
-     * @param token connect token.
+     * @param token       token.
+     * @param memberId    member id.
+     * @param messageHost message host.
+     * @param messagePort message port.
      */
-    public LoginResponseMessage(ConnectToken token) {
+    public LoginResponseMessage(String token, String memberId, String messageHost, int messagePort) {
         super(MessageType.LoginResponse);
-        this.token = token.getToken();
-        this.memberId = token.getMember().getId();
-        this.allocateServer = token.getAllocatedMessageServer();
+        this.token = token;
+        this.memberId = memberId;
+        this.messageHost = messageHost;
+        this.messagePort = messagePort;
     }
 
     /**

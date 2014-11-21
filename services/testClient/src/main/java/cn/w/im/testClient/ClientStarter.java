@@ -72,12 +72,12 @@ public class ClientStarter {
         loginThread.start();
     }
 
-    public void StartMessageThread(final String token, final String memberId, final ServerBasic allocatedMessageServer) {
+    public void StartMessageThread(final String token, final String memberId, final String messageHost, final int messagePort) {
         messageThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 MessageConnector messageConnector = new MessageConnector(clientStarter, token, memberId, MESSAGE_CLIENT_TYPE,
-                        PRODUCT_TYPE, allocatedMessageServer);
+                        PRODUCT_TYPE, messageHost, messagePort);
                 messageConnector.connect();
             }
         });
@@ -85,8 +85,8 @@ public class ClientStarter {
     }
 
 
-    public void loginSuccess(String token, String memberId, ServerBasic allocatedMessageServer) {
+    public void loginSuccess(String token, String memberId, String messageHost, int messagePort) {
         LOGGER.debug("login success.");
-        StartMessageThread(token, memberId, allocatedMessageServer);
+        StartMessageThread(token, memberId, messageHost, messagePort);
     }
 }

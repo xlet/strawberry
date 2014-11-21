@@ -93,8 +93,8 @@ public class DefaultRecentContactProviderImpl implements RecentContactProvider {
     private Comparator<RecentContactStatus> recentContactItemComparator = new Comparator<RecentContactStatus>() {
         @Override
         public int compare(RecentContactStatus contactItem, RecentContactStatus contactItem2) {
-            if (contactItem.getLastContactTime() > contactItem.getLastContactTime()) return 1;
-            return -1;
+            if (contactItem.getLastContactTime() > contactItem.getLastContactTime()) return -1;
+            return 1;
         }
     };
 

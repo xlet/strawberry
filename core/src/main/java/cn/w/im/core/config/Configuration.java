@@ -11,6 +11,8 @@ public class Configuration {
 
     private int port;
 
+    private String outerHost;
+
     private boolean debug = false;
 
     private String dataStoreType = "mongo";
@@ -51,6 +53,24 @@ public class Configuration {
      */
     public void setPort(int port) {
         this.port = port;
+    }
+
+    /**
+     * get outer host.
+     *
+     * @return outer host.
+     */
+    public String getOuterHost() {
+        return outerHost;
+    }
+
+    /**
+     * set outer host.
+     *
+     * @param outerHost outer host.
+     */
+    public void setOuterHost(String outerHost) {
+        this.outerHost = outerHost;
     }
 
     /**

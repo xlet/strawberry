@@ -13,6 +13,7 @@ import cn.w.im.core.message.NonePersistentMessage;
 import cn.w.im.core.message.Message;
 import cn.w.im.core.message.forward.ForwardResponseMessage;
 import cn.w.im.core.exception.ServerInnerException;
+import cn.w.im.core.util.IpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,45 +40,15 @@ public abstract class AbstractServer {
 
 
     /**
-     * 构造函数.
+     * constructor.
      *
-     * @param serverType 服务类型.
+     * @param serverType server type.
+     * @param outerHost  outer host.
+     * @throws UnknownHostException can not get lan ip,throw this exception.
      */
-    public AbstractServer(ServerType serverType, int port) throws UnknownHostException {
-        InetAddress localAddress = getLocalHostLANAddress();
-        this.serverBasic = new ServerBasic(serverType, localAddress.getHostAddress(), port);
-    }
-
-    private InetAddress getLocalHostLANAddress() throws UnknownHostException {
-        try {
-            InetAddress candidateAddress = null;
-            for (Enumeration interfaces = NetworkInterface.getNetworkInterfaces(); interfaces.hasMoreElements(); ) {
-                NetworkInterface anInterface = (NetworkInterface) interfaces.nextElement();
-                for (Enumeration addresses = anInterface.getInetAddresses(); addresses.hasMoreElements(); ) {
-                    InetAddress inetAddress = (InetAddress) addresses.nextElement();
-                    if (!inetAddress.isLoopbackAddress()) {
-                        if (inetAddress.isSiteLocalAddress()) {
-                            return inetAddress;
-                        } else if (candidateAddress == null) {
-                            candidateAddress = inetAddress;
-                        }
-                    }
-                }
-            }
-            if (candidateAddress != null) {
-                return candidateAddress;
-            }
-
-            InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
-            if (jdkSuppliedAddress == null) {
-                throw new UnknownHostException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
-            }
-            return jdkSuppliedAddress;
-        } catch (Exception e) {
-            UnknownHostException unknownHostException = new UnknownHostException("Failed to determine LAN address:" + e);
-            unknownHostException.initCause(e);
-            throw unknownHostException;
-        }
+    public AbstractServer(ServerType serverType, String outerHost, int port) throws UnknownHostException {
+        InetAddress localAddress = IpUtils.getLocalHostLANAddress();
+        this.serverBasic = new ServerBasic(serverType, localAddress.getHostAddress(), outerHost, port);
     }
 
     /**
@@ -168,7 +139,7 @@ public abstract class AbstractServer {
      * @return host.
      */
     public String getHost() {
-        return this.serverBasic.getHost();
+        return this.serverBasic.getLanHost();
     }
 
     /**
@@ -213,7 +184,7 @@ public abstract class AbstractServer {
      * @param host host.
      */
     protected void setHost(String host) {
-        this.serverBasic.setHost(host);
+        this.serverBasic.setLanHost(host);
     }
 
     /**

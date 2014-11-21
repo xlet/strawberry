@@ -63,7 +63,7 @@ public final class Bootstrap {
 
     private Bootstrap() throws UnknownHostException {
         configuration = (Configuration) SpringContext.context().getBean("serverConfig");
-        this.messageBus = new BusServer(configuration.getPort());
+        this.messageBus = new BusServer(configuration.getOuterHost(), configuration.getPort());
     }
 
     private void startServer() throws Exception {

@@ -12,7 +12,8 @@ public class ServerBasic {
     private long startDateTime;
     private String nodeId;
     private ServerType serverType;
-    private String host;
+    private String lanHost;
+    private String outerHost;
 
     private ServerBasic() {
     }
@@ -23,29 +24,48 @@ public class ServerBasic {
      * @param serverType server type.
      * @param port       port.
      */
-    public ServerBasic(ServerType serverType, String host, int port) {
+    public ServerBasic(ServerType serverType, String lanHost, String outerHost, int port) {
         this.serverType = serverType;
         this.port = port;
-        this.host = host;
-        this.nodeId = host + ":" + port;
+        this.lanHost = lanHost;
+        this.outerHost = outerHost;
+        this.nodeId = lanHost + ":" + port;
     }
 
     /**
-     * get local host.
+     * get local lanHost.
      *
      * @return local ip address.
      */
-    public String getHost() {
-        return host;
+    public String getLanHost() {
+        return lanHost;
     }
 
     /**
-     * set local host.
+     * set local lanHost.
      *
-     * @param host host.
+     * @param lanHost lanHost.
      */
-    public void setHost(String host) {
-        this.host = host;
+    public void setLanHost(String lanHost) {
+        this.lanHost = lanHost;
+    }
+
+    /**
+     * get outer host.
+     *
+     * @return outer host.
+     */
+    public String getOuterHost() {
+        return outerHost;
+    }
+
+    /**
+     * set outer host.
+     *
+     * @param outerHost outer host.
+     */
+    public void setOuterHost(String outerHost) {
+        this.outerHost = outerHost;
     }
 
     /**

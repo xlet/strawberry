@@ -15,7 +15,7 @@ public class BusServerStartTester {
 
     @Test
     public void test_bus_server_start() throws UnknownHostException {
-        AbstractServer server = new BusServer(PORT);
+        AbstractServer server = new BusServer("bus.im.w.cn", PORT);
         server.start();
     }
 }

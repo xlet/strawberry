@@ -33,22 +33,24 @@ public class MessageConnector {
 
     private EventLoopGroup connectGroup = new NioEventLoopGroup();
     private ProductType productType;
-    private ServerBasic allocatedMessageServer;
+    private String messageHost;
+    private int messagePort;
 
     public MessageConnector(ClientStarter clientStarter, String token, String memberId,
-                            MessageClientType messageClientType, ProductType productType, ServerBasic allocatedMessageSErver) {
+                            MessageClientType messageClientType, ProductType productType,
+                            String messageHost, int messagePort) {
         this.clientStarter = clientStarter;
         this.token = token;
         this.memberId = memberId;
         this.messageClientType = messageClientType;
         this.productType = productType;
-        this.allocatedMessageServer = allocatedMessageSErver;
+        this.messageHost = messageHost;
+        this.messagePort = messagePort;
     }
 
     public void connect() {
 
         final ConnectHandler handler = new ConnectHandler(this.token, this.memberId, messageClientType, this.productType);
-        ServerBasic serverBasic = this.allocatedMessageServer;
 
         try {
             Bootstrap bootstrap = new Bootstrap();
@@ -68,7 +70,7 @@ public class MessageConnector {
                             );
                         }
                     });
-            bootstrap.connect(serverBasic.getHost(), serverBasic.getPort()).sync().channel().closeFuture().sync();
+            bootstrap.connect(messageHost, messagePort).sync().channel().closeFuture().sync();
         } catch (Exception ex) {
             connectGroup.shutdownGracefully();
             ex.printStackTrace();

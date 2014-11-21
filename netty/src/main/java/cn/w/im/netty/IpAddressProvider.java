@@ -23,6 +23,7 @@ public class IpAddressProvider {
      */
     public static String getRemoteIpAddress(ChannelHandlerContext ctx) {
         InetSocketAddress remoteAddress = (InetSocketAddress) ctx.channel().remoteAddress();
+        ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress().isSiteLocalAddress();
         return remoteAddress.getHostString();
     }
 

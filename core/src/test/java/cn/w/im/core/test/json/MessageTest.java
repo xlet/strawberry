@@ -34,6 +34,7 @@ public class MessageTest extends AbstractJUnit4SpringContextTests {
     private static final Logger LOG = LoggerFactory.getLogger(MessageTest.class);
 
     private static final String HOST = "10.0.40.38";
+    private static final String OUTER_HOST = "im.w.cn";
     private static final int PORT = 17021;
 
     @Autowired
@@ -81,11 +82,12 @@ public class MessageTest extends AbstractJUnit4SpringContextTests {
     public void gen_login_message() throws JsonProcessingException, UnsupportedEncodingException {
 
         LoginMessage loginMessage = new LoginMessage(CLIENT_TYPE, ProductType.OA, "13622882929", "w123456");
-        ServerBasic serverBasic = new ServerBasic(ServerType.LoginServer, HOST, PORT);
+        ServerBasic serverBasic = new ServerBasic(ServerType.LoginServer, HOST, OUTER_HOST, PORT);
         serverBasic.setStart(true);
         serverBasic.setStartDateTime(System.currentTimeMillis());
         LoginResponseMessage loginSuccessResponseMessage = new LoginResponseMessage();
-        loginSuccessResponseMessage.setAllocateServer(serverBasic);
+        loginSuccessResponseMessage.setMessageHost("10.0.40.38");
+        loginSuccessResponseMessage.setMessagePort(16021);
         loginSuccessResponseMessage.setMemberId("11223344");
         loginSuccessResponseMessage.setToken("dddddddddddd");
         LoginResponseMessage loginFailResponseMessage = new LoginResponseMessage(ErrorCodeDefine.ID_PASSWORD_ERROR_CODE, "ID_PASSWORD_ERROR_CODE");

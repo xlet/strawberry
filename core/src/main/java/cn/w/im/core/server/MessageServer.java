@@ -25,10 +25,11 @@ public class MessageServer extends ScalableServer {
     /**
      * 构造函数.
      *
-     * @param port port.
+     * @param outerHost outer host.
+     * @param port      listening port.
      */
-    public MessageServer(int port) throws UnknownHostException {
-        super(ServerType.MessageServer, port);
+    public MessageServer(String outerHost, int port) throws UnknownHostException {
+        super(ServerType.MessageServer, outerHost, port);
     }
 
     @Override

@@ -17,6 +17,7 @@ import cn.w.im.core.message.Message;
 import cn.w.im.core.message.client.LoginMessage;
 import cn.w.im.core.message.client.LoginResponseMessage;
 import cn.w.im.core.message.server.*;
+import cn.w.im.core.util.IpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,10 +38,11 @@ public class LoginServer extends ScalableServer {
     /**
      * 构造函数.
      *
-     * @param port port.
+     * @param outerHost outer host.
+     * @param port      port.
      */
-    public LoginServer(int port) throws UnknownHostException {
-        super(ServerType.LoginServer, port);
+    public LoginServer(String outerHost, int port) throws UnknownHostException {
+        super(ServerType.LoginServer, outerHost, port);
     }
 
     @Override
@@ -112,12 +114,26 @@ public class LoginServer extends ScalableServer {
 
     private void loginSuccess(TokenResponseMessage message) {
         if (message.isSuccess()) {
-            ConnectToken token = message.getToken();
-            LoginResponseMessage loginResponseMessage = new LoginResponseMessage(token);
-            this.messageProvider().send(token.getMember(), loginResponseMessage);
+            ConnectToken connectToken = message.getToken();
+            String token = connectToken.getToken();
+            String memberId = connectToken.getMember().getId();
+            String messageHost = this.getMessageHost(connectToken.getClientHost(), connectToken.getAllocatedMessageServer());
+            int messagePort = connectToken.getAllocatedMessageServer().getPort();
+            LoginResponseMessage loginResponseMessage = new LoginResponseMessage(token, memberId, messageHost, messagePort);
+            this.messageProvider().send(connectToken.getMember(), loginResponseMessage);
         } else {
             LOGGER.error("core[" + message.getFromServer().getNodeId() + "] perhaps error! errorCode[" + message.getErrorCode() + "] errorMessage:" + message.getErrorMessage());
         }
+    }
+
+    private String getMessageHost(String clientHost, ServerBasic allocatedMessageServer) {
+
+        String messageServerLanHost = allocatedMessageServer.getLanHost();
+        String messageServerOuterHost = allocatedMessageServer.getOuterHost();
+        if (IpUtils.isInner(clientHost)) {
+            return messageServerLanHost;
+        }
+        return messageServerOuterHost;
     }
 
     private void login(LoginMessage message, Channel channel, MessageClientType clientType) {

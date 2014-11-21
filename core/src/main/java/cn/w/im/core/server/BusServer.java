@@ -25,8 +25,15 @@ public class BusServer extends AbstractServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BusServer.class);
 
-    public BusServer(int port) throws UnknownHostException {
-        super(ServerType.MessageBus, port);
+    /**
+     * constructor.
+     *
+     * @param outerHost outer host.
+     * @param port      listening port.
+     * @throws UnknownHostException can not get lan ip,throw this exception.
+     */
+    public BusServer(String outerHost, int port) throws UnknownHostException {
+        super(ServerType.MessageBus, outerHost, port);
     }
 
     @Override

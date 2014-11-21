@@ -33,8 +33,8 @@ public class ClientProviderTester {
     private AbstractServer loginServer;
 
     public ClientProviderTester() throws UnknownHostException {
-        this.thisServer = new MessageServer(PORT);
-        this.loginServer = new LoginServer(PORT);
+        this.thisServer = new MessageServer("m1.im.w.cn", PORT);
+        this.loginServer = new LoginServer("login.im.w.cn", PORT);
     }
 
     private static final Channel channel = new Channel() {

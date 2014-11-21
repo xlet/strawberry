@@ -8,6 +8,7 @@
         <property name="dataStoreType" value="${message.repository.type}"/>
         <property name="bind" value="${server.bind}"/>
         <property name="port" value="${server.listen.port}"/>
+        <property name="outerHost" value="${server.host.outer}"/>
         <property name="nettyInnerLoggerEnable" value="${netty.inner.logger.enable}"/>
     </bean>
 </beans>
