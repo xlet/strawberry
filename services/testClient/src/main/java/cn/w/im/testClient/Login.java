@@ -27,11 +27,15 @@ public class Login {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Login.class);
 
+    private static final String LOGIN_SERVER_HOST = "10.0.40.38";
+    private static final int LOGIN_SERVER_PORT = 17021;
+
     private final ClientStarter clientStarter;
     private String loginId;
     private String password;
     private MessageClientType messageClientType;
     private ProductType productType;
+
 
     private EventLoopGroup loginGroup = new NioEventLoopGroup();
 
@@ -65,7 +69,7 @@ public class Login {
                             );
                         }
                     });
-            bootstrap.connect("10.0.40.38", 17021).sync().channel().closeFuture().sync();
+            bootstrap.connect(LOGIN_SERVER_HOST, LOGIN_SERVER_PORT).sync().channel().closeFuture().sync();
         } catch (Exception ex) {
             loginGroup.shutdownGracefully();
             ex.printStackTrace();

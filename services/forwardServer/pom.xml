@@ -34,6 +34,26 @@
     <build>
         <plugins>
             <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.6.1</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/../../bin/login/</directory>
+                            <includes>
+                                <include>bootstrap-forward.jar</include>
+                            </includes>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/../../bin/message/</directory>
+                            <includes>
+                                <include>bootstrap-forward.jar</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
@@ -59,6 +79,11 @@
                         </goals>
                         <configuration>
                             <tasks>
+                                <!--<echo>Ant Task - delete files</echo>-->
+                                <!--<delete>${project.basedir}/../../bin/login/bootstrap-forward.jar</delete>-->
+                                <!--<delete>${project.basedir}/../../bin/login/lib/</delete>-->
+                                <!--<delete>${project.basedir}/../../bin/message/bootstrap-forward.jar</delete>-->
+                                <!--<delete>${project.basedir}/../../bin/message/lib/</delete>-->
                                 <echo>Ant Task - copying files.....</echo>
                                 <echo>copy to bin</echo>
                                 <echo>copy jar to login server</echo>

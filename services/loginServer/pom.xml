@@ -38,6 +38,26 @@
     </dependencies>
     <build>
         <plugins>
+            <!--<plugin>-->
+                <!--<artifactId>maven-clean-plugin</artifactId>-->
+                <!--<version>2.6.1</version>-->
+                <!--<configuration>-->
+                    <!--<filesets>-->
+                        <!--<fileset>-->
+                            <!--<directory>${project.basedir}/../../bin/login/</directory>-->
+                            <!--<includes>-->
+                                <!--<include>bootstrap-login.jar</include>-->
+                            <!--</includes>-->
+                        <!--</fileset>-->
+                        <!--<fileset>-->
+                            <!--<directory>${project.basedir}/../../bin/login/lib/</directory>-->
+                            <!--<includes>-->
+                                <!--<include>*.jar</include>-->
+                            <!--</includes>-->
+                        <!--</fileset>-->
+                    <!--</filesets>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
