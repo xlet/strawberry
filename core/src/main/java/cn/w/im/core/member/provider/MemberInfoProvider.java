@@ -22,15 +22,6 @@ public interface MemberInfoProvider {
      */
     BasicMember verify(String loginId, String password, ProductType productType) throws IdPasswordException;
 
-    /**
-     * get member.
-     *
-     * @param memberId    member id.
-     * @param productType product type.
-     * @return member.
-     */
-    BasicMember get(String memberId, ProductType productType) throws MemberNotExistedException, GetMemberErrorException;
-
 
     /**
      * get member from cache.

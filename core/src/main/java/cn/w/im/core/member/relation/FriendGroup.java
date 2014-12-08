@@ -1,10 +1,13 @@
 package cn.w.im.core.member.relation;
 
+import cn.w.im.core.actionSupport.ActionType;
+import cn.w.im.core.actionSupport.FriendGroupChangeLog;
+import cn.w.im.core.actionSupport.FriendGroupContactChangeLog;
+import cn.w.im.core.exception.ServerInnerException;
 import cn.w.im.core.member.BasicMember;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * friend group info.
@@ -15,7 +18,7 @@ public class FriendGroup {
     private String name;
     @JsonIgnore
     private BasicMember owner;
-    private List<BasicMember> contacts;
+    private Map<String, BasicMember> contacts;
     private boolean system;
 
     /**
@@ -29,7 +32,7 @@ public class FriendGroup {
      * constructor.
      *
      * @param id     id.
-     * @param name   name.
+     * @param name   namee.
      * @param owner  owner member.
      * @param system true:system group.
      */
@@ -38,6 +41,16 @@ public class FriendGroup {
         this.name = name;
         this.owner = owner;
         this.system = system;
+        this.contacts = new HashMap<String, BasicMember>();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("id").append(this.getId());
+        sb.append("name").append(this.getName());
+        sb.append("system").append(this.isSystem());
+        return sb.toString();
     }
 
     /**
@@ -50,30 +63,12 @@ public class FriendGroup {
     }
 
     /**
-     * set id.
-     *
-     * @param id id.
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
      * get name.
      *
      * @return name.
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * set name.
-     *
-     * @param name name.
-     */
-    public void setName(String name) {
-        this.name = name;
     }
 
     /**
@@ -86,30 +81,23 @@ public class FriendGroup {
     }
 
     /**
-     * set owner member.
-     *
-     * @param owner owner member.
-     */
-    public void setOwner(BasicMember owner) {
-        this.owner = owner;
-    }
-
-    /**
      * get child contacts.
      *
      * @return child contacts.
      */
-    public List<BasicMember> getContacts() {
-        return contacts;
+    public Collection<BasicMember> getContacts() {
+        return contacts.values();
     }
 
     /**
-     * set child contacts.
+     * initialize contacts not contact change log.
      *
-     * @param contacts child contacts.
+     * @param contact contact.
      */
-    public void setContacts(List<BasicMember> contacts) {
-        this.contacts = contacts;
+    public void initContact(BasicMember contact) {
+        if (this.contacts.containsKey(contact.getId())) {
+            this.contacts.put(contact.getId(), contact);
+        }
     }
 
     /**
@@ -122,18 +110,48 @@ public class FriendGroup {
     }
 
     /**
-     * set whether system group.
+     * add contact to friend group and record contact change log.
      *
-     * @param system true:system group.
+     * @param contact contact.
+     * @throws ServerInnerException server exception.
      */
-    public void setSystem(boolean system) {
-        this.system = system;
+    public void addContact(BasicMember contact) throws ServerInnerException {
+        if (this.contacts.containsKey(contact.getId())) {
+            this.contacts.put(contact.getId(), contact);
+
+            FriendGroupContactChangeLog contactChangeLog = new FriendGroupContactChangeLog(contact, ActionType.Add);
+            contactChangeLog.save();
+        }
+
+        throw new ContactExistsException(contact.getId());
     }
 
-    public void addContract(BasicMember member) {
-        if (this.contacts == null) {
-            this.contacts = new ArrayList<BasicMember>();
+    /**
+     * delete contact from friend group and record contact change log.
+     *
+     * @param contact contact.
+     * @throws ServerInnerException server exception.
+     */
+    public void deleteContact(BasicMember contact) throws ServerInnerException {
+        if (this.contacts.containsKey(contact.getId())) {
+            this.contacts.remove(contact.getId());
+
+            FriendGroupContactChangeLog contactChangeLog = new FriendGroupContactChangeLog(contact, ActionType.Delete);
+            contactChangeLog.save();
         }
-        this.contacts.add(member);
+
+        throw new ContactNotExistedException(contact.getId());
+    }
+
+    /**
+     * update friend group name.
+     *
+     * @param newName group new name.
+     * @throws ServerInnerException
+     */
+    public void update(String newName) throws ServerInnerException {
+        this.name = newName;
+        FriendGroupChangeLog friendGroupChangeLog = new FriendGroupChangeLog(this, ActionType.Update);
+        friendGroupChangeLog.save();
     }
 }

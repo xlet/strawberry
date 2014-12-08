@@ -19,6 +19,7 @@ public class OAMember extends BasicMember {
         this.setMemberSource(MemberSourceType.OA);
         this.setTempMember(false);
         this.setInit(true);
+        this.setOuter(true);
     }
 
     public String getPost() {
@@ -44,5 +45,13 @@ public class OAMember extends BasicMember {
             return this.getId().substring(0, index);
         }
         return "";
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("post").append(this.getPost());
+        sb.append("department").append(this.getDepartment());
+        return sb.toString();
     }
 }

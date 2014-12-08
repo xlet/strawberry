@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 /**
  * member basic info.
  */
-
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
 public abstract class BasicMember {
 
@@ -21,6 +20,7 @@ public abstract class BasicMember {
     private String address;
     private String email;
     private boolean init;
+    private boolean outer;
 
     /**
      * get member source.
@@ -234,7 +234,44 @@ public abstract class BasicMember {
      *
      * @param init true:init.
      */
-    public void setInit(boolean init) {
+    protected void setInit(boolean init) {
         this.init = init;
+    }
+
+    /**
+     * get is outer system member.
+     *
+     * @return true:outer.
+     */
+    public boolean isOuter() {
+        return outer;
+    }
+
+    /**
+     * set is outer system member.
+     *
+     * @param outer true:outer.
+     */
+    protected void setOuter(boolean outer) {
+        this.outer = outer;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("memberSource").append(this.getMemberSource());
+        sb.append("id").append(this.getId());
+        sb.append("nickname").append(this.getNickname());
+        sb.append("sex").append(this.getSex());
+        sb.append("picUrl").append(this.picUrl);
+        sb.append("signature").append(this.signature);
+        sb.append("tempMember").append(this.isTempMember());
+        sb.append("mobile").append(this.getMobile());
+        sb.append("telephone").append(this.getTelephone());
+        sb.append("address").append(this.getAddress());
+        sb.append("email").append(this.getEmail());
+        sb.append("init").append(this.isInit());
+        sb.append("outer").append(this.isOuter());
+        return sb.toString();
     }
 }

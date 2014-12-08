@@ -18,6 +18,18 @@ public class WcnMember extends BasicMember {
         this.setMemberSource(MemberSourceType.WCN);
         this.setTempMember(false);
         this.setInit(true);
+        this.setOuter(true);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("isMerchant").append(this.isMerchant());
+        sb.append("contractor").append(this.getContractor());
+        sb.append("shopName").append(this.getShopName());
+        sb.append("mobileValid").append(this.isMobileValid());
+        sb.append("realNameValid").append(this.isRealNameValid());
+        return sb.toString();
     }
 
     /**

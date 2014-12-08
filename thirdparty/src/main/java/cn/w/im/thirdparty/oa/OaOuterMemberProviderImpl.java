@@ -98,11 +98,11 @@ public class OaOuterMemberProviderImpl implements OuterMemberProvider {
             if (member != null && !StringUtils.isEmpty(((OAMember) member).getDepartment())) {
                 if (!friendGroupMap.containsKey(oaMember.getDepartment())) {
                     FriendGroup friendGroup = new FriendGroup("", oaMember.getDepartment(), owner, true);
-                    friendGroup.addContract(oaMember);
+                    friendGroup.initContact(oaMember);
                     friendGroupMap.put(oaMember.getDepartment(), friendGroup);
                 } else {
                     FriendGroup friendGroup = friendGroupMap.get(oaMember.getDepartment());
-                    friendGroup.addContract(oaMember);
+                    friendGroup.initContact(oaMember);
                 }
             }
         }

@@ -11,6 +11,7 @@ public class TempMember extends BasicMember {
         this.setMemberSource(MemberSourceType.TEMP);
         this.setTempMember(true);
         this.setInit(true);
+        this.setOuter(false);
     }
 
     /**
@@ -29,5 +30,12 @@ public class TempMember extends BasicMember {
      */
     public void setSource(String source) {
         this.source = source;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("source").append(this.getSource());
+        return sb.toString();
     }
 }

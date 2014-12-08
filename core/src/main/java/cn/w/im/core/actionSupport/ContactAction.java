@@ -7,45 +7,45 @@ import cn.w.im.core.member.BasicMember;
  * <p/>
  * this only for group with action.
  */
-public class MemberWithAction {
+public class ContactAction {
 
-    private BasicMember member;
+    private BasicMember contact;
 
     private ActionType action;
 
     /**
      * default constructor.
      */
-    public MemberWithAction() {
+    public ContactAction() {
     }
 
     /**
      * constructor.
      *
-     * @param member member.
-     * @param action action.
+     * @param contact contact.
+     * @param action  action.
      */
-    public MemberWithAction(BasicMember member, ActionType action) {
-        this.member = member;
+    public ContactAction(BasicMember contact, ActionType action) {
+        this.contact = contact;
         this.action = action;
     }
 
     /**
-     * get member.
+     * get contact.
      *
-     * @return member.
+     * @return contact.
      */
-    public BasicMember getMember() {
-        return member;
+    public BasicMember getContact() {
+        return contact;
     }
 
     /**
-     * set member.
+     * set contact.
      *
-     * @param member member.
+     * @param contact contact.
      */
-    public void setMember(BasicMember member) {
-        this.member = member;
+    public void setContact(BasicMember contact) {
+        this.contact = contact;
     }
 
     /**

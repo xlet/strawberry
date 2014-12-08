@@ -1,12 +1,18 @@
 package cn.w.im.core.test;
 
 import cn.w.im.core.client.MessageClientType;
+import cn.w.im.core.member.MemberSourceType;
+import cn.w.im.core.member.SexType;
+import cn.w.im.core.member.TempMember;
 import cn.w.im.core.util.IpUtils;
 import org.junit.Test;
 
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -44,5 +50,52 @@ public class NormalTest {
         System.out.println(b);
 
         assertThat(a).isEqualTo(b);
+    }
+
+    @Test
+    public void test_hash_code() {
+        TempMember tempMember = new TempMember();
+        tempMember.setSource("w.cn");
+        tempMember.setAddress("望海路37号4楼");
+        tempMember.setEmail("hanjiayou@w.cn");
+        tempMember.setId("wdemo1:w094");
+        tempMember.setMemberSource(MemberSourceType.OA);
+        tempMember.setMobile("18626877807");
+        tempMember.setNickname("Jackie");
+        tempMember.setPicUrl("http://www.w.cn/xxxxxxxxx.jgp");
+        tempMember.setSex(SexType.Male);
+        tempMember.setSignature("我靠！");
+        tempMember.setTelephone("00000000");
+
+        String hashCode1 = md5Hex(tempMember.toString());
+        tempMember.setSource("aap.w.cn");
+        String hashCode2 = md5Hex(tempMember.toString());
+
+        System.out.println(hashCode1);
+        System.out.println(hashCode2);
+
+        tempMember = new TempMember();
+        String hashCode3 = md5Hex(tempMember.toString());
+        System.out.println(hashCode3);
+    }
+
+    public static String hex(byte[] array) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < array.length; ++i) {
+            sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
+        }
+        return sb.toString();
+    }
+
+    public static String md5Hex(String message) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            return hex(md.digest(message.getBytes("CP1252")));
+        } catch (NoSuchAlgorithmException e) {
+
+        } catch (UnsupportedEncodingException e) {
+
+        }
+        return message;
     }
 }

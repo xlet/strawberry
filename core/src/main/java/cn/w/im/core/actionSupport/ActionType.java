@@ -5,9 +5,10 @@ package cn.w.im.core.actionSupport;
  */
 public enum ActionType {
 
-    Add(0x01),
-    Update(0x02),
-    Delete(0x04);
+    None(0x01),
+    Add(0x02),
+    Update(0x04),
+    Delete(0x08);
 
     private int value;
 

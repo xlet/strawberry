@@ -8,7 +8,19 @@ import cn.w.im.core.exception.ServerInnerException;
  */
 public class ContactNotExistedException extends ServerInnerException {
 
+    private String memberId;
+
     public ContactNotExistedException(MemberNotCachedException ex) {
         super("contact[" + ex.getMemberId() + "] is not existed.", ex);
+        this.memberId = ex.getMemberId();
+    }
+
+    public ContactNotExistedException(String memberId) {
+        super("contact[" + memberId + "] is not existed.");
+        this.memberId = memberId;
+    }
+
+    public String getMemberId() {
+        return memberId;
     }
 }
