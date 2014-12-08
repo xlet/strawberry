@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>im-services</artifactId>
+        <groupId>cn.w.im</groupId>
+<<<<<<< HEAD:messageBus/pom.xml
+        <version>1.0.1.Final</version>
+=======
+        <version>2.0.1-SNAPSHOT</version>
+>>>>>>> pushByVersion:services/messageBus/pom.xml
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>im-messageBus</artifactId>
+
+    <name>Im/MessageBus</name>
+    <description>消息总线，连接所有服务的服务，提供服务之间的消息通道.将来可扩展为一个消息订阅发布服务.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>im-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>im-netty</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>im-persistent</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+<<<<<<< HEAD:messageBus/pom.xml
+            <groupId>cn.w.im</groupId>
+            <artifactId>im-handlers</artifactId>
+=======
+            <groupId>${project.groupId}</groupId>
+            <artifactId>im-thirdparty</artifactId>
+>>>>>>> pushByVersion:services/messageBus/pom.xml
+            <version>${project.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--<plugin>-->
+                <!--<artifactId>maven-clean-plugin</artifactId>-->
+                <!--<version>2.6.1</version>-->
+                <!--<configuration>-->
+                    <!--<filesets>-->
+                        <!--<fileset>-->
+                            <!--<directory>${project.basedir}/../../bin/bus/</directory>-->
+                            <!--<includes>-->
+                                <!--<include>bootstrap.jar</include>-->
+                            <!--</includes>-->
+                        <!--</fileset>-->
+                        <!--<fileset>-->
+                            <!--<directory>${project.basedir}/../../bin/bus/lib/</directory>-->
+                            <!--<includes>-->
+                                <!--<include>*.jar</include>-->
+                            <!--</includes>-->
+                        <!--</fileset>-->
+                    <!--</filesets>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib</classpathPrefix>
+                            <mainClass>cn.w.im.messageBus.Bootstrap</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-configuration</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <echo>Ant Task - copying files.....</echo>
+                                <echo>copy to bin</echo>
+                                <echo>copy jar to bin</echo>
+                                <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
+                                      tofile="${project.basedir}/../../bin/bus/bootstrap.jar"></copy>
+                                <echo>copy dependence to bin</echo>
+                                <copy todir="${project.basedir}/../../bin/bus/lib/" overwrite="true">
+                                    <fileset dir="${project.build.directory}/lib/"/>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <bean class="cn.w.im.core.jackson.MapperCreator">
+        <property name="subTypes">
+            <list>
+                <ref bean="wcnMemberSubType"/>
+                <ref bean="oaMemberSubType"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="oaMemberSubType" class="cn.w.im.core.jackson.NamedSubType">
+        <property name="type" value="cn.w.im.thirdparty.oa.OAMember"/>
+        <property name="name" value="OA"/>
+    </bean>
+
+    <bean id="wcnMemberSubType" class="cn.w.im.core.jackson.NamedSubType">
+        <property name="type" value="cn.w.im.thirdparty.wcn.WcnMember"/>
+        <property name="name" value="WCN"/>
+    </bean>
+
+</beans>

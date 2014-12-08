@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>im-services</artifactId>
+        <groupId>cn.w.im</groupId>
+        <version>2.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>im-forwardServer</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Im/ForwardServer</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>im-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>im-netty</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>im-thirdparty</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.6.1</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/../../bin/login/</directory>
+                            <includes>
+                                <include>bootstrap-forward.jar</include>
+                            </includes>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/../../bin/message/</directory>
+                            <includes>
+                                <include>bootstrap-forward.jar</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib</classpathPrefix>
+                            <mainClass>cn.w.im.forwardServer.Bootstrap</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-configuration</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <!--<echo>Ant Task - delete files</echo>-->
+                                <!--<delete>${project.basedir}/../../bin/login/bootstrap-forward.jar</delete>-->
+                                <!--<delete>${project.basedir}/../../bin/login/lib/</delete>-->
+                                <!--<delete>${project.basedir}/../../bin/message/bootstrap-forward.jar</delete>-->
+                                <!--<delete>${project.basedir}/../../bin/message/lib/</delete>-->
+                                <echo>Ant Task - copying files.....</echo>
+                                <echo>copy to bin</echo>
+                                <echo>copy jar to login server</echo>
+                                <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
+                                      tofile="${project.basedir}/../../bin/login/bootstrap-forward.jar"></copy>
+                                <echo>copy dependence to login server</echo>
+                                <copy todir="${project.basedir}/../../bin/login/lib/" overwrite="true">
+                                    <fileset dir="${project.build.directory}/lib/"/>
+                                </copy>
+                                <echo>copy jar to message server</echo>
+                                <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
+                                      tofile="${project.basedir}/../../bin/message/bootstrap-forward.jar"></copy>
+                                <echo>copy dependence to message server</echo>
+                                <copy todir="${project.basedir}/../../bin/message/lib/" overwrite="true">
+                                    <fileset dir="${project.build.directory}/lib/"/>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
