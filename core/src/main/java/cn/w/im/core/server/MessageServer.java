@@ -1,6 +1,7 @@
 package cn.w.im.core.server;
 
 import cn.w.im.core.MessageHandlerContext;
+import cn.w.im.core.exception.ServerInnerException;
 import cn.w.im.core.status.memberAll.DefaultMemberAllProviderImpl;
 import cn.w.im.core.status.memberAll.MemberAllProvider;
 import cn.w.im.core.message.Message;
@@ -33,13 +34,13 @@ public class MessageServer extends ScalableServer {
     }
 
     @Override
-    public void start() {
+    public void start() throws ServerInnerException {
         super.start();
         this.memberProvider = new DefaultMemberAllProviderImpl(this.messageProvider(), this.clientProvider());
     }
 
     @Override
-    public void handlerMessage(MessageHandlerContext context) {
+    public void handlerMessage(MessageHandlerContext context) throws ServerInnerException {
         Message message = context.getMessage();
         switch (message.getMessageType()) {
             case Connected:

@@ -56,7 +56,7 @@ public class MemberAll {
                      StatusProvider statusProvider,
                      ContactProvider contactProvider,
                      RecentContactProvider recentContactProvider,
-                     MessageProvider messageProvider, ClientProvider clientProvider) {
+                     MessageProvider messageProvider, ClientProvider clientProvider) throws ServerInnerException {
         this.memberInfoProvider = memberInfoProvider;
         this.statusProvider = statusProvider;
         this.contactProvider = contactProvider;
@@ -77,7 +77,7 @@ public class MemberAll {
         return this.statusProvider.status(this.self);
     }
 
-    public Collection<FriendGroup> friendGroups() {
+    public Collection<FriendGroup> friendGroups() throws ServerInnerException {
         return this.contactProvider.getFriendGroup(this.self);
     }
 
@@ -89,7 +89,7 @@ public class MemberAll {
         return this.clientProvider.getClient(this.self);
     }
 
-    public void connected(MessageClientType clientType) throws ClientTypeConnectedException {
+    public void connected(MessageClientType clientType) throws ServerInnerException {
 
         this.removeToken(clientType);
 
@@ -143,7 +143,7 @@ public class MemberAll {
      *
      * @param status status.
      */
-    public void statusChange(Status status) {
+    public void statusChange(Status status) throws ServerInnerException {
         this.statusProvider.change(this.self, status);
         MemberStatusMessage memberStatusMessage = new MemberStatusMessage(this.self.getId(), status.getValue());
         for (FriendGroup friendGroup : this.friendGroups()) {
@@ -158,14 +158,14 @@ public class MemberAll {
     /**
      * set this member online.
      */
-    private void online() {
+    private void online() throws ServerInnerException {
         this.statusChange(Status.Online);
     }
 
     /**
      * send contracts and contracts status.
      */
-    private void sendContactAndStatus() {
+    private void sendContactAndStatus() throws ServerInnerException {
         Collection<FriendGroup> friendGroups = this.friendGroups();
         if (friendGroups.size() != 0) {
             for (FriendGroup friendGroup : friendGroups) {
@@ -285,7 +285,7 @@ public class MemberAll {
         return this.contactProvider.getContact(toMemberId);
     }
 
-    public void logout(MessageClientType clientType) {
+    public void logout(MessageClientType clientType) throws ServerInnerException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("member:{},clientType:{} logout.", this.self.getId(), clientType);
         }

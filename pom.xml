@@ -12,11 +12,7 @@
     <groupId>cn.w.im</groupId>
     <artifactId>im-parent</artifactId>
     <packaging>pom</packaging>
-<<<<<<< HEAD
-    <version>1.0.1.Final</version>
-=======
     <version>2.0.1-SNAPSHOT</version>
->>>>>>> pushByVersion
 
     <name>LiuLiu</name>
     <url>http://liuliu.w.cn</url>
@@ -36,10 +32,6 @@
         <tag>HEAD</tag>
     </scm>
 
-<<<<<<< HEAD
-=======
-
->>>>>>> pushByVersion
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

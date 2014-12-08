@@ -5,11 +5,7 @@
     <parent>
         <artifactId>im-services</artifactId>
         <groupId>cn.w.im</groupId>
-<<<<<<< HEAD:messageBus/pom.xml
-        <version>1.0.1.Final</version>
-=======
         <version>2.0.1-SNAPSHOT</version>
->>>>>>> pushByVersion:services/messageBus/pom.xml
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -35,13 +31,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-<<<<<<< HEAD:messageBus/pom.xml
-            <groupId>cn.w.im</groupId>
-            <artifactId>im-handlers</artifactId>
-=======
             <groupId>${project.groupId}</groupId>
             <artifactId>im-thirdparty</artifactId>
->>>>>>> pushByVersion:services/messageBus/pom.xml
             <version>${project.version}</version>
         </dependency>
 

@@ -1,4 +1,0 @@
-login.liuliu.w.cn
-mongo.liuliu.w.cn
-bus.liuliu.w.cn
-message.liuliu.w.cn

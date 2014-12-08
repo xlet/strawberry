@@ -54,7 +54,7 @@ public abstract class AbstractServer {
     /**
      * 服务启动时调用.
      */
-    public void start() {
+    public void start() throws ServerInnerException {
         if (!this.serverBasic.isStart()) {
             this.serverBasic.setStart(true);
             this.serverBasic.setStartDateTime(new Date().getTime());
@@ -87,7 +87,7 @@ public abstract class AbstractServer {
      *
      * @param context message handler context.
      */
-    public final void messageArrived(MessageHandlerContext context) {
+    public final void messageArrived(MessageHandlerContext context) throws ServerInnerException {
         Message message = context.getMessage();
         switch (message.getMessageType()) {
             case ForwardRequest:  //forward service request server basic info  message.
@@ -102,7 +102,7 @@ public abstract class AbstractServer {
         }
     }
 
-    protected abstract void handlerMessage(MessageHandlerContext context);
+    protected abstract void handlerMessage(MessageHandlerContext context) throws ServerInnerException;
 
     /**
      * send request client this server basic info.

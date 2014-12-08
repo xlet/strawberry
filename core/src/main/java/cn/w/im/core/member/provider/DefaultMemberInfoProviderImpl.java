@@ -74,7 +74,7 @@ public class DefaultMemberInfoProviderImpl implements MemberInfoProvider {
     }
 
     @Override
-    public Collection<FriendGroup> getSystemGroup(BasicMember owner) {
+    public Collection<FriendGroup> getSystemGroup(BasicMember owner) throws ServerInnerException {
         try {
             if (owner.getMemberSource() == MemberSourceType.OA) {
                 OuterMemberProvider outerMemberProvider = this.getOuterMemberProvider(ProductType.OA);

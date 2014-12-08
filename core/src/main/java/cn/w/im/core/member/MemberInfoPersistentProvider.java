@@ -12,4 +12,6 @@ public interface MemberInfoPersistentProvider {
     boolean isChanged(BasicMember member);
 
     boolean exists(BasicMember basicMember);
+
+    void update(BasicMember basicMember);
 }

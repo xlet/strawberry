@@ -1,6 +1,7 @@
 package cn.w.im.core.status.memberAll;
 
 import cn.w.im.core.MessageHandlerContext;
+import cn.w.im.core.exception.ServerInnerException;
 import cn.w.im.core.member.BasicMember;
 
 /**
@@ -13,7 +14,7 @@ public interface MemberAllProvider {
      *
      * @param context message handler context.
      */
-    void handlerMessage(MessageHandlerContext context);
+    void handlerMessage(MessageHandlerContext context) throws ServerInnerException;
 
     /**
      * get member all.

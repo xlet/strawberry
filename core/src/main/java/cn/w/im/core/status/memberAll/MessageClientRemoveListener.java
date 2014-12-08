@@ -1,6 +1,7 @@
 package cn.w.im.core.status.memberAll;
 
 import cn.w.im.core.client.MessageClientType;
+import cn.w.im.core.exception.ServerInnerException;
 import cn.w.im.core.member.BasicMember;
 import cn.w.im.core.client.Client;
 import cn.w.im.core.client.ClientRemoveListener;
@@ -23,14 +24,14 @@ public class MessageClientRemoveListener implements ClientRemoveListener {
     }
 
     @Override
-    public void onClientRemove(Client client) {
+    public void onClientRemove(Client client) throws ServerInnerException {
         if (client instanceof MessageClient) {
             MessageClient messageClient = (MessageClient) client;
             this.onMessageClientRemove(messageClient);
         }
     }
 
-    private void onMessageClientRemove(MessageClient messageClient) {
+    private void onMessageClientRemove(MessageClient messageClient) throws ServerInnerException {
         MessageClientType clientType = messageClient.getClientType();
         BasicMember logoutMember = messageClient.getMember();
 

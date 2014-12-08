@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  * mongo recent contact persistent provider implement.
@@ -86,9 +87,9 @@ public class MongoRecentContactDao extends BasicDAO<MongoRecentContactStatus, Ob
         RecentContactStatus status = new RecentContactStatus();
         status.setOwner(owner);
         if (memberId1.equals(owner.getId())) {
-            status.setContact(new NotInitMember(memberId2));
+            status.setContact(new NotInitMember(memberId2, UUID.randomUUID().toString())); //todo:jackie this error!
         } else {
-            status.setContact(new NotInitMember(memberId1));
+        status.setContact(new NotInitMember(memberId1,UUID.randomUUID().toString())); //todo:jackie this error!
         }
         status.setLastMessageContent(mongoStatus.getLastMessageContent());
         status.setLastContactTime(mongoStatus.getLastContactTime());

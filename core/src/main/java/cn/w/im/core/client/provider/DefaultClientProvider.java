@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -182,7 +183,7 @@ public class DefaultClientProvider implements ClientProvider {
         Client noTypeClient = this.getClient(host, port);
         ServerBasic connectedServer = noTypeClient.connectedServer();
         Channel channel = noTypeClient.channel();
-        MessageClient client = new MessageClient(channel, connectedServer, member, clientType);
+        MessageClient client = new MessageClient(channel, connectedServer, member, clientType, UUID.randomUUID().toString());
         return client;
     }
 
@@ -247,7 +248,7 @@ public class DefaultClientProvider implements ClientProvider {
     }
 
     @Override
-    public final void removeClient(Channel channel) throws ClientNotRegisterException {
+    public final void removeClient(Channel channel) throws ServerInnerException {
 
         if (channel == null) {
             throw new IllegalArgumentException("channel is null.");
@@ -260,7 +261,7 @@ public class DefaultClientProvider implements ClientProvider {
     }
 
     @Override
-    public void removeClient(String host, int port) throws ClientNotRegisterException {
+    public void removeClient(String host, int port) throws ServerInnerException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("try to remove client[host:{},port:{}", host, port);
         }
@@ -294,7 +295,7 @@ public class DefaultClientProvider implements ClientProvider {
         this.printAllClients();
     }
 
-    public void fireClientRemove(Client client) {
+    public void fireClientRemove(Client client) throws ServerInnerException {
         for (ClientRemoveListener listener : this.clientRemoveListeners) {
             listener.onClientRemove(client);
         }

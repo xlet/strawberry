@@ -1,5 +1,6 @@
 package cn.w.im.core.member.provider;
 
+import cn.w.im.core.exception.ServerInnerException;
 import cn.w.im.core.member.BasicMember;
 import cn.w.im.core.member.relation.FriendGroup;
 import cn.w.im.core.ProductType;
@@ -36,7 +37,7 @@ public interface MemberInfoProvider {
      *
      * @param basicMember member.
      */
-    void addMember(BasicMember basicMember);
+    void addMember(BasicMember basicMember) throws ServerInnerException;
 
     /**
      * get outer system defined system friend group.
@@ -44,5 +45,5 @@ public interface MemberInfoProvider {
      * @param owner owner member.
      * @return friend groups.
      */
-    Collection<FriendGroup> getSystemGroup(BasicMember owner);
+    Collection<FriendGroup> getSystemGroup(BasicMember owner) throws ServerInnerException;
 }

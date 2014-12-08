@@ -44,7 +44,7 @@ public class DefaultMemberAllProviderImpl implements MemberAllProvider {
 
     private Map<String, MemberAll> memberMap;
 
-    public DefaultMemberAllProviderImpl(MessageProvider messageProvider, ClientProvider clientProvider) {
+    public DefaultMemberAllProviderImpl(MessageProvider messageProvider, ClientProvider clientProvider) throws ServerInnerException {
         this.memberInfoProvider = new DefaultMemberInfoProviderImpl();
         this.statusProvider = new DefaultStatusProvider();
         this.contactProvider = new DefaultContactProviderImpl(this.memberInfoProvider);
@@ -81,7 +81,7 @@ public class DefaultMemberAllProviderImpl implements MemberAllProvider {
         }
     }
 
-    private MemberAll getMemberAndCreateIfNotExisted(BasicMember member) {
+    private MemberAll getMemberAndCreateIfNotExisted(BasicMember member) throws ServerInnerException {
         if (this.memberMap.containsKey(member.getId())) {
             return this.memberMap.get(member.getId());
         }
@@ -99,7 +99,7 @@ public class DefaultMemberAllProviderImpl implements MemberAllProvider {
         throw new MemberAllNotExisted(memberId);
     }
 
-    private void tokenReceived(MessageHandlerContext context) {
+    private void tokenReceived(MessageHandlerContext context) throws ServerInnerException {
         TokenMessage tokenMessage = (TokenMessage) context.getMessage();
         ConnectToken connectToken = tokenMessage.getToken();
         BasicMember member = connectToken.getMember();
@@ -146,14 +146,14 @@ public class DefaultMemberAllProviderImpl implements MemberAllProvider {
             MessageClientType clientType = message.getClientType();
             MemberAll memberAll = this.getMember(memberId);
             memberAll.logout(clientType);
-        } catch (MemberAllNotExisted ex) {
+        } catch (ServerInnerException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
 
     }
 
     @Override
-    public void handlerMessage(MessageHandlerContext context) {
+    public void handlerMessage(MessageHandlerContext context) throws ServerInnerException {
         switch (context.getMessage().getMessageType()) {
             case Token:
                 this.tokenReceived(context);
@@ -183,7 +183,7 @@ public class DefaultMemberAllProviderImpl implements MemberAllProvider {
             Status memberStatus = Status.valueOf(message.getStatus());
             MemberAll memberAll = this.getMember(memberId);
             memberAll.statusChange(memberStatus);
-        } catch (MemberAllNotExisted e) {
+        } catch (ServerInnerException e) {
             LOGGER.error(e.getMessage(), e);
         }
     }

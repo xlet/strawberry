@@ -3,6 +3,7 @@ package cn.w.im.core.client.provider;
 import cn.w.im.core.Channel;
 import cn.w.im.core.client.MessageClientType;
 import cn.w.im.core.client.*;
+import cn.w.im.core.exception.ServerInnerException;
 import cn.w.im.core.server.AbstractServer;
 import cn.w.im.core.server.ServerBasic;
 import cn.w.im.core.server.ServerType;
@@ -53,7 +54,7 @@ public interface ClientProvider {
      * @param channel current channel.
      * @throws ClientNotRegisterException client dit not register exception.
      */
-    void removeClient(Channel channel) throws ClientNotRegisterException;
+    void removeClient(Channel channel) throws ServerInnerException;
 
     /**
      * remove a registered client.
@@ -62,7 +63,7 @@ public interface ClientProvider {
      * @param port port.
      * @throws ClientNotRegisterException client dit not register exception.
      */
-    void removeClient(String host, int port) throws ClientNotRegisterException;
+    void removeClient(String host, int port) throws ServerInnerException;
 
     /**
      * add client remove listener.

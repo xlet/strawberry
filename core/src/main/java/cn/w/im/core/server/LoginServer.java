@@ -46,7 +46,7 @@ public class LoginServer extends ScalableServer {
     }
 
     @Override
-    public void start() {
+    public void start() throws ServerInnerException {
         super.start();
         this.messageServerAllocateProvider = new DefaultMessageServerAllocateProvider();
         this.memberProvider = new DefaultMemberInfoProviderImpl();
@@ -54,7 +54,7 @@ public class LoginServer extends ScalableServer {
 
 
     @Override
-    public void handlerMessage(MessageHandlerContext context) {
+    public void handlerMessage(MessageHandlerContext context) throws ServerInnerException {
 
         Message message = context.getMessage();
         switch (message.getMessageType()) {

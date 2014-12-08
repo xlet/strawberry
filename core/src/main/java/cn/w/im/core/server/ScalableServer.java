@@ -31,7 +31,7 @@ public abstract class ScalableServer extends AbstractServer {
     }
 
     @Override
-    protected void handlerMessage(MessageHandlerContext context) {
+    protected void handlerMessage(MessageHandlerContext context) throws ServerInnerException {
         Message message = context.getMessage();
         switch (message.getMessageType()) {
             case ForwardReady: //forward server ready then register self to bus server.

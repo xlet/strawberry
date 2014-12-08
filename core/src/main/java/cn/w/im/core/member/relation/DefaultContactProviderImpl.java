@@ -1,5 +1,6 @@
 package cn.w.im.core.member.relation;
 
+import cn.w.im.core.exception.ServerInnerException;
 import cn.w.im.core.member.provider.MemberInfoProvider;
 import cn.w.im.core.member.BasicMember;
 import cn.w.im.core.member.provider.MemberNotCachedException;
@@ -33,7 +34,7 @@ public class DefaultContactProviderImpl implements ContactProvider {
 
 
     @Override
-    public Collection<FriendGroup> getFriendGroup(BasicMember owner) {
+    public Collection<FriendGroup> getFriendGroup(BasicMember owner) throws ServerInnerException {
         // try get from cache.
         if (this.memberFriendGroupMap.containsKey(owner.getId())) {
             return this.memberFriendGroupMap.get(owner.getId());
