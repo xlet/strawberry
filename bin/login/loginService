@@ -23,8 +23,8 @@
 #             script's ability to control the application.
 
 # Application
-APP_NAME="liuliu_login"
-APP_LONG_NAME="LiuLiu Login Server"
+APP_NAME="strawberry_login"
+APP_LONG_NAME="Strawberry Login Server"
 
 # Wrapper
 WRAPPER_CMD="./wrapper/wrapper"

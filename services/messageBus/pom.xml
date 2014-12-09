@@ -3,36 +3,40 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>im-services</artifactId>
-        <groupId>cn.w.im</groupId>
+        <artifactId>strawberry-services</artifactId>
+        <groupId>org.xlet.strawberry</groupId>
         <version>2.0.1-SNAPSHOT</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>im-messageBus</artifactId>
+    <artifactId>strawberry-messageBus</artifactId>
+    <packaging>jar</packaging>
 
-    <name>Im/MessageBus</name>
-    <description>消息总线，连接所有服务的服务，提供服务之间的消息通道.将来可扩展为一个消息订阅发布服务.</description>
+    <name>Strawberry/MessageBus</name>
+    <description>
+        message bus.
+    </description>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-core</artifactId>
+            <artifactId>strawberry-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-netty</artifactId>
+            <artifactId>strawberry-netty</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-persistent</artifactId>
+            <artifactId>strawberry-persistent</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-thirdparty</artifactId>
+            <artifactId>strawberry-thirdparty</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -41,24 +45,24 @@
     <build>
         <plugins>
             <!--<plugin>-->
-                <!--<artifactId>maven-clean-plugin</artifactId>-->
-                <!--<version>2.6.1</version>-->
-                <!--<configuration>-->
-                    <!--<filesets>-->
-                        <!--<fileset>-->
-                            <!--<directory>${project.basedir}/../../bin/bus/</directory>-->
-                            <!--<includes>-->
-                                <!--<include>bootstrap.jar</include>-->
-                            <!--</includes>-->
-                        <!--</fileset>-->
-                        <!--<fileset>-->
-                            <!--<directory>${project.basedir}/../../bin/bus/lib/</directory>-->
-                            <!--<includes>-->
-                                <!--<include>*.jar</include>-->
-                            <!--</includes>-->
-                        <!--</fileset>-->
-                    <!--</filesets>-->
-                <!--</configuration>-->
+            <!--<artifactId>maven-clean-plugin</artifactId>-->
+            <!--<version>2.6.1</version>-->
+            <!--<configuration>-->
+            <!--<filesets>-->
+            <!--<fileset>-->
+            <!--<directory>${project.basedir}/../../bin/bus/</directory>-->
+            <!--<includes>-->
+            <!--<include>bootstrap.jar</include>-->
+            <!--</includes>-->
+            <!--</fileset>-->
+            <!--<fileset>-->
+            <!--<directory>${project.basedir}/../../bin/bus/lib/</directory>-->
+            <!--<includes>-->
+            <!--<include>*.jar</include>-->
+            <!--</includes>-->
+            <!--</fileset>-->
+            <!--</filesets>-->
+            <!--</configuration>-->
             <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -69,7 +73,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
-                            <mainClass>cn.w.im.messageBus.Bootstrap</mainClass>
+                            <mainClass>org.xlet.strawberry.messageBus.Bootstrap</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -86,7 +90,12 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <echo>Ant Task - copying files.....</echo>
+                                <echo>Ant Task - files task.....</echo>
+                                <echo>Ant Task - delete files</echo>
+                                <delete file="${project.basedir}/../../bin/bus/bootstrap.jar"/>
+                                <delete>
+                                    <fileset dir="${project.basedir}/../../bin/bus/lib/" includes="*.jar" />
+                                </delete>
                                 <echo>copy to bin</echo>
                                 <echo>copy jar to bin</echo>
                                 <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"

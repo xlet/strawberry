@@ -4,7 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean class="cn.w.im.core.jackson.MapperCreator">
+    <bean class="org.xlet.strawberry.core.jackson.MapperCreator">
         <property name="subTypes">
             <list>
                 <ref bean="wcnMemberSubType"/>
@@ -13,13 +13,13 @@
         </property>
     </bean>
 
-    <bean id="oaMemberSubType" class="cn.w.im.core.jackson.NamedSubType">
-        <property name="type" value="cn.w.im.thirdparty.oa.OAMember"/>
+    <bean id="oaMemberSubType" class="org.xlet.strawberry.core.jackson.NamedSubType">
+        <property name="type" value="org.xlet.strawberry.thirdparty.oa.OAMember"/>
         <property name="name" value="OA"/>
     </bean>
 
-    <bean id="wcnMemberSubType" class="cn.w.im.core.jackson.NamedSubType">
-        <property name="type" value="cn.w.im.thirdparty.wcn.WcnMember"/>
+    <bean id="wcnMemberSubType" class="org.xlet.strawberry.core.jackson.NamedSubType">
+        <property name="type" value="org.xlet.strawberry.thirdparty.web.WebMember"/>
         <property name="name" value="WCN"/>
     </bean>
 

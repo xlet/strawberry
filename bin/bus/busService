@@ -23,8 +23,8 @@
 #             script's ability to control the application.
 
 # Application
-APP_NAME="liuliu_bus"
-APP_LONG_NAME="LiuLiu Bus Server"
+APP_NAME="strawberry_bus"
+APP_LONG_NAME="Strawberry Bus Server"
 
 # Wrapper
 WRAPPER_CMD="./wrapper/wrapper"

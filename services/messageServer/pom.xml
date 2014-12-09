@@ -3,60 +3,60 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>im-services</artifactId>
-        <groupId>cn.w.im</groupId>
+        <artifactId>strawberry-services</artifactId>
+        <groupId>org.xlet.strawberry</groupId>
         <version>2.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>im-messageServer</artifactId>
+    <artifactId>strawberry-messageServer</artifactId>
     <packaging>jar</packaging>
 
-    <name>Im/messageServer</name>
+    <name>Strawberry/messageServer</name>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-core</artifactId>
+            <artifactId>strawberry-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-netty</artifactId>
+            <artifactId>strawberry-netty</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-persistent</artifactId>
+            <artifactId>strawberry-persistent</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-thirdparty</artifactId>
+            <artifactId>strawberry-thirdparty</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
     <build>
         <plugins>
             <!--<plugin>-->
-                <!--<artifactId>maven-clean-plugin</artifactId>-->
-                <!--<version>2.6.1</version>-->
-                <!--<configuration>-->
-                    <!--<filesets>-->
-                        <!--<fileset>-->
-                            <!--<directory>${project.basedir}/../../bin/message/</directory>-->
-                            <!--<includes>-->
-                                <!--<include>bootstrap-message.jar</include>-->
-                            <!--</includes>-->
-                        <!--</fileset>-->
-                        <!--<fileset>-->
-                            <!--<directory>${project.basedir}/../../bin/message/lib/</directory>-->
-                            <!--<includes>-->
-                                <!--<include>*.jar</include>-->
-                            <!--</includes>-->
-                        <!--</fileset>-->
-                    <!--</filesets>-->
-                <!--</configuration>-->
+            <!--<artifactId>maven-clean-plugin</artifactId>-->
+            <!--<version>2.6.1</version>-->
+            <!--<configuration>-->
+            <!--<filesets>-->
+            <!--<fileset>-->
+            <!--<directory>${project.basedir}/../../bin/message/</directory>-->
+            <!--<includes>-->
+            <!--<include>bootstrap-message.jar</include>-->
+            <!--</includes>-->
+            <!--</fileset>-->
+            <!--<fileset>-->
+            <!--<directory>${project.basedir}/../../bin/message/lib/</directory>-->
+            <!--<includes>-->
+            <!--<include>*.jar</include>-->
+            <!--</includes>-->
+            <!--</fileset>-->
+            <!--</filesets>-->
+            <!--</configuration>-->
             <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -67,7 +67,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
-                            <mainClass>cn.w.im.messageServer.Bootstrap</mainClass>
+                            <mainClass>org.xlet.strawberry.messageServer.Bootstrap</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -84,6 +84,11 @@
                         </goals>
                         <configuration>
                             <tasks>
+                                <echo>Ant Task - delete files</echo>
+                                <delete file="${project.basedir}/../../bin/message/bootstrap.jar"/>
+                                <delete>
+                                    <fileset dir="${project.basedir}/../../bin/message/lib/" includes="*.jar"/>
+                                </delete>
                                 <echo>Ant Task - copying files.....</echo>
                                 <echo>copy to bin</echo>
                                 <echo>copy jar to bin</echo>

@@ -8,5 +8,5 @@
 
     <import resource="jsonSubTypeRegister.xml"/>
 
-    <bean class="cn.w.im.core.spring.SpringContext"/>
+    <bean class="org.xlet.strawberry.core.spring.SpringContext"/>
 </beans>

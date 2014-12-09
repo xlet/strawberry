@@ -4,7 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean class="cn.w.im.core.config.Configuration">
+    <bean class="org.xlet.strawberry.core.config.Configuration">
         <property name="dataStoreType" value="${message.repository.type}"/>
         <property name="bind" value="${server.bind}"/>
         <property name="port" value="${server.listen.port}"/>

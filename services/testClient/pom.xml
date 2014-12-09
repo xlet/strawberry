@@ -3,36 +3,36 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>im-services</artifactId>
-        <groupId>cn.w.im</groupId>
+        <artifactId>strawberry-services</artifactId>
+        <groupId>org.xlet.strawberry</groupId>
         <version>2.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>im-testClient</artifactId>
+    <artifactId>strawberry-testClient</artifactId>
     <packaging>jar</packaging>
 
-    <name>Im/TestClient</name>
+    <name>Strawberry/TestClient</name>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-core</artifactId>
+            <artifactId>strawberry-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-netty</artifactId>
+            <artifactId>strawberry-netty</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-persistent</artifactId>
+            <artifactId>strawberry-persistent</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-thirdparty</artifactId>
+            <artifactId>strawberry-thirdparty</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -51,7 +51,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
-                            <mainClass>cn.w.im.testClient.ClientStarter</mainClass>
+                            <mainClass>org.xlet.strawberry.testClient.ClientStarter</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -4,38 +4,34 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-<<<<<<< HEAD:messageServer/src/main/resources/applicationContext.xml
-    <context:property-placeholder location="file:/etc/liuliu/server/server.conf"/>
-=======
-    <bean id="propertyConfig" class="cn.w.im.core.config.SystemPropertyPropertyPlaceholderConfigurer">
+    <bean id="propertyConfig" class="org.xlet.strawberry.core.config.SystemPropertyPropertyPlaceholderConfigurer">
         <constructor-arg name="systemProperty">
-            <value>liuliu.server.config</value>
+            <value>strawberry.server.config</value>
         </constructor-arg>
     </bean>
 
->>>>>>> pushByVersion:services/messageServer/src/main/resources/applicationContext.xml
     <import resource="serverConfig.xml"/>
 
     <import resource="jsonSubTypeRegister.xml"/>
 
-    <context:component-scan base-package="cn.w.im"/>
+    <context:component-scan base-package="org.xlet.strawberry"/>
 
-    <bean class="cn.w.im.core.spring.SpringContext"/>
+    <bean class="org.xlet.strawberry.core.spring.SpringContext"/>
 
-    <bean id="mongo" class="cn.w.im.persistent.mongo.MongoFactoryBean">
+    <bean id="mongo" class="org.xlet.strawberry.persistent.mongo.MongoFactoryBean">
         <property name="readSecondary" value="false"/>
         <property name="writeConcern" value="SAFE"/>
         <property name="url" value="${repository.mongo.url}"/>
     </bean>
 
-    <bean id="morphia" class="cn.w.im.persistent.mongo.MorphiaFactoryBean">
+    <bean id="morphia" class="org.xlet.strawberry.persistent.mongo.MorphiaFactoryBean">
         <property name="mapPackages">
             <array>
-                <value>cn.w.im.domains.mongo</value>
+                <value>org.xlet.strawberry.persistent.mongo.domain</value>
             </array>
         </property>
     </bean>
-    <bean id="dataStore" class="cn.w.im.persistent.mongo.DatastoreFactoryBean">
+    <bean id="dataStore" class="org.xlet.strawberry.persistent.mongo.DatastoreFactoryBean">
         <property name="morphia" ref="morphia"/>
         <property name="mongoClient" ref="mongo"/>
         <property name="dbName" value="message"/>
@@ -54,23 +50,23 @@
     </bean>
     <bean id="httpClient" factory-bean="httpClientBuilder" factory-method="build"/>
 
-    <bean id="ucConfig" class="cn.w.im.thirdparty.wcn.sdk.config.UcConfig">
+    <bean id="ucConfig" class="org.xlet.strawberry.thirdparty.web.sdk.config.UcConfig">
         <property name="baseUrl" value="${userCenter.api.url}"/>
         <property name="secret" value="${userCenter.api.secret}"/>
         <property name="httpClient" ref="httpClient"/>
     </bean>
 
-    <bean id="wcnMemberService" class="cn.w.im.thirdparty.wcn.sdk.WcnMemberServiceImpl">
+    <bean id="wcnMemberService" class="org.xlet.strawberry.thirdparty.web.sdk.WebMemberServiceImpl">
         <property name="config" ref="ucConfig"/>
     </bean>
 
     <!-- oa api config -->
-    <bean id="oaConfig" class="cn.w.im.thirdparty.oa.sdk.OaConfig">
+    <bean id="oaConfig" class="org.xlet.strawberry.thirdparty.oa.sdk.OaConfig">
         <property name="baseUrl" value="${oa.api.url}"/>
         <property name="httpClient" ref="httpClient"/>
     </bean>
 
-    <bean id="oaMemberService" class="cn.w.im.thirdparty.oa.sdk.OaMemberServiceImpl">
+    <bean id="oaMemberService" class="org.xlet.strawberry.thirdparty.oa.sdk.OaMemberServiceImpl">
         <property name="config" ref="oaConfig"/>
     </bean>
 </beans>

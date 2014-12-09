@@ -23,8 +23,8 @@
 #             script's ability to control the application.
 
 # Application
-APP_NAME="liuliu_message_forward"
-APP_LONG_NAME="LiuLiu Message Forward Server"
+APP_NAME="strawberry_message_forward"
+APP_LONG_NAME="Strawberry Message Forward Server"
 
 # Wrapper
 WRAPPER_CMD="./wrapper/wrapper"

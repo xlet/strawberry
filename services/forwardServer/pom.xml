@@ -3,31 +3,31 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>im-services</artifactId>
-        <groupId>cn.w.im</groupId>
+        <artifactId>strawberry-services</artifactId>
+        <groupId>org.xlet.strawberry</groupId>
         <version>2.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>im-forwardServer</artifactId>
+    <artifactId>strawberry-forwardServer</artifactId>
     <packaging>jar</packaging>
 
-    <name>Im/ForwardServer</name>
+    <name>Strawberry/ForwardServer</name>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-core</artifactId>
+            <artifactId>strawberry-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-netty</artifactId>
+            <artifactId>strawberry-netty</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>im-thirdparty</artifactId>
+            <artifactId>strawberry-thirdparty</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
@@ -62,7 +62,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
-                            <mainClass>cn.w.im.forwardServer.Bootstrap</mainClass>
+                            <mainClass>org.xlet.strawberry.forwardServer.Bootstrap</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -79,11 +79,9 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <!--<echo>Ant Task - delete files</echo>-->
-                                <!--<delete>${project.basedir}/../../bin/login/bootstrap-forward.jar</delete>-->
-                                <!--<delete>${project.basedir}/../../bin/login/lib/</delete>-->
-                                <!--<delete>${project.basedir}/../../bin/message/bootstrap-forward.jar</delete>-->
-                                <!--<delete>${project.basedir}/../../bin/message/lib/</delete>-->
+                                <echo>Ant Task - delete files</echo>
+                                <delete file="${project.basedir}/../../bin/login/bootstrap-forward.jar"/>
+                                <delete file="${project.basedir}/../../bin/message/bootstrap-forward.jar"/>
                                 <echo>Ant Task - copying files.....</echo>
                                 <echo>copy to bin</echo>
                                 <echo>copy jar to login server</echo>

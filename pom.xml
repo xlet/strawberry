@@ -9,26 +9,26 @@
         <version>9</version>
     </parent>
 
-    <groupId>cn.w.im</groupId>
-    <artifactId>im-parent</artifactId>
+    <groupId>org.xlet.strawberry</groupId>
+    <artifactId>strawberry-parent</artifactId>
     <packaging>pom</packaging>
     <version>2.0.1-SNAPSHOT</version>
 
-    <name>LiuLiu</name>
-    <url>http://liuliu.w.cn</url>
+    <name>Strawberry</name>
+    <url>http://strawberry.xlet.org</url>
     <description>
-        溜溜IM
+        instant messageing based on netty.
     </description>
 
     <organization>
-        <name>The WIm Project</name>
-        <url>http://liuliu.w.cn</url>
+        <name>Xlet</name>
+        <url>http://www.xlet.org</url>
     </organization>
 
     <scm>
-        <url>http://git.dev/im.git</url>
-        <connection>scm:git:ssh://git@git.dev/git/im.git</connection>
-        <developerConnection>scm:git:ssh://git@git.dev/git/im.git</developerConnection>
+        <url>https://github.com/xlet/strawberry.git</url>
+        <connection>scm:git:ssh://git@github.com:xlet/strawberry.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:xlet/strawberry.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 

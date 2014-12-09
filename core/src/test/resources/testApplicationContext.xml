@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="jsonMapper" class="cn.w.im.core.jackson.MapperCreator">
+    <bean id="jsonMapper" class="org.xlet.strawberry.core.jackson.MapperCreator">
         <property name="subTypes">
             <list>
                 <ref bean="testMessage" />
@@ -11,8 +11,8 @@
         </property>
     </bean>
 
-    <bean id="testMessage" class="cn.w.im.core.jackson.NamedSubType">
-        <property name="type" value="cn.w.im.core.test.json.TestMessage"/>
+    <bean id="testMessage" class="org.xlet.strawberry.core.jackson.NamedSubType">
+        <property name="type" value="org.xlet.strawberry.core.test.json.TestMessage"/>
         <property name="name" value="Test"/>
     </bean>
 </beans>

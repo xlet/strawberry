@@ -6,16 +6,16 @@
 
     <import resource="jsonSubTypeRegister.xml"/>
 
-    <bean id="propertyConfig" class="cn.w.im.core.config.SystemPropertyPropertyPlaceholderConfigurer">
+    <bean id="propertyConfig" class="org.xlet.strawberry.core.config.SystemPropertyPropertyPlaceholderConfigurer">
         <constructor-arg name="systemProperty">
-            <value>liuliu.server.config</value>
+            <value>strawberry.server.config</value>
         </constructor-arg>
     </bean>
 
 
-    <bean class="cn.w.im.core.spring.SpringContext"/>
+    <bean class="org.xlet.strawberry.core.spring.SpringContext"/>
 
-    <bean class="cn.w.im.core.config.ForwardConfiguration">
+    <bean class="org.xlet.strawberry.core.config.ForwardConfiguration">
         <property name="busHost" value="${bus.host}"/>
         <property name="busPort" value="${bus.listen.port}"/>
         <property name="serverHost" value="${server.host}"/>
