@@ -41,7 +41,7 @@
         <logback.version>1.1.2</logback.version>
         <io.netty.version>4.0.12.Final</io.netty.version>
         <jackson.version>2.10.3</jackson.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.13.1</junit.version>
         <easymock.version>3.2</easymock.version>
         <morphia.version>0.108</morphia.version>
         <mongodb.java.version>2.12.3</mongodb.java.version>
